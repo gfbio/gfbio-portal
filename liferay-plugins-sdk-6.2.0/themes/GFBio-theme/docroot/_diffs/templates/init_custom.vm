@@ -2,3 +2,4 @@
 This file allows you to override and define new Velocity variables.
 *#
 
+#set ($portal_url = $portalUtil.getPortalURL($theme_display))

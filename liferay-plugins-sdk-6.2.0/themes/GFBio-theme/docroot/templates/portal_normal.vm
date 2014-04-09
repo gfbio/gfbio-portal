@@ -122,7 +122,7 @@ $theme.include($body_top_include)
 					<h2 class="ce_headline">our partners</h2>
 		
 					<div class="ce_text partners-list-link block" id="partners-list-link">
-		  				<h3><a title="Partner" href="partner.html">&gt;&gt; See the complete list</a></h3>    
+		  				<h3><a title="Partner" href="$portal_url/partner">&gt;&gt; See the complete list</a></h3>    
 					</div>
 		
 					<div class="ce_text block">
@@ -147,6 +147,37 @@ $theme.include($body_top_include)
 $theme.include($body_bottom_include)
 
 $theme.include($bottom_include)
+
+<script>
+(function($) {
+    $(document).ready(function() {
+      $(document).accordion({
+        // Put custom options here
+        heightStyle: 'content',
+        header: 'div.toggler',
+        collapsible: true
+      });
+      var activate = function(tog) {
+        var tgs = $('div.toggler');
+        tgs.removeClass('active');
+        tog.addClass('active');
+        tgs.next('div.accordion').attr('aria-hidden', 'true');
+        tog.next('div.accordion').attr('aria-hidden', 'false');
+      };
+      $('div.toggler').focus(function(e) {
+        $('div.toggler').attr('tabindex', 0);
+        $(this).attr('tabindex', -1);
+      }).blur(function() {
+        $(this).attr('tabindex', 0);
+      }).click(function() {
+        activate($(this));
+      }).keypress(function(event) {
+        if (event.keyCode == 13) activate($(this));
+      });
+    });
+  })(jQuery);
+</script>
+
 
 </body>
 
