@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+	<ModulePrefs title="GFBio Search Gadget" scrolling="true">
+		<Require feature="dynamic-height" />
+	</ModulePrefs>
+	<Content type="html">
+  <![CDATA[
+    <script type="text/javascript">
+
+       function makeTextRequest() {    
+        var params = {};  
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+        var url = "http://www.gfbio.org/data-portal.html?q_=";
+        var query=	document.getElementById('acQueryInput_').value
+        gadgets.io.makeRequest(url+query, response, params);
+      };
+         function response(obj) {    
+         var return_str= obj.data;
+         var start = return_str.indexOf("<!--RESULT LIST START-->");
+         var end = return_str.indexOf("<!--RESULT LIST END-->");
+       	document.getElementById('content_div').innerHTML = return_str.substring(start, end); 
+    	gadgets.window.adjustHeight(); 
+        };   
+    </script>
+    
+	 <div> 
+	 <table width=100%> 
+	 <tr><td> 
+	 <label>Search:&nbsp;</label></td><td width="70%"> 
+	 <input id="acQueryInput_" name="q_" class="acInput" value="shark" autocomplete="off"></td></tr> 
+	 </table> 
+	 </div> 
+
+
+ 	<input type="button" value="Find Data" style="font-weight: bold" onClick="javascript:makeTextRequest();"> 
+
+    <div id="content_div"></div>
+  ]]>
+	</Content>
+</Module>
