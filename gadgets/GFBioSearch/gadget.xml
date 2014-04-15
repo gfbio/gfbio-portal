@@ -11,29 +11,66 @@
         var params = {};  
         params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
         var url = "http://www.gfbio.org/data-portal.html?q_=";
-        var query=	document.getElementById('acQueryInput_').value
+        var query=	document.getElementById('QueryInput').value;
         gadgets.io.makeRequest(url+query, response, params);
       };
-         function response(obj) {    
-         var return_str= obj.data;
-         var start = return_str.indexOf("<!--RESULT LIST START-->");
-         var end = return_str.indexOf("<!--RESULT LIST END-->");
-       	document.getElementById('content_div').innerHTML = return_str.substring(start, end); 
+      
+      function getLink(url) {    
+        var params = {};  
+        params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+        gadgets.io.makeRequest(url, response, params);
+      };
+      
+      function response(obj) {    
+        var return_str= obj.data;
+        var start = return_str.indexOf("Search Results:");
+ 		if (start >= 0) { 
+ 			start = return_str.substring(0, start).lastIndexOf( "<div"); 
+ 		} 
+ 		if (start >=0){
+        	var end = return_str.indexOf("<!--RESULT LIST END-->");
+        	var result = return_str.substring(start, end); 
+         	
+          	// change the link to javascript 
+ 			result = replaceAll("href=\"data-portal.html", 
+ 				"href=\"javascript:getLink('http://www.gfbio.org/data-portal.html",result); 
+ 				 
+ 			var ind = result.indexOf("http://www.gfbio.org/"); 
+ 			while (ind >= 0) { 
+ 				ind = result.indexOf("\"", ind); 
+ 				result = replaceFirstFrom(result, ind, "\"", "')\""); 
+ 				ind = result.indexOf("http://www.gfbio.org/", ind); 
+ 			}  
+        	document.getElementById('content_div').innerHTML = result; 
+		}
     	gadgets.window.adjustHeight(); 
-        };   
-    </script>
+    };   
+        
+	function replaceFirstFrom( str,  from,  regex,
+			 replacement) {
+		var prefix = str.substring(0, from);
+		var rest = str.substring(from);
+		rest = rest.replace(regex, replacement);
+		return prefix + rest;
+	}
     
+    function replaceAll(find, replace, str) {
+  		return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+	}
+	
+	function escapeRegExp(string) {
+    	return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+	}
+    </script>
 	 <div> 
-	 <table width=100%> 
-	 <tr><td> 
-	 <label>Search:&nbsp;</label></td><td width="70%"> 
-	 <input id="acQueryInput_" name="q_" class="acInput" value="shark" autocomplete="off"></td></tr> 
-	 </table> 
-	 </div> 
+	 <label>Search:&nbsp;</label>
+	 <input id="QueryInput" name="q_" class="acInput" value="shark" autocomplete="off">
+
 
 
  	<input type="button" value="Find Data" style="font-weight: bold" onClick="javascript:makeTextRequest();"> 
 
+	 </div> 
     <div id="content_div"></div>
   ]]>
 	</Content>
