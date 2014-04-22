@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+	<ModulePrefs title="GFBioWiki" author_email="INF@your.domain">
+		<Require feature="opensocial-0.9" />
+	</ModulePrefs>
+	<Content type="html" view="canvas"><![CDATA[
+
+<script type="text/javascript" src="http://localhost:8123/GFBioWiki/canvas.js"></script>
+
+<script type="text/javascript">
+	gadgets.util.registerOnLoadHandler(init);
+    var params = {};  
+    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
+    var url = "http://gfbio.biowikifarm.net";
+    gadgets.io.makeRequest(url, response, params);
+    
+    function response(obj) {    
+        document.getElementById('content_div').innerHTML = obj.data; 
+    	gadgets.window.adjustHeight(); 
+    };   
+</script>
+
+
+    <div id="content_div"></div>
+
+  ]]></Content>
+</Module>
