@@ -121,9 +121,22 @@ $dockbarOpenGradientStart: #0EA6F9;
 		}
 	}
 	
-	#dock_nav{
+	#dock{
+		
 		background-color:#FFFFFF;
 		display:block;
+		
+		@include respond-to(desktop){
+			display:none;
+		}
+		
+	}
+	#nav{
+		
+		background-color:#FFFFFF;
+		display:block;
+		
+		
 	}
 
 	.redirected-to-message {
