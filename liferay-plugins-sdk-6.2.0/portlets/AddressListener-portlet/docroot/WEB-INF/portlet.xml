@@ -31,4 +31,35 @@
 			<role-name>user</role-name>
 		</security-role-ref>
 	</portlet>
+	<portlet>
+		<portlet-name>gf-bio_-search_demo1_1</portlet-name>
+		<display-name>Gf Bio Search Demo1 1</display-name>
+		<portlet-class>com.test.GFBio_Search_demo1_1</portlet-class>
+		<init-param>
+			<name>view-template</name>
+			<value>/html/gfbio_search_demo1_1/view.jsp</value>
+		</init-param>
+		<expiration-cache>0</expiration-cache>
+		<supports>
+			<mime-type>text/html</mime-type>
+			<portlet-mode>view</portlet-mode>
+		</supports>
+		<portlet-info>
+			<title>Gf Bio Search Demo1 1</title>
+			<short-title>Gf Bio Search Demo1 1</short-title>
+			<keywords></keywords>
+		</portlet-info>
+		<security-role-ref>
+			<role-name>administrator</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>guest</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>power-user</role-name>
+		</security-role-ref>
+		<security-role-ref>
+			<role-name>user</role-name>
+		</security-role-ref>
+	</portlet>
 </portlet-app>

@@ -4,5 +4,6 @@
 <display>
 	<category name="category.sample">
 		<portlet id="AddressListener" />
+		<portlet id="gf-bio_-search_demo1_1"></portlet>
 	</category>
 </display>
