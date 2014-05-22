@@ -3,6 +3,7 @@ package gfbio.portal.search;
 import java.io.*;
 
 import javax.portlet.*;
+
 import org.json.JSONObject;
 import java.io.IOException;
 
@@ -16,11 +17,6 @@ public class GFBioSearch extends GenericPortlet {
 				response);
 	}
 
-	protected JSONObject getSearchResult(String query) {
-		JSONObject searchResult = PangeaeSearch.HttpPost(query);
-		JSONObject ret = PangeaeSearch.parsedResult(searchResult);
-		return ret;
-	}
 
 	public void serveResource(ResourceRequest request, ResourceResponse response)
 			throws PortletException, IOException {
@@ -28,10 +24,10 @@ public class GFBioSearch extends GenericPortlet {
 		try {
 			response.setContentType("text/html");
 			String keyword = request.getParameter("queryString");
-			System.out.println("keyword: " + keyword);
 
-			JSONObject json = getSearchResult(keyword);
-			System.out.println(json.toString());
+			JSONObject searchResult = PangeaeSearch.HttpPost(keyword);
+			JSONObject json = PangeaeSearch.parsedResult(searchResult);
+			
 			PrintWriter writer = response.getWriter();
 			writer.print(json);
 		} catch (Exception e) {

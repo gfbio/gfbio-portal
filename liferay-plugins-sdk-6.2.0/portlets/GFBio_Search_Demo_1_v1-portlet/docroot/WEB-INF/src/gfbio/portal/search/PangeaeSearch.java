@@ -33,7 +33,14 @@ public class PangeaeSearch {
 	static String dataCount = "";
 	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
-	static String queryString = "{\"size\" : %d,\"query\": {\"simple_query_string\": {\"query\": \"%s\"}}}";
+	static String queryString = "{\"size\" : %d,\"query\": {\"simple_query_string\": {\"query\": \"%s\"}},%s}";
+	static String facetString = "\"facets\": "
+			+ "{\"datacenter\": {\"terms\": {\"field\": \"dataCenterFacet\",\"size\": 10}},"
+			+ "\"region\": {\"terms\": {\"field\": \"regionFacet\",\"size\": 10}},"
+			+ "\"project\": {\"terms\": {\"field\": \"projectFacet\",\"size\": 10}},"
+			+ "\"parameter\": {\"terms\": {\"field\": \"parameterFacet\",\"size\": 10}},"
+			+ "\"taxonomy\": {\"terms\": {\"field\": \"taxonomyFacet\",\"size\": 10}},"
+			+ "\"investigator\": {\"terms\": {\"field\": \"investigatorFacet\",\"size\": 10}}}";
 	static int maxResult = 100;
 
 	public static JSONObject HttpPost(String query) {
@@ -43,7 +50,8 @@ public class PangeaeSearch {
 			String restURL = url;
 			HttpPost post = new HttpPost(restURL);
 			StringEntity input;
-			String queryJSON = String.format(queryString, maxResult, query);
+			String queryJSON = String.format(queryString, maxResult, query,
+					facetString);
 			System.out.println(queryJSON);
 			input = new StringEntity(queryJSON);
 			post.setEntity(input);
@@ -193,43 +201,90 @@ public class PangeaeSearch {
 				region = getValue(source, "region");
 				String[] citation = getCitation(source);
 				title = citation[0];
-				if (title.isEmpty()) title = "N/A";
+				if (title.isEmpty())
+					title = "N/A";
 				authors = citation[1];
-				if (authors.isEmpty()) authors = "N/A";
+				if (authors.isEmpty())
+					authors = "N/A";
 				citedDate = citation[2];
-				if (citedDate.isEmpty()) citedDate = "N/A";
+				if (citedDate.isEmpty())
+					citedDate = "N/A";
 				setXMLfromJSON(source, "xml");
 				investigator = getValue(source, "investigator");
-				if (investigator.isEmpty()) investigator = "N/A";
+				if (investigator.isEmpty())
+					investigator = "N/A";
 				description = getDescription(source);
-				if (description.isEmpty()) description = "N/A";
+				if (description.isEmpty())
+					description = "N/A";
 				dataCenter = getValue(source, "dataCenter");
-				if (dataCenter.isEmpty()) dataCenter = "N/A";
+				if (dataCenter.isEmpty())
+					dataCenter = "N/A";
 				project = getValue(source, "project");
-				if (project.isEmpty()) project = "N/A";
+				if (project.isEmpty())
+					project = "N/A";
 				parameter = getValue(source, "parameter");
-				if (parameter.isEmpty()) parameter = "N/A";
+				if (parameter.isEmpty())
+					parameter = "N/A";
 				taxonomy = "N/A";
 				dataCount = getDataCount(source);
-				if (dataCount.isEmpty()) dataCount = "N/A";
+				if (dataCount.isEmpty())
+					dataCount = "N/A";
 
 				JSONObject result = new JSONObject();
-				result.put("title",title);
-				result.put("authors",authors);
-				result.put("description",description);
-				result.put("dataCenter",dataCenter);
-				result.put("region",region);
-				result.put("project",project);
-				result.put("citedDate",citedDate);
-				result.put("parameter",parameter);
-				result.put("taxonomy",taxonomy);
-				result.put("investigator",investigator);
-				result.put("score",score);
-				result.put("dataCount",dataCount);
+				result.put("title", title);
+				result.put("authors", authors);
+				result.put("description", description);
+				result.put("dataCenter", dataCenter);
+				result.put("region", region);
+				result.put("project", project);
+				result.put("citedDate", citedDate);
+				result.put("parameter", parameter);
+				result.put("taxonomy", taxonomy);
+				result.put("investigator", investigator);
+				result.put("score", score);
+				result.put("dataCount", dataCount);
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
+			ret.put("facet", parseFacet(rawResult));
 
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+	}
+
+	public static JSONObject parseFacet(JSONObject rawResult) {
+		JSONObject ret = new JSONObject();
+		try {
+			JSONObject facets = rawResult.getJSONObject("facets");
+			ret.put("datacenter",getFacetTerm("datacenter",facets));
+			ret.put("region",getFacetTerm("region",facets));
+			ret.put("project",getFacetTerm("project",facets));
+			ret.put("parameter",getFacetTerm("parameter",facets));
+			ret.put("taxonomy",getFacetTerm("taxonomy",facets));
+			ret.put("investigator",getFacetTerm("investigator",facets));
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	protected static JSONArray getFacetTerm(String facetName, JSONObject facets){
+		JSONArray ret = new JSONArray();
+		try {
+			JSONObject facet = facets.getJSONObject(facetName);
+			JSONArray terms = facet.getJSONArray("terms");
+			for (int i=0; i<terms.length(); i++){
+				JSONObject term = (JSONObject) terms.get(i);
+				String name = term.getString("term");
+				String count = term.getString("count");
+				JSONObject obj = new JSONObject();
+				obj.put("name",name);
+				obj.put("count",count);
+				ret.put(obj);
+			}
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();

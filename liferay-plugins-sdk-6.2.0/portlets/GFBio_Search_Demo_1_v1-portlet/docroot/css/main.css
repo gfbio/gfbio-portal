@@ -1,0 +1,24 @@
+input[type=search]{
+    width:25%;
+    min-width:200px;
+}
+
+select[name=tableId_length]{
+    width:20%;
+    min-width:80px;
+}
+.divleft{
+/*    width:20%; */
+   float: left;
+}
+.divright{
+/*         width: 80%; */
+   width:auto;
+/*    float: right; */
+}
+div.container {
+        width: 80%;
+    }
+.search_portlet{
+	height: auto;
+}
