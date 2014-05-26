@@ -47,18 +47,11 @@
 				
 			
 			
+			<div id="dock">				
+				#dockbar()
+			</div>	
 				
-				
-			
-			#if (!$is_signed_in)
-					<a data-redirect="$is_login_redirect_required" href="$sign_in_url" id="sign-in" rel="nofollow">$sign_in_text</a>
-			#end
-			
-			<div id="dock">
-				##if ($is_signed_in)
-					#dockbar()
-				##end
-			</div>
+		
 			<div id="nav">	
 				#if ($has_navigation || $is_signed_in)
 						#parse ("$full_templates_path/navigation.vm")
