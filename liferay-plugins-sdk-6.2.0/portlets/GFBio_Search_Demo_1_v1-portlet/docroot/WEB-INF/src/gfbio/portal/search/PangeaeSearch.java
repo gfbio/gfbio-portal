@@ -33,15 +33,6 @@ public class PangeaeSearch {
 	static String dataCount = "";
 	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
-	static String queryString = "{\"size\" : %d,\"query\": {\"simple_query_string\": {\"query\": \"%s\"}},%s}";
-	static String facetString = "\"facets\": "
-			+ "{\"datacenter\": {\"terms\": {\"field\": \"dataCenterFacet\",\"size\": 10}},"
-			+ "\"region\": {\"terms\": {\"field\": \"regionFacet\",\"size\": 10}},"
-			+ "\"project\": {\"terms\": {\"field\": \"projectFacet\",\"size\": 10}},"
-			+ "\"parameter\": {\"terms\": {\"field\": \"parameterFacet\",\"size\": 10}},"
-			+ "\"taxonomy\": {\"terms\": {\"field\": \"taxonomyFacet\",\"size\": 10}},"
-			+ "\"investigator\": {\"terms\": {\"field\": \"investigatorFacet\",\"size\": 10}}}";
-	static int maxResult = 100;
 
 	public static JSONObject HttpPost(String query) {
 		JSONObject ret = null;
@@ -50,10 +41,8 @@ public class PangeaeSearch {
 			String restURL = url;
 			HttpPost post = new HttpPost(restURL);
 			StringEntity input;
-			String queryJSON = String.format(queryString, maxResult, query,
-					facetString);
-			System.out.println(queryJSON);
-			input = new StringEntity(queryJSON);
+//			System.out.println(query);
+			input = new StringEntity(query);
 			post.setEntity(input);
 			HttpResponse response = client.execute(post);
 			BufferedReader rd = new BufferedReader(new InputStreamReader(
@@ -257,14 +246,17 @@ public class PangeaeSearch {
 
 	public static JSONObject parseFacet(JSONObject rawResult) {
 		JSONObject ret = new JSONObject();
+		JSONObject result = new JSONObject();
 		try {
 			JSONObject facets = rawResult.getJSONObject("facets");
-			ret.put("datacenter",getFacetTerm("datacenter",facets));
-			ret.put("region",getFacetTerm("region",facets));
-			ret.put("project",getFacetTerm("project",facets));
-			ret.put("parameter",getFacetTerm("parameter",facets));
-			ret.put("taxonomy",getFacetTerm("taxonomy",facets));
-			ret.put("investigator",getFacetTerm("investigator",facets));
+			result.put("datacenter",getFacetTerm("datacenter",facets));
+			result.put("region",getFacetTerm("region",facets));
+			result.put("project",getFacetTerm("project",facets));
+			result.put("parameter",getFacetTerm("parameter",facets));
+			result.put("taxonomy",getFacetTerm("taxonomy",facets));
+			result.put("investigator",getFacetTerm("investigator",facets));
+			ret.put("facet", result);
+			System.out.println(ret);
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();

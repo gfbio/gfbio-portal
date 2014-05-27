@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-	<ModulePrefs title="GFBioWiki" author_email="INF@your.domain">
-		<Require feature="opensocial-0.9" />
+	<ModulePrefs title="GFBio Wiki"  scrolling="true">
+		<Require feature="dynamic-height" />
 	</ModulePrefs>
-	<Content type="html" view="canvas"><![CDATA[
+	<Content type="html"><![CDATA[
 
-<script type="text/javascript" src="http://localhost:8123/GFBioWiki/canvas.js"></script>
 
-<script type="text/javascript">
-	gadgets.util.registerOnLoadHandler(init);
-    var params = {};  
-    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;  
-    var url = "http://gfbio.biowikifarm.net";
-    gadgets.io.makeRequest(url, response, params);
-    
-    function response(obj) {    
-        document.getElementById('content_div').innerHTML = obj.data; 
-    	gadgets.window.adjustHeight(); 
-    };   
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script>
+function wiki_auth(login, pass, ref){
+    $.post('http://gfbio.biowikifarm.net/int/index.php?action=login&wpName=' + login + 
+            '&wpPassword=' + pass + '&format=text&returnto=Main+Page', function(data) {
+        if(data.login.result == 'NeedToken') {
+            $.post('http://gfbio.biowikifarm.net/int/index.php?action=login&wpName=' + login + 
+                    '&wpPassword=' + pass + '&lgtoken='+data.login.token+'&format=test&returnto=Main+Page', 
+                    function(data) {
+                if(!data.error){
+                   if (data.login.result == "Success") { 
+                        document.location.href=ref; 
+                   } else {
+                        console.log('Result: '+ data.login.result);
+                   }
+                } else {
+                   console.log('Error: ' + data.error);
+                }
+            });
+        } else {
+            console.log('Result: ' + data.login.result);
+        }
+        if(data.error) {
+            console.log('Error: ' + data.error);
+        }
+    });
+}
 </script>
-
-
-    <div id="content_div"></div>
+<script>
+$(document).ready(function(){
+            wiki_auth('Kobkaew', 'GreenFrog1', 'http://gfbio.biowikifarm.net/int');
+});
+</script>
 
   ]]></Content>
 </Module>
