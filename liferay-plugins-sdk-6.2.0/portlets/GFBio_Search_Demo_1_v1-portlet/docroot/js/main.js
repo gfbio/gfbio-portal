@@ -1,34 +1,34 @@
 function createDatatable(dataset,facet){
-	var region = [];
-	for (var i=0; i<facet.facet.region.length; i++){
-		region.push(facet.facet.region[i].name);
-	}
-	console.log('region:'+region);
-	var datacenter = [];
-	for (i=0; i<facet.facet.datacenter.length; i++){
-		datacenter.push(facet.facet.datacenter[i].name);
-	}
-	console.log('datacenter:'+datacenter);
-	var project = [];
-	for (i=0; i<facet.facet.project.length; i++){
-		project.push(facet.facet.project[i].name);
-	}
-	console.log('project:'+project);
-	var parameter = [];
-	for (i=0; i<facet.facet.parameter.length; i++){
-		parameter.push(facet.facet.parameter[i].name);
-	}
-	console.log('parameter:'+parameter);
-	var investigator = [];
-	for (i=0; i<facet.facet.investigator.length; i++){
-		investigator.push(facet.facet.investigator[i].name);
-	}
-	console.log('investigator:'+investigator);
-	var taxonomy = [];
-	for (i=0; i<facet.facet.taxonomy.length; i++){
-		taxonomy.push(facet.facet.taxonomy[i].name);
-	}
-	console.log('taxonomy:'+taxonomy);
+//	var region = [];
+//	for (var i=0; i<facet.facet.region.length; i++){
+//		region.push(facet.facet.region[i].name);
+//	}
+//	console.log('region:'+region);
+//	var datacenter = [];
+//	for (i=0; i<facet.facet.datacenter.length; i++){
+//		datacenter.push(facet.facet.datacenter[i].name);
+//	}
+//	console.log('datacenter:'+datacenter);
+//	var project = [];
+//	for (i=0; i<facet.facet.project.length; i++){
+//		project.push(facet.facet.project[i].name);
+//	}
+//	console.log('project:'+project);
+//	var parameter = [];
+//	for (i=0; i<facet.facet.parameter.length; i++){
+//		parameter.push(facet.facet.parameter[i].name);
+//	}
+//	console.log('parameter:'+parameter);
+//	var investigator = [];
+//	for (i=0; i<facet.facet.investigator.length; i++){
+//		investigator.push(facet.facet.investigator[i].name);
+//	}
+//	console.log('investigator:'+investigator);
+//	var taxonomy = [];
+//	for (i=0; i<facet.facet.taxonomy.length; i++){
+//		taxonomy.push(facet.facet.taxonomy[i].name);
+//	}
+//	console.log('taxonomy:'+taxonomy);
 	
 	var oTable = $('#tableId').dataTable( {
 		"bJQueryUI": true,
@@ -93,24 +93,26 @@ function createDatatable(dataset,facet){
 		"aaData": dataset,
 		"oLanguage": {
 		    "sSearch": "Filter: "
-		},
+		}
 //		"oColVis": { "fnStateChange": function (iColumn, bVisible) { columnstatechange();   } }
-	}).columnFilter({
-		"aoColumns": [
-	     		null,
-	     		null,
-	     		null,
-	     		{ type: "checkbox", values: datacenter  },
-	     		{ type: "checkbox", values: region  },
-	     		{ type: "checkbox", values: project  },
-	     		null,
-	     		{ type: "checkbox", values: parameter  },
-	     		{ type: "checkbox", values: investigator  },
-	     		{ type: "checkbox", values: taxonomy  }
-	     		],
-	    "bUseColVis": true
-	});			
-//	 columnstatechange();
+	});
+//	.columnFilter({
+//		"aoColumns": [
+//	     		null,
+//	     		null,
+//	     		null,
+//	     		{ type: "checkbox", values: datacenter  },
+////	     		{ type: "checkbox", values: region  },
+//	     		null,
+//	     		{ type: "checkbox", values: project  },
+////	     		null,
+////	     		{ type: "checkbox", values: parameter  },
+////	     		{ type: "checkbox", values: investigator  },
+////	     		{ type: "checkbox", values: taxonomy  }
+//	     		],
+//	    "bUseColVis": true
+//	});			
+////	 columnstatechange();
 }
 
 function columnstatechange(){

@@ -40,9 +40,9 @@ public class GFBioSearch extends GenericPortlet {
 			if (mode.equals("getResult")){
 				queryJSON = String.format(queryString, maxResult, keyword,facetString);
 			}
-//			else if(mode.equals("getFacet")){
-//				queryJSON = String.format(queryString, maxResult, keyword,facetString);
-//			}
+			else if(mode.equals("getFacet")){
+				queryJSON = String.format(queryString, maxResult, keyword,facetString);
+			}
 //			System.out.println(queryJSON);
 			JSONObject searchResult = PangeaeSearch.HttpPost(queryJSON);
 			JSONObject json = new JSONObject();
@@ -50,9 +50,10 @@ public class GFBioSearch extends GenericPortlet {
 			if (mode.equals("getResult")){
 				json=	PangeaeSearch.parsedResult(searchResult);
 			}
-//			else if (mode.equals("getFacet")){
-//				json= PangeaeSearch.parseFacet(searchResult);
-//			}
+			else if (mode.equals("getFacet")){
+				json= PangeaeSearch.parseFacet(searchResult);
+			}
+			System.out.println(json);
 			PrintWriter writer = response.getWriter();
 			writer.print(json);
 		} catch (Exception e) {
