@@ -6,3 +6,18 @@ select[name=tableId_length] {
   width: 20%;
   min-width: 80px; }
 
+.divleft {
+  width: 19%;
+  float: left; }
+
+.divright {
+  width: 80%;
+  float: right;
+  /*    width:auto; */ }
+
+div.container {
+  width: 80%; }
+
+.search_portlet {
+  height: auto; }
+
