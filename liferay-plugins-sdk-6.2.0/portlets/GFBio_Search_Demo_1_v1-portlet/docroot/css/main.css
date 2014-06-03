@@ -11,6 +11,9 @@ select[name=tableId_length] {
 .divleft {
 	width: 19%;
 	float: left;
+	overflow-x:scroll;
+	margin-top:50px;
+   
 }
 
 .divright {
@@ -25,4 +28,14 @@ div.container {
 
 .search_portlet {
 	height: auto;
+}
+ul{
+	margin: 10px 0px 10px 0px !important; 
+}
+td.details-control {
+    background: url('../images/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.shown td.details-control {
+    background: url('../images/details_close.png') no-repeat center center;
 }

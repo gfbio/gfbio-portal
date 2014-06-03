@@ -17,7 +17,7 @@ public class GFBioSearch extends GenericPortlet {
 			+ "\"parameter\": {\"terms\": {\"field\": \"parameterFacet\",\"size\": 10}},"
 			+ "\"taxonomy\": {\"terms\": {\"field\": \"taxonomyFacet\",\"size\": 10}},"
 			+ "\"investigator\": {\"terms\": {\"field\": \"investigatorFacet\",\"size\": 10}}}";
-	static int maxResult = 100;
+	static int maxResult = 20;
 
 	protected void doView(RenderRequest request, RenderResponse response)
 			throws PortletException, IOException {
@@ -43,7 +43,7 @@ public class GFBioSearch extends GenericPortlet {
 			else if(mode.equals("getFacet")){
 				queryJSON = String.format(queryString, maxResult, keyword,facetString);
 			}
-//			System.out.println(queryJSON);
+
 			JSONObject searchResult = PangeaeSearch.HttpPost(queryJSON);
 			JSONObject json = new JSONObject();
 			System.out.println(searchResult);

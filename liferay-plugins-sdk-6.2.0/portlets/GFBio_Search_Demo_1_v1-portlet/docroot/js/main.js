@@ -1,39 +1,10 @@
 function createDatatable(dataset,facet){
-//	var region = [];
-//	for (var i=0; i<facet.facet.region.length; i++){
-//		region.push(facet.facet.region[i].name);
-//	}
-//	console.log('region:'+region);
-//	var datacenter = [];
-//	for (i=0; i<facet.facet.datacenter.length; i++){
-//		datacenter.push(facet.facet.datacenter[i].name);
-//	}
-//	console.log('datacenter:'+datacenter);
-//	var project = [];
-//	for (i=0; i<facet.facet.project.length; i++){
-//		project.push(facet.facet.project[i].name);
-//	}
-//	console.log('project:'+project);
-//	var parameter = [];
-//	for (i=0; i<facet.facet.parameter.length; i++){
-//		parameter.push(facet.facet.parameter[i].name);
-//	}
-//	console.log('parameter:'+parameter);
-//	var investigator = [];
-//	for (i=0; i<facet.facet.investigator.length; i++){
-//		investigator.push(facet.facet.investigator[i].name);
-//	}
-//	console.log('investigator:'+investigator);
-//	var taxonomy = [];
-//	for (i=0; i<facet.facet.taxonomy.length; i++){
-//		taxonomy.push(facet.facet.taxonomy[i].name);
-//	}
-//	console.log('taxonomy:'+taxonomy);
 	
 	var oTable = $('#tableId').dataTable( {
 		"bJQueryUI": true,
 		"bDestroy": true,
 		"sDom" : 'Clfrtip',
+		"bUseColVis": true,
 		colVis: {exclude: [0,1,2]},
 		"columns": [
 		               {
@@ -41,13 +12,11 @@ function createDatatable(dataset,facet){
 		            	   "sWidth": "30%"},
 		                {
 		                	"data":"authors",
-		                    "visible": false,
-		                    "searchable": false
+		                    "visible": false
 		                },
 		                {
 		                	"data":"description",
-		                    "visible": false,
-		                    "searchable": false
+		                    "visible": false
 		                },{
 		                	"data":"dataCenter",
 			            	"sWidth": "25%"
@@ -55,7 +24,7 @@ function createDatatable(dataset,facet){
 		                {
 		                	"data":"region",
 		                    "visible": false,
-		                    "searchable": false
+		                    "searchable": true
 		                },{
 		                	"data":"project",
 			            	"sWidth": "25%"
@@ -70,22 +39,25 @@ function createDatatable(dataset,facet){
 		                },
 		                {
 		                	"data":"investigator",
-		                    "visible": false,
-		                    "searchable": false
+		                    "visible": false
 		                },
 		                {
 		                	"data":"taxonomy",
-		                    "visible": false,
-		                    "searchable": false
+		                    "visible": false
 		                },
 		                {
 		                	"data":"score",
-		                    "visible": false,
-		                    "searchable": false
+		                    "visible": false
 		                },
 		                {
 		                	"data":"dataCount",
-			            	"sWidth": "10%"
+			            	"sWidth": "7%"
+		                }
+		                ,{
+		                    "class":          'details-control',
+		                    "sortable":      false,
+		                    "data":           null,
+		                    "defaultContent": ''
 		                }
 		            ],
 		"order": [[ 10, "desc" ]],
@@ -94,69 +66,201 @@ function createDatatable(dataset,facet){
 		"oLanguage": {
 		    "sSearch": "Filter: "
 		}
-//		"oColVis": { "fnStateChange": function (iColumn, bVisible) { columnstatechange();   } }
 	});
-//	.columnFilter({
-//		"aoColumns": [
-//	     		null,
-//	     		null,
-//	     		null,
-//	     		{ type: "checkbox", values: datacenter  },
-////	     		{ type: "checkbox", values: region  },
-//	     		null,
-//	     		{ type: "checkbox", values: project  },
-////	     		null,
-////	     		{ type: "checkbox", values: parameter  },
-////	     		{ type: "checkbox", values: investigator  },
-////	     		{ type: "checkbox", values: taxonomy  }
-//	     		],
-//	    "bUseColVis": true
-//	});			
-////	 columnstatechange();
-}
 
-function columnstatechange(){
-    $("tfoot input").keyup( function () {
-         var oSettings = oTable.fnSettings();
-         var renderedIndex=$("tfoot input").index(this);
-         var hiddenColumnsCount=0;
-         var aoColumns=oSettings.aoColumns;
-                //count the hidden columns preceding the currently active filter input.
-                //note: we want to stop counting at the current filter index, which is renderedIndex+hiddenColumnsCount
-         for (i=0; i<=renderedIndex+hiddenColumnsCount; i++) { 
-             if (!aoColumns[i].bVisible) hiddenColumnsCount++;
-         }
-         oTable.fnFilter( this.value, renderedIndex+hiddenColumnsCount );
-     } );
-    $("tfoot input").focus( function () {
-         if ( this.className == "search_init" ) {
-           this.className = "";
-           this.title = this.value;         // use the title attribute to store the temp value for the filter input
-           this.value = "";
-         }
-     } );
-    $("tfoot input").blur( function (i) {
-         if ( this.value == "" ) {
-           this.className = "search_init";
-           this.value = this.title;
-         }
-     } );
-
+	 $('#tableId tbody').on('click', 'td.details-control', function () {
+	        var tr = $(this).closest('tr');
+	        var oTable = $('#tableId').DataTable();
+	        var row = oTable.row( tr );
+	 
+	        if ( row.child.isShown() ) {
+	            // This row is already open - close it
+	            row.child.hide();
+	            tr.removeClass('shown');
+	        }
+	        else {
+	            // Open this row
+	            row.child( format(row.data()) ).show();
+	            tr.addClass('shown');
+	        }
+	    } );
 }
 
 function addToolTip(){
 	$('#tableId tbody').on('mouseover','tr', function () {
 		var table = $('#tableId').dataTable();
 		var iRow = table.fnGetPosition(this); 
-		var sCitation = table.fnGetData(iRow)["authors"];
-		var sDescription = table.fnGetData(iRow)["description"];
-		
+		var sCitation = "";
+		var sDescription = "";
+		if (table.length >0){
+			sCitation = table.fnGetData(iRow)["authors"];
+			sDescription = table.fnGetData(iRow)["description"];
+		}
 		this.setAttribute( 'title', "Author(s):"+ sCitation +"\n\nDescription: "+ sDescription);
 	});
 
-//		$('#tableId').dataTable().$('tr').tooltip( {
-//	        "delay": 0,
-//	        "track": true,
-//	        "fade": 250
-//	    } );
+}
+
+
+
+function createFacetTree(data){
+
+			var listString = createFacetList(data.facet);
+
+            $("#search_result_facet").jstree("destroy");
+			var ul = document.getElementById('search_result_facet');
+			ul.innerHTML = listString;
+
+			$('#search_result_facet').jstree({
+				"checkbox" : {
+					"keep_selected_style" : false,
+					"undetermined" : true
+				},
+				"core" : {
+					"themes" : {
+						"icons" : false
+					}
+				},
+				"plugins" : [ "checkbox" ]
+			});
+			
+
+			checkAllTree(data.facet);
+			Liferay.fire('facetUpdate', {
+				ipcData : facet
+			});
+
+			$('#search_result_facet').on("changed.jstree",
+				function(e, data) {
+					var str = data.selected + '';
+					var selectedList = str.split(",");
+					getFilterTable(selectedList);
+			});
+}
+
+function createFacetList(facet){
+
+	var listString = '<ul>';
+    $.each(facet, function (id, option) {
+    	listString += '<li id="li1_'+id+'">' + id;
+		listString += '<ul>';
+        $.each(option, function (id2, option2) {
+        	var val = option2.name;
+        	if (val.length>20) val = val.substring(0,20);
+        	listString+='<li id="li2_'+id+'_'+ val+'">'; 
+        	listString+=option2.name+'</li>';
+        });
+		listString += '</ul>';
+        listString += '</li>';
+    });  
+	listString += '</ul>';
+    return listString;
+}
+
+
+function getFilterTable(selectedList) {
+
+	var columns = $('#tableId thead th');
+
+	var datacenterFilter = '';
+	var datacenterId = 3;
+	var datacenterCheck = true;
+	var regionFilter = '';
+	var regionId = 4;
+	var regionCheck = true;
+	var projectFilter = '';
+	var projectId = 5;
+	var projectCheck = true;
+	var parameterFilter = '';
+	var parameterId = 7;
+	var parameterCheck = true;
+	var taxonomyFilter = '';
+	var taxonomyId = 9;
+	var taxonomyCheck = true;
+	var investigatorFilter = '';
+	var investigatorId = 8;
+	var investigatorCheck = true;
+
+	for ( var i = 0; i < selectedList.length; i++) {
+		var id = selectedList[i];
+		var arrayid = id.split("_");
+		if (arrayid[0] == "li1") {
+			if (arrayid[1] == "datacenter") {
+				datacenterCheck = false;
+				datacenterFilter = '';
+			} else if (arrayid[1] == "region") {
+				regionCheck = false;
+				regionFilter = '';
+			} else if (arrayid[1] == "project") {
+				projectCheck = false;
+				projectFilter = '';
+			} else if (arrayid[1] == "parameter") {
+				parameterCheck = false;
+				parameterFilter = '';
+			} else if (arrayid[1] == "taxonomy") {
+				taxonomyCheck = false;
+				taxonomyFilter = '';
+			} else if (arrayid[1] == "investigator") {
+				investigatorCheck = false;
+				investigatorFilter = '';
+			}
+		} else if (arrayid[0] == "li2") {
+			if (arrayid[1] == "datacenter" && datacenterCheck) {
+				if (datacenterFilter != "")
+					datacenterFilter += "|";
+				datacenterFilter += arrayid[2];
+			} else if (arrayid[1] == "region" && regionCheck) {
+				if (regionFilter != "")
+					regionFilter += "|";
+				regionFilter += arrayid[2];
+			} else if (arrayid[1] == "project" && projectCheck) {
+				if (projectFilter != "")
+					projectFilter += "|";
+				projectFilter += arrayid[2];
+			} else if (arrayid[1] == "parameter" && parameterCheck) {
+				if (parameterFilter != "")
+					parameterFilter += "|";
+				parameterFilter += arrayid[2];
+			} else if (arrayid[1] == "taxonomy" && taxonomyCheck) {
+				if (taxonomyFilter != "")
+					taxonomyFilter += "|";
+				taxonomyFilter += arrayid[2];
+			} else if (arrayid[1] == "investigator" && investigatorCheck) {
+				if (investigatorFilter != "")
+					investigatorFilter += "|";
+				investigatorFilter += arrayid[2];
+			}
+		}
+	}
+	var oTable = $('#tableId').DataTable();
+	oTable.column(datacenterId,true,false).search(datacenterFilter).draw();
+	oTable.column(regionId).search(regionFilter,true,false).draw();
+	oTable.column(projectId).search(projectFilter,true,false).draw();
+	oTable.column(parameterId).search(parameterFilter,true,false).draw();
+	oTable.column(taxonomyId).search(taxonomyFilter,true,false).draw();
+	oTable.column(investigatorId).search(investigatorFilter,true,false).draw();
+}
+
+function checkAllTree(facet) {
+	$.each(facet, function(id, option) {
+		//$('#search_result_facet').jstree("select_node", "#li1_" + id).jstree("open_all");
+		$('#search_result_facet').jstree("select_node", "#li1_" + id).jstree("open_node", $('#li1_region'));
+	});
+}
+function format ( d ) {
+    // `d` is the original data object for the row
+    return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+        '<tr>'+
+            '<td>Full name:</td>'+
+//            '<td>'+d.name+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extension number:</td>'+
+//            '<td>'+d.extn+'</td>'+
+        '</tr>'+
+        '<tr>'+
+            '<td>Extra info:</td>'+
+//            '<td>And any further details here (images etc)...</td>'+
+        '</tr>'+
+    '</table>';
 }
