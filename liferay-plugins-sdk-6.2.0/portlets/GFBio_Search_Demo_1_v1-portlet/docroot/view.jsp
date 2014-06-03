@@ -65,6 +65,7 @@
             facet = jsonDataset.facet;
             createDatatable(dataset,facet);
 			addToolTip();
+			addExtraRow();
 			createFacetTree(facet);
         }	
 		});

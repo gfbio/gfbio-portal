@@ -54,10 +54,10 @@ function createDatatable(dataset,facet){
 			            	"sWidth": "7%"
 		                }
 		                ,{
-		                    "class":          'details-control',
-		                    "sortable":      false,
-		                    "data":           null,
-		                    "defaultContent": ''
+		                    "class":"details-control",
+		                    "sortable":false,
+		                    "data":null,
+		                    "defaultContent":""
 		                }
 		            ],
 		"order": [[ 10, "desc" ]],
@@ -68,11 +68,18 @@ function createDatatable(dataset,facet){
 		}
 	});
 
-	 $('#tableId tbody').on('click', 'td.details-control', function () {
+}
+function addExtraRow(){
+	console.log('1');
+	 $('.details-control').click(function (evt) {
+		 evt.stopPropagation();
+		 evt.preventDefault();
+			console.log('2');
 	        var tr = $(this).closest('tr');
 	        var oTable = $('#tableId').DataTable();
 	        var row = oTable.row( tr );
-	 
+
+	    	console.log(row.child.isShown());
 	        if ( row.child.isShown() ) {
 	            // This row is already open - close it
 	            row.child.hide();
@@ -87,7 +94,8 @@ function createDatatable(dataset,facet){
 }
 
 function addToolTip(){
-	$('#tableId tbody').on('mouseover','tr', function () {
+//	$('#tableId tbody .odd .even').on('mouseover','tr', function () {
+	$('.odd, .even').hover( function(){
 		var table = $('#tableId').dataTable();
 		var iRow = table.fnGetPosition(this); 
 		var sCitation = "";
@@ -127,7 +135,7 @@ function createFacetTree(data){
 
 			checkAllTree(data.facet);
 			Liferay.fire('facetUpdate', {
-				ipcData : facet
+				ipcData : data.facet
 			});
 
 			$('#search_result_facet').on("changed.jstree",
@@ -251,16 +259,43 @@ function format ( d ) {
     // `d` is the original data object for the row
     return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
         '<tr>'+
-            '<td>Full name:</td>'+
-//            '<td>'+d.name+'</td>'+
+            '<td>Full title:</td>'+
+            '<td>'+d.title+'</td>'+
         '</tr>'+
+        
         '<tr>'+
-            '<td>Extension number:</td>'+
-//            '<td>'+d.extn+'</td>'+
+            '<td>Authors:</td>'+
+            '<td>'+d.authors+'</td>'+
         '</tr>'+
+        
         '<tr>'+
-            '<td>Extra info:</td>'+
-//            '<td>And any further details here (images etc)...</td>'+
+	        '<td>Cited Date:</td>'+
+	        '<td>'+d.citedDate+'</td>'+
+        '</tr>'+
+
+        '<tr>'+
+            '<td>Description:</td>'+
+            '<td>'+d.description+'</td>'+
+        '</tr>'+
+
+        '<tr>'+
+            '<td>Investigator:</td>'+
+            '<td>'+d.investigator+'</td>'+
+        '</tr>'+
+
+        '<tr>'+
+            '<td>Project:</td>'+
+            '<td>'+d.project+'</td>'+
+        '</tr>'+
+
+        '<tr>'+
+            '<td>Region:</td>'+
+            '<td>'+d.region+'</td>'+
+        '</tr>'+
+
+        '<tr>'+
+            '<td>Taxonomy:</td>'+
+            '<td>'+d.taxonomy+'</td>'+
         '</tr>'+
     '</table>';
 }
