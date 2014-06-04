@@ -99,7 +99,7 @@ $dockbarOpenGradientStart: #0EA6F9;
 		}
 	} 
 	
-	#sign-in {
+	/* #sign-in {
 		background: url(@theme_image_path@/common/key.png) no-repeat 3px 50%;
 		font-weight: bold;
 		color:#FFFFFF;
@@ -119,18 +119,9 @@ $dockbarOpenGradientStart: #0EA6F9;
 			position: absolute;	
 			top: 1.5em;
 		}
-	}
+	} */
 	
-	#dock{
-		
-		background-color:#FFFFFF;
-		display:block;
-		
-		@include respond-to(desktop){
-			display:none;
-		}
-		
-	}
+	
 	#nav{
 		
 		background-color:#FFFFFF;
@@ -356,7 +347,8 @@ $dockbarOpenGradientStart: #0EA6F9;
 						padding-right: 20px;
 					}
 			 
-		}	
+		}
+				
 		
 		.header-menu{
 					

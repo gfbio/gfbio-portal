@@ -1,9 +1,13 @@
 @import "compass";
+
 @import "mixins";
 
 @import url(custom_common.css);
+
 @import url(color_schemes/common.css);
+
 @import url(color_schemes/dark.css);
+
 @import url(color_schemes/light.css);
 
 /* This file allows you to override default styles in one central location for easier upgrade and maintenance. */
@@ -55,8 +59,6 @@ select,input,textarea {
 	clear: both
 }
 
-
-
 /* @media ( max-width :767px) {
 	#wrapper {
 		margin: 0;
@@ -82,7 +84,6 @@ select,input,textarea {
 #main .inside {
 	min-height: 1px
 } */
-
 img {
 	max-width: 100%;
 	height: auto
@@ -250,7 +251,6 @@ h1,h2,h3,h4,h5,h6 {
 h1,h2,h3,h4,h5,h6,p,pre,blockquote,table,ol,ul,form {
 	margin-bottom: 12px
 }
-
 
 /* ColorBox v1.4.11, (c) 2011 Jack Moore - jacklmoore.com, MIT license */
 #colorbox,#cboxOverlay,#cboxWrapper {
@@ -653,7 +653,7 @@ div#main input.input-captcha {
 	overflow: visible
 }
 
- div#Own-Header {
+div#Own-Header {
 	position: relative;
 }
 
@@ -678,7 +678,7 @@ div#header-suchfeld label {
 
 div#header-suchfeld label span.mandatory {
 	display: none;
-} 
+}
 
 div#header-suchfeld div.submit_container {
 	left: 105px;
@@ -689,7 +689,7 @@ div#header-suchfeld div.submit_container {
 body.data-portal div#header-suchfeld {
 	display: none;
 }
- 
+
 div#header-suchfeld .acDropdown li.yui-ac-highlight {
 	background-color: #39F;
 }
@@ -701,7 +701,7 @@ div.accordion {
 
 div.toggler {
 	margin-top: 20px;
-	font: 24px robotolight;
+	font: 16px robotolight;
 	color: #39F;
 	cursor: pointer
 }
@@ -733,8 +733,7 @@ div#menue-toggle-button {
 	display: none;
 	margin-top: 20px;
 	margin-bottom: 20px;
-	background-image:
-		url("../images/layout/menue-toggle-button.png");
+	background-image: url("../images/layout/menue-toggle-button.png");
 	background-repeat: no-repeat;
 	cursor: pointer
 }
@@ -950,7 +949,6 @@ div#Our-Partners h2,div#Our-Partners div#partners-list-link {
 div#Our-Partners h2 {
 	margin-top: 10px;
 	margin-right: 10px;
-	
 }
 
 div#Our-Partners div#partners-logo-bar {
@@ -1098,10 +1096,10 @@ div#wrapper,div#Submenue-Boxes,div#Our-Partners,div#Main-Menue,div#Fullwidth-Foo
 	margin: 0px auto
 }
 
- div#Own-Header {
+div#Own-Header {
 	max-width: 1020px;
 	margin: 0px auto
-} 
+}
 
 div#wrapper,div#Submenue-Boxes,div#Our-Partners,div#Main-Menue,div#Fullwidth-Footer
 	{
@@ -1123,10 +1121,7 @@ div#main div.inside {
 }
 
 /*------------Responsive Styles --------- */
-
-
- 
- @media ( max-width :500px) { /* Style sheet responsive-0-500 */
+@media ( max-width :500px) { /* Style sheet responsive-0-500 */
 	div#main div.inside {
 		padding-right: 0
 	}
@@ -1153,11 +1148,9 @@ div#main div.inside {
 	div#footer-menue {
 		display: none
 	}
-	
-	div#logo-gfbio{
-		display:inline;
+	div#logo-gfbio {
+		display: inline;
 	}
-	
 	img#logo-gfbio {
 		left: 7%;
 		top: 3%;
@@ -1183,7 +1176,6 @@ div#main div.inside {
 	aside#right {
 		display: none
 	}
-	
 	img#logo-gfbio {
 		left: 7%;
 		top: 5%;
@@ -1282,11 +1274,9 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotothin';
 	src: url("../images/fonts/roboto/roboto-thin-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-thin-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-thin-webfont.eot?#iefix")
 		format('embedded-opentype'),
-		url("../images/fonts/roboto/roboto-thin-webfont.woff")
-		format('woff'),
+		url("../images/fonts/roboto/roboto-thin-webfont.woff") format('woff'),
 		url("../images/fonts/roboto/roboto-thin-webfont.ttf")
 		format('truetype'),
 		url("../images/fonts/roboto/roboto-thin-webfont.svg#robotothin")
@@ -1298,8 +1288,7 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotothin_italic';
 	src: url("../images/fonts/roboto/roboto-thinitalic-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-thinitalic-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-thinitalic-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-thinitalic-webfont.woff")
 		format('woff'),
@@ -1314,11 +1303,9 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotolight';
 	src: url("../images/fonts/roboto/roboto-light-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-light-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-light-webfont.eot?#iefix")
 		format('embedded-opentype'),
-		url("../images/fonts/roboto/roboto-light-webfont.woff")
-		format('woff'),
+		url("../images/fonts/roboto/roboto-light-webfont.woff") format('woff'),
 		url("../images/fonts/roboto/roboto-light-webfont.ttf")
 		format('truetype'),
 		url("../images/fonts/roboto/roboto-light-webfont.svg#robotolight")
@@ -1329,10 +1316,8 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'robotolight_italic';
-	src:
-		url("../images/fonts/roboto/roboto-lightitalic-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-lightitalic-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-lightitalic-webfont.eot");
+	src: url("../images/fonts/roboto/roboto-lightitalic-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-lightitalic-webfont.woff")
 		format('woff'),
@@ -1347,8 +1332,7 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotoitalic';
 	src: url("../images/fonts/roboto/roboto-italic-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-italic-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-italic-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-italic-webfont.woff")
 		format('woff'),
@@ -1363,8 +1347,7 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotoregular';
 	src: url("../images/fonts/roboto/roboto-regular-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-regular-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-regular-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-regular-webfont.woff")
 		format('woff'),
@@ -1379,8 +1362,7 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotobold_italic';
 	src: url("../images/fonts/roboto/roboto-bolditalic-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-bolditalic-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-bolditalic-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-bolditalic-webfont.woff")
 		format('woff'),
@@ -1395,11 +1377,9 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotobold';
 	src: url("../images/fonts/roboto/roboto-bold-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-bold-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-bold-webfont.eot?#iefix")
 		format('embedded-opentype'),
-		url("../images/fonts/roboto/roboto-bold-webfont.woff")
-		format('woff'),
+		url("../images/fonts/roboto/roboto-bold-webfont.woff") format('woff'),
 		url("../images/fonts/roboto/roboto-bold-webfont.ttf")
 		format('truetype'),
 		url("../images/fonts/roboto/roboto-bold-webfont.svg#robotobold")
@@ -1410,10 +1390,8 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'robotoblack_italic';
-	src:
-		url("../images/fonts/roboto/roboto-blackitalic-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-blackitalic-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-blackitalic-webfont.eot");
+	src: url("../images/fonts/roboto/roboto-blackitalic-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-blackitalic-webfont.woff")
 		format('woff'),
@@ -1428,11 +1406,9 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotoblack';
 	src: url("../images/fonts/roboto/roboto-black-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-black-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-black-webfont.eot?#iefix")
 		format('embedded-opentype'),
-		url("../images/fonts/roboto/roboto-black-webfont.woff")
-		format('woff'),
+		url("../images/fonts/roboto/roboto-black-webfont.woff") format('woff'),
 		url("../images/fonts/roboto/roboto-black-webfont.ttf")
 		format('truetype'),
 		url("../images/fonts/roboto/roboto-black-webfont.svg#robotoblack")
@@ -1460,8 +1436,7 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'roboto_condensedbold';
-	src:
-		url("../images/fonts/roboto/robotocondensed-bold-webfont.eot");
+	src: url("../images/fonts/roboto/robotocondensed-bold-webfont.eot");
 	src:
 		url("../images/fonts/roboto/robotocondensed-bold-webfont.eot?#iefix")
 		format('embedded-opentype'),
@@ -1477,8 +1452,7 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'roboto_condensedregular';
-	src:
-		url("../images/fonts/roboto/robotocondensed-regular-webfont.eot");
+	src: url("../images/fonts/roboto/robotocondensed-regular-webfont.eot");
 	src:
 		url("../images/fonts/roboto/robotocondensed-regular-webfont.eot?#iefix")
 		format('embedded-opentype'),
@@ -1494,8 +1468,7 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'roboto_condenseditalic';
-	src:
-		url("../images/fonts/roboto/robotocondensed-italic-webfont.eot");
+	src: url("../images/fonts/roboto/robotocondensed-italic-webfont.eot");
 	src:
 		url("../images/fonts/roboto/robotocondensed-italic-webfont.eot?#iefix")
 		format('embedded-opentype'),
@@ -1511,8 +1484,7 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'roboto_condensedlight';
-	src:
-		url("../images/fonts/roboto/robotocondensed-light-webfont.eot");
+	src: url("../images/fonts/roboto/robotocondensed-light-webfont.eot");
 	src:
 		url("../images/fonts/roboto/robotocondensed-light-webfont.eot?#iefix")
 		format('embedded-opentype'),
@@ -1545,8 +1517,7 @@ div#main div.inside {
 
 @font-face {
 	font-family: 'robotomedium_italic';
-	src:
-		url("../images/fonts/roboto/roboto-mediumitalic-webfont.eot");
+	src: url("../images/fonts/roboto/roboto-mediumitalic-webfont.eot");
 	src:
 		url("../images/fonts/roboto/roboto-mediumitalic-webfont.eot?#iefix")
 		format('embedded-opentype'),
@@ -1563,8 +1534,7 @@ div#main div.inside {
 @font-face {
 	font-family: 'robotomedium';
 	src: url("../images/fonts/roboto/roboto-medium-webfont.eot");
-	src:
-		url("../images/fonts/roboto/roboto-medium-webfont.eot?#iefix")
+	src: url("../images/fonts/roboto/roboto-medium-webfont.eot?#iefix")
 		format('embedded-opentype'),
 		url("../images/fonts/roboto/roboto-medium-webfont.woff")
 		format('woff'),
