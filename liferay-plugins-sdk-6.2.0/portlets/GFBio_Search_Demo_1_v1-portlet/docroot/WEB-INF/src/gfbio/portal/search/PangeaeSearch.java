@@ -31,6 +31,8 @@ public class PangeaeSearch {
 	static String parameter = "";
 	static String taxonomy = "N/A";
 	static String dataCount = "";
+	static String dsLink = "";
+	static String dlLink = "";
 	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
 
@@ -149,7 +151,49 @@ public class PangeaeSearch {
 		return ret;
 
 	}
+	protected static String getDSLink(JSONObject source) {
+		String ret = "";
+		try {
+			if (doc != null) {
+				NodeList nl = doc.getElementsByTagName("linkage");
+				for (int i =0; i < nl.getLength(); i++){
+					String type = nl.item(i).getAttributes().getNamedItem("type").getNodeValue();
+					System.out.println(type);
+					if (type.trim().equals("metadata")){
+						ret = nl.item(i).getTextContent();
+						System.out.println(ret);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
 
+	}
+
+	protected static String getDLLink(JSONObject source) {
+		String ret = "";
+		try {
+			if (doc != null) {
+				NodeList nl = doc.getElementsByTagName("linkage");
+				for (int i =0; i < nl.getLength(); i++){
+					String type = nl.item(i).getAttributes().getNamedItem("type").getNodeValue();
+					System.out.println(type);
+					if (type.trim().equals("data")){
+						ret = nl.item(i).getTextContent();
+						System.out.println(ret);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+
+	}
 	protected static void setXMLfromJSON(JSONObject source, String name) {
 		try {
 			if (source.has(name)) {
@@ -220,7 +264,14 @@ public class PangeaeSearch {
 				dataCount = getDataCount(source);
 				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
 					dataCount = "N/A";
-
+				dsLink = getDSLink(source);
+				if (dsLink.trim().isEmpty() || dsLink.trim().length()==0)
+					dsLink = "N/A";
+				dlLink = getDLLink(source);
+				if (dlLink.trim().isEmpty() || dlLink.trim().length()==0)
+					dlLink = "N/A";
+				
+				
 				JSONObject result = new JSONObject();
 				result.put("title", title.trim());
 				result.put("authors", authors.trim());
@@ -234,6 +285,8 @@ public class PangeaeSearch {
 				result.put("investigator", investigator.trim());
 				result.put("score", score);
 				result.put("dataCount", dataCount.trim());
+				result.put("dsLink", dsLink.trim());
+				result.put("dlLink", dlLink.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);

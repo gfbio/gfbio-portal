@@ -178,10 +178,11 @@ function createFacetList(facet) {
 		listString += '<ul>';
 		$.each(option, function(id2, option2) {
 			var val = option2.name;
+			var count = option2.count;
 			if (val.length > 20)
 				val = val.substring(0, 20);
 			listString += '<li id="li2_' + id + '_' + val + '">';
-			listString += option2.name + '</li>';
+			listString += option2.name +' ('+ count+')</li>';
 		});
 		listString += '</ul>';
 		listString += '</li>';
@@ -293,6 +294,7 @@ function createExtraRow(d) {
 	return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'
 			+ createTR('Full title',d.title)
 			+ createTR('Authors',d.authors)
+			+ createTR('Data Center', d.dataCenter)
 			+ createTR('Cited Date',d.citedDate)
 			+ createTR('Description',d.description)
 			+ createTR('Investigator',d.investigator)
@@ -300,9 +302,11 @@ function createExtraRow(d) {
 			+ createTR('Region',d.region)
 			+ createTR('Taxonomy',d.taxonomy)
 			+ createTR('Size', d.dataCount)
-			+ createTR('Link', '<a href="#">Dataset Homepage</a>')
+			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>')
+			+ createTR('Link', '<a href="'+d.dsLink+'" target="_newtab">'+d.dsLink+'</a>')
 			+ createTR('License', '<a href="#">Creative Commons Attribution 3.0</a>')
 			+ createTR('Download', '<a href="#">Dataset Download Link</a>')
+			
 			+ '</table>';
 }
 
