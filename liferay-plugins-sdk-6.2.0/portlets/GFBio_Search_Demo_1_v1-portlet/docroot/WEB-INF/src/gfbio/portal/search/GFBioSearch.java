@@ -17,7 +17,7 @@ public class GFBioSearch extends GenericPortlet {
 			+ "\"parameter\": {\"terms\": {\"field\": \"parameterFacet\",\"size\": 10}},"
 			+ "\"taxonomy\": {\"terms\": {\"field\": \"taxonomyFacet\",\"size\": 10}},"
 			+ "\"investigator\": {\"terms\": {\"field\": \"investigatorFacet\",\"size\": 10}}}";
-	static int maxResult = 20;
+	static int maxResult = 50;
 
 	protected void doView(RenderRequest request, RenderResponse response)
 			throws PortletException, IOException {

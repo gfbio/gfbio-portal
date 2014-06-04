@@ -10,19 +10,10 @@
 	type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables.js"
 	type="text/javascript"></script>
-<!-- <script -->
-<%-- 	src="${pageContext.request.contextPath}/js/dataTables.jqueryui.js" --%>
-<!-- 	type="text/javascript"></script> -->
 <script src="${pageContext.request.contextPath}/js/dataTables.colVis.js"
 	type="text/javascript"></script>
-<!-- <script -->
-<%-- 	src="${pageContext.request.contextPath}/js/jquery.dataTables.columnFilter.js" --%>
-<!-- 	type="text/javascript"></script> -->
 <script src="${pageContext.request.contextPath}/js/jstree.js"
 	type="text/javascript"></script>
-<!-- <script -->
-<%-- 	src="${pageContext.request.contextPath}/js/ColVis.js" --%>
-<!-- 	type="text/javascript"></script> -->
 
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/css/main.css">
@@ -43,8 +34,9 @@
 		getSearchResult(keyword);
 	});
 
-	function gfbioQuery(keyword) {
-		$('#tableId').dataTable().fnClearTable();
+	function gfbioQuery() {
+		$('#tableId').DataTable().clear();
+		var keyword = document.getElementById("gfbioSearchInput").value;
 		getSearchResult(keyword);
 	}
 	
@@ -64,8 +56,6 @@
             var dataset = jsonDataset.dataset;
             facet = jsonDataset.facet;
             createDatatable(dataset,facet);
-			addToolTip();
-			addExtraRow();
 			createFacetTree(facet);
         }	
 		});
@@ -77,18 +67,15 @@
 
 <div id="search_portlet">
 	<label>Search:&nbsp; <input id="gfbioSearchInput"
-		name="gfbioSearchInput" class="acInput" value="shark"
+		name="gfbioSearchInput" class="acInput" value="tree"
 		autocomplete="off"> <input id="QueryButton" name="QueryButton"
 		type="button" value="Find Data" style="font-weight: bold"
-		onclick="javascript:gfbioQuery(document.getElementById('gfbioSearchInput').value);" /></label>
+		onclick="javascript:gfbioQuery();" /></label>
 
 	<br />
 	<div id="div_facet_outer" class="divleft">
 		Facet Filter
 		<div id="search_result_facet">
-<!-- 			<ul id="facetUl"> -->
-<!-- 			</ul> -->
-<!-- 			<br style="clear: both" /> -->
 		</div>
 	</div>
 	<div id="search_result_table" class="divright">

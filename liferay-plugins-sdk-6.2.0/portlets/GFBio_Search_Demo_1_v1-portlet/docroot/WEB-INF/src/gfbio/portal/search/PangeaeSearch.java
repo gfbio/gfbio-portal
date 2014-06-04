@@ -188,50 +188,52 @@ public class PangeaeSearch {
 				JSONObject source = hit.getJSONObject("_source");
 
 				region = getValue(source, "region");
+				if (region.trim().isEmpty() || region.trim().length()==0)
+					region = "N/A";
 				String[] citation = getCitation(source);
 				title = citation[0];
-				if (title.isEmpty())
+				if (title.trim().isEmpty() || title.trim().length()==0)
 					title = "N/A";
 				authors = citation[1];
-				if (authors.isEmpty())
+				if (authors.trim().isEmpty() || authors.trim().length()==0)
 					authors = "N/A";
 				citedDate = citation[2];
-				if (citedDate.isEmpty())
+				if (citedDate.trim().isEmpty() || citedDate.trim().length()==0)
 					citedDate = "N/A";
 				setXMLfromJSON(source, "xml");
 				investigator = getValue(source, "investigator");
-				if (investigator.isEmpty())
+				if (investigator.trim().isEmpty() || investigator.trim().length()==0)
 					investigator = "N/A";
 				description = getDescription(source);
-				if (description.isEmpty())
+				if (description.trim().isEmpty() || description.trim().length()==0)
 					description = "N/A";
 				dataCenter = getValue(source, "dataCenter");
-				if (dataCenter.isEmpty())
+				if (dataCenter.trim().isEmpty() || dataCenter.trim().length()==0)
 					dataCenter = "N/A";
 				project = getValue(source, "project");
-				if (project.isEmpty())
+				if (project.trim().isEmpty() || project.trim().length()==0)
 					project = "N/A";
 				parameter = getValue(source, "parameter");
-				if (parameter.isEmpty())
+				if (parameter.trim().isEmpty() || parameter.trim().length()==0)
 					parameter = "N/A";
 				taxonomy = "N/A";
 				dataCount = getDataCount(source);
-				if (dataCount.isEmpty())
+				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
 					dataCount = "N/A";
 
 				JSONObject result = new JSONObject();
-				result.put("title", title);
-				result.put("authors", authors);
-				result.put("description", description);
-				result.put("dataCenter", dataCenter);
-				result.put("region", region);
-				result.put("project", project);
-				result.put("citedDate", citedDate);
-				result.put("parameter", parameter);
-				result.put("taxonomy", taxonomy);
-				result.put("investigator", investigator);
+				result.put("title", title.trim());
+				result.put("authors", authors.trim());
+				result.put("description", description.trim());
+				result.put("dataCenter", dataCenter.trim());
+				result.put("region", region.trim());
+				result.put("project", project.trim());
+				result.put("citedDate", citedDate.trim());
+				result.put("parameter", parameter.trim());
+				result.put("taxonomy", taxonomy.trim());
+				result.put("investigator", investigator.trim());
 				result.put("score", score);
-				result.put("dataCount", dataCount);
+				result.put("dataCount", dataCount.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
