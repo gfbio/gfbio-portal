@@ -91,10 +91,8 @@
 					<th>Project</th>
 					<th>Year</th>
 					<th>Parameter</th>
-					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
-					<th>Data Count</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -108,10 +106,8 @@
 					<th>Project</th>
 					<th>Year</th>
 					<th>Parameter</th>
-					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
-					<th>Data Count</th>
 					<th></th>
 				</tr>
 			</tfoot>

@@ -23,14 +23,14 @@ public class PangeaeSearch {
 	static String region = "";
 	static String title = "";
 	static String authors = "";
-	static String citedDate = "";
+	static String citationdate = "";
 	static String investigator = "";
 	static String description = "";
 	static String dataCenter = "";
 	static String project = "";
 	static String parameter = "";
-	static String taxonomy = "N/A";
-	static String dataCount = "";
+//	static String taxonomy = "N/A";
+//	static String dataCount = "";
 	static String dsLink = "";
 	static String dlLink = "";
 	static Document doc;
@@ -128,29 +128,29 @@ public class PangeaeSearch {
 		return ret;
 	}
 
-	protected static String getDataCount(JSONObject source) {
-		String ret = "";
-		try {
-			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("dc:format");
-				if (nl.getLength() > 0) {
-					String format = nl.item(0).getTextContent();
-					if (format != "") {
-						int start = format.indexOf(",");
-						int end = format.indexOf("data points");
-						if (start >= 0 && end > start) {
-							ret = format.substring(start + 1, end);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-
-	}
+//	protected static String getDataCount(JSONObject source) {
+//		String ret = "";
+//		try {
+//			if (doc != null) {
+//				NodeList nl = doc.getElementsByTagName("dc:format");
+//				if (nl.getLength() > 0) {
+//					String format = nl.item(0).getTextContent();
+//					if (format != "") {
+//						int start = format.indexOf(",");
+//						int end = format.indexOf("data points");
+//						if (start >= 0 && end > start) {
+//							ret = format.substring(start + 1, end);
+//						}
+//					}
+//				}
+//			}
+//		} catch (Exception e) {
+//			System.out.println(e);
+//			e.printStackTrace();
+//		}
+//		return ret;
+//
+//	}
 	protected static String getDSLink(JSONObject source) {
 		String ret = "";
 		try {
@@ -194,6 +194,8 @@ public class PangeaeSearch {
 		return ret;
 
 	}
+	
+	//TODO: remove all XML parsing code, when Uwe update the JSON results
 	protected static void setXMLfromJSON(JSONObject source, String name) {
 		try {
 			if (source.has(name)) {
@@ -241,9 +243,9 @@ public class PangeaeSearch {
 				authors = citation[1];
 				if (authors.trim().isEmpty() || authors.trim().length()==0)
 					authors = "N/A";
-				citedDate = citation[2];
-				if (citedDate.trim().isEmpty() || citedDate.trim().length()==0)
-					citedDate = "N/A";
+				citationdate = citation[2];
+				if (citationdate.trim().isEmpty() || citationdate.trim().length()==0)
+					citationdate = "N/A";
 				setXMLfromJSON(source, "xml");
 				investigator = getValue(source, "investigator");
 				if (investigator.trim().isEmpty() || investigator.trim().length()==0)
@@ -260,10 +262,10 @@ public class PangeaeSearch {
 				parameter = getValue(source, "parameter");
 				if (parameter.trim().isEmpty() || parameter.trim().length()==0)
 					parameter = "N/A";
-				taxonomy = "N/A";
-				dataCount = getDataCount(source);
-				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
-					dataCount = "N/A";
+//				taxonomy = "N/A";
+//				dataCount = getDataCount(source);
+//				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
+//					dataCount = "N/A";
 				dsLink = getDSLink(source);
 				if (dsLink.trim().isEmpty() || dsLink.trim().length()==0)
 					dsLink = "N/A";
@@ -279,12 +281,12 @@ public class PangeaeSearch {
 				result.put("dataCenter", dataCenter.trim());
 				result.put("region", region.trim());
 				result.put("project", project.trim());
-				result.put("citedDate", citedDate.trim());
+				result.put("citation", citationdate.trim());
 				result.put("parameter", parameter.trim());
-				result.put("taxonomy", taxonomy.trim());
+//				result.put("taxonomy", taxonomy.trim());
 				result.put("investigator", investigator.trim());
 				result.put("score", score);
-				result.put("dataCount", dataCount.trim());
+//				result.put("dataCount", dataCount.trim());
 				result.put("dsLink", dsLink.trim());
 				result.put("dlLink", dlLink.trim());
 				arrayResult.put(result);
@@ -308,7 +310,7 @@ public class PangeaeSearch {
 			result.put("region",getFacetTerm("region",facets));
 			result.put("project",getFacetTerm("project",facets));
 			result.put("parameter",getFacetTerm("parameter",facets));
-			result.put("taxonomy",getFacetTerm("taxonomy",facets));
+//			result.put("taxonomy",getFacetTerm("taxonomy",facets));
 			result.put("investigator",getFacetTerm("investigator",facets));
 			ret.put("facet", result);
 			System.out.println(ret);

@@ -7,7 +7,7 @@
    )
    set datestr=%month%_%day%_%year%
    echo datestr is %datestr%
-    
+
    set BACKUP_FILE=C:\Users\GFBio\gfbio_portal_backup\gfbio_portaldb_%datestr%.backup
    echo backup file name is %BACKUP_FILE%
    SET PGPASSWORD=gfbio

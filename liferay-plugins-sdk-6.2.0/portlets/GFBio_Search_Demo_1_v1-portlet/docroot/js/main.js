@@ -7,54 +7,57 @@ function createDatatable(dataset, facet) {
 		// display show/hide column button
 		// "bUseColVis": true,
 		colVis : {
-			exclude : [ 0, 12 ]
+			exclude : [ 0, 11 ]
 		},
 		// custom visible columns, except title and +button columns
 		"columns" : [ {
 			"data" : "title",
-			"sWidth" : "30%"
+			"sWidth" : "30%",
+			"sortable" : false
 		}, {
 			"data" : "authors",
 			"visible" : false,
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "description",
 			"visible" : false,
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "dataCenter",
 			"sWidth" : "25%",
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "region",
 			"visible" : false,
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "project",
 			"sWidth" : "25%",
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
-			"data" : "citedDate",
+			"data" : "citation",
 			"sWidth" : "10%",
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "parameter",
 			"visible" : false,
-			"searchable" : true
+			"searchable" : true,
+			"sortable" : false
 		}, {
 			"data" : "investigator",
-			"visible" : false
-		}, {
-			"data" : "taxonomy",
 			"visible" : false,
-			"searchable" : true
-		}, {
+			"sortable" : false
+		}, 
+		{
 			"data" : "score",
-			"visible" : false
-		}, {
-			"data" : "dataCount",
-			"sWidth" : "7%",
-			"searchable" : true
+			"visible" : false,
+			"sortable" : false
 		}, {
 			"class" : "details-control",
 			"sortable" : false,
@@ -62,7 +65,7 @@ function createDatatable(dataset, facet) {
 			"defaultContent" : ""
 		} // last column for +button
 		],
-		"order" : [ [ 10, "desc" ] ], // ordered by score
+		"order" : [ [ 9, "desc" ] ], // ordered by score
 		"sAutoWidth" : true,
 		"aaData" : dataset,
 		"oLanguage" : {
@@ -193,8 +196,6 @@ function createFacetList(facet) {
 
 function getFilterTable(selectedList) {
 
-//	var columns = $('#tableId thead th');
-
 	var datacenterFilter = '';
 	var datacenterId = 3;
 	var datacenterCheck = true;
@@ -207,9 +208,6 @@ function getFilterTable(selectedList) {
 	var parameterFilter = '';
 	var parameterId = 7;
 	var parameterCheck = true;
-	var taxonomyFilter = '';
-	var taxonomyId = 9;
-	var taxonomyCheck = true;
 	var investigatorFilter = '';
 	var investigatorId = 8;
 	var investigatorCheck = true;
@@ -230,9 +228,6 @@ function getFilterTable(selectedList) {
 			} else if (arrayid[1] == "parameter") {
 				parameterCheck = false;
 				parameterFilter = '';
-			} else if (arrayid[1] == "taxonomy") {
-				taxonomyCheck = false;
-				taxonomyFilter = '';
 			} else if (arrayid[1] == "investigator") {
 				investigatorCheck = false;
 				investigatorFilter = '';
@@ -254,10 +249,6 @@ function getFilterTable(selectedList) {
 				if (parameterFilter != "")
 					parameterFilter += "|";
 				parameterFilter += arrayid[2];
-			} else if (arrayid[1] == "taxonomy" && taxonomyCheck) {
-				if (taxonomyFilter != "")
-					taxonomyFilter += "|";
-				taxonomyFilter += arrayid[2];
 			} else if (arrayid[1] == "investigator" && investigatorCheck) {
 				if (investigatorFilter != "")
 					investigatorFilter += "|";
@@ -274,8 +265,8 @@ function getFilterTable(selectedList) {
 	oTable.column(projectId).search(projectFilter, true, false).draw();
 	console.log(parameterFilter);
 	oTable.column(parameterId).search(parameterFilter, true, false).draw();
-	console.log(taxonomyFilter);
-	oTable.column(taxonomyId).search(taxonomyFilter, true, false).draw();
+//	console.log(taxonomyFilter);
+//	oTable.column(taxonomyId).search(taxonomyFilter, true, false).draw();
 	console.log(investigatorFilter);
 	oTable.column(investigatorId).search(investigatorFilter, true, false)
 			.draw();
@@ -283,9 +274,6 @@ function getFilterTable(selectedList) {
 
 function checkAllTree(facet) {
 	$.each(facet, function(id, option) {
-		// $('#search_result_facet').jstree("select_node", "#li1_" +
-		// id).jstree("open_all");
-		// check all facet, expand only region node
 		$('#search_result_facet').jstree("select_node", "#li1_" + id).jstree(
 				"open_node", $('#li1_region'));
 	});
@@ -295,13 +283,11 @@ function createExtraRow(d) {
 			+ createTR('Full title',d.title)
 			+ createTR('Authors',d.authors)
 			+ createTR('Data Center', d.dataCenter)
-			+ createTR('Cited Date',d.citedDate)
+			+ createTR('Citation',d.citation)
 			+ createTR('Description',d.description)
 			+ createTR('Investigator',d.investigator)
 			+ createTR('Project',d.project)
 			+ createTR('Region',d.region)
-			+ createTR('Taxonomy',d.taxonomy)
-			+ createTR('Size', d.dataCount)
 			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>')
 			+ createTR('Link', '<a href="'+d.dsLink+'" target="_newtab">'+d.dsLink+'</a>')
 			+ createTR('License', '<a href="#">Creative Commons Attribution 3.0</a>')
