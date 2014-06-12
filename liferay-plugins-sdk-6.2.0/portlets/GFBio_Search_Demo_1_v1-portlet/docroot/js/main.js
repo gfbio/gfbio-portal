@@ -3,7 +3,7 @@ function createDatatable(dataset, facet) {
 	var oTable = $('#tableId').DataTable({
 		"bJQueryUI" : true,
 		"bDestroy" : true,
-		"sDom" : 'Clfrtip',
+		"sDom" : 'Clrtip',
 		// display show/hide column button
 		// "bUseColVis": true,
 		colVis : {
@@ -290,8 +290,8 @@ function createExtraRow(d) {
 			+ createTR('Region',d.region)
 			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>')
 			+ createTR('Link', '<a href="'+d.dsLink+'" target="_newtab">'+d.dsLink+'</a>')
-			+ createTR('License', '<a href="#">Creative Commons Attribution 3.0</a>')
-			+ createTR('Download', '<a href="#">Dataset Download Link</a>')
+			+ createTR('License', d.dataRights)
+			+ createTR('Download', '<a href="'+d.dlLink+'">Dataset Download Link</a>')
 			
 			+ '</table>';
 }

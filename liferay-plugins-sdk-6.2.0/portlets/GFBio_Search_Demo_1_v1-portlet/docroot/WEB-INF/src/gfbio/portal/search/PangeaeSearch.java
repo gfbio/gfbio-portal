@@ -33,6 +33,7 @@ public class PangeaeSearch {
 //	static String dataCount = "";
 	static String dsLink = "";
 	static String dlLink = "";
+	static String dataRights = "";
 	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
 
@@ -151,6 +152,22 @@ public class PangeaeSearch {
 //		return ret;
 //
 //	}
+	protected static String getDataRights(JSONObject source) {
+		String ret = "";
+		try {
+			if (doc != null) {
+				NodeList nl = doc.getElementsByTagName("dc:rights");
+				if (nl.getLength() > 0) {
+					ret = nl.item(0).getTextContent();
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+
+	}
 	protected static String getDSLink(JSONObject source) {
 		String ret = "";
 		try {
@@ -272,6 +289,9 @@ public class PangeaeSearch {
 				dlLink = getDLLink(source);
 				if (dlLink.trim().isEmpty() || dlLink.trim().length()==0)
 					dlLink = "N/A";
+				dataRights = getDataRights(source);
+				if (dataRights.trim().isEmpty() || dataRights.trim().length()==0)
+					dataRights = "N/A";
 				
 				
 				JSONObject result = new JSONObject();
@@ -289,6 +309,7 @@ public class PangeaeSearch {
 //				result.put("dataCount", dataCount.trim());
 				result.put("dsLink", dsLink.trim());
 				result.put("dlLink", dlLink.trim());
+				result.put("dataRights", dataRights.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
