@@ -41,23 +41,26 @@
 	}
 	
 	function getSearchResult(keyword){
+<%-- 		createDatatable("<%=searchURL%>/GFBioSearch",keyword,"<portlet:namespace />"); --%>
 		$.ajax({
+			
 			"url": "<%=searchURL%>"
 			+ "/GFBioSearch",
-		"data" : {
-			"<portlet:namespace />mode" : "getResult",
-				"<portlet:namespace />queryString" : keyword
-		},
-		"dataSrc" : "dataset",
-		"type" : "POST",
+			"data" : {
+				"<portlet:namespace />mode" : "getResult",
+					"<portlet:namespace />queryString" : encodeURI(keyword)
+			},
+			"dataSrc" : "dataset",
+			"type" : "POST",
 
-        success : function(data) {
-            var jsonDataset = eval("(function(){return " + data + ";})()");
-            var dataset = jsonDataset.dataset;
-            facet = jsonDataset.facet;
-            createDatatable(dataset,facet);
-			createFacetTree(facet);
-        }	
+	        success : function(d) {
+// 	        	console.log(d);
+	            var jsonDataset = eval("(function(){return " + d + ";})()");
+	            var dataset = jsonDataset.dataset;
+	            facet = jsonDataset.facet;
+	            createDatatable(dataset);
+				createFacetTree(facet);
+	        }	
 		});
 	}
 

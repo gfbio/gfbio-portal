@@ -1,8 +1,43 @@
-function createDatatable(dataset, facet) {
-	console.log('create datatable');
+function createDatatable(dataset) {
+	
+//	console.log('create datatable:'+dataset);
+//	console.log(searchURL);
+//	console.log(keyword);
+	
+//	 		"dataSrc" : "dataset",
+//	 		"type" : "POST",
+
+//	         success : function(data) {
+//	             var jsonDataset = eval("(function(){return " + data + ";})()");
+//	             var dataset = jsonDataset.dataset;
+//	             facet = jsonDataset.facet;
+//	             createDatatable(dataset,facet);
+//	 			createFacetTree(facet);
+//	         }	
 	var oTable = $('#tableId').DataTable({
-		"bJQueryUI" : true,
 		"bDestroy" : true,
+		"bJQueryUI" : true,        
+//		"processing": true,
+//        "serverSide": true,
+//        "ajax": {
+//        	"url":searchURL,
+//        	"data": {
+//        		"mode" : "getResult",
+//        		"queryString" : encodeURI(keyword)
+//        	},
+//        	"dataSrc" : "dataset",
+//        	"type" : "POST"
+//        },
+//        "fnServerParams" : function(aoData){
+//        	aoData.push({
+//        		"name":"<portlet:namespace />mode",
+//        		"value":"getResult"
+//        	},{
+//        		"name":"<portlet:namespace />queryString",
+//        		"value": encodeURI(keyword)
+//        	});
+//        },
+//        "sAjaxSource":searchURL,
 		"sDom" : 'Clrtip',
 		// display show/hide column button
 		// "bUseColVis": true,
@@ -79,6 +114,11 @@ function createDatatable(dataset, facet) {
 				console.log('table draw callback');
 				addToolTip();
 				addExtraRow();
+//				 var jsonDataset = eval("(function(){return " + data + ";})()");
+//	             var dataset = jsonDataset.dataset;
+//	             facet = jsonDataset.facet;
+//	             createDatatable(dataset,facet);
+//	 			createFacetTree(facet);
 		    }
 		}
 	});

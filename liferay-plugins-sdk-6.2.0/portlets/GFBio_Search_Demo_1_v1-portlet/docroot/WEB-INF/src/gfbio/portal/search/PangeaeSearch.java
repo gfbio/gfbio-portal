@@ -253,14 +253,14 @@ public class PangeaeSearch {
 				region = getValue(source, "region");
 				if (region.trim().isEmpty() || region.trim().length()==0)
 					region = "N/A";
-				String[] citation = getCitation(source);
-				title = citation[0];
+//				String[] citation = getCitation(source);
+				title = getValue(source, "citation.title");
 				if (title.trim().isEmpty() || title.trim().length()==0)
 					title = "N/A";
-				authors = citation[1];
+				authors = getValue(source, "citation.authors");
 				if (authors.trim().isEmpty() || authors.trim().length()==0)
 					authors = "N/A";
-				citationdate = citation[2];
+				citationdate = getValue(source, "citation.date");
 				if (citationdate.trim().isEmpty() || citationdate.trim().length()==0)
 					citationdate = "N/A";
 				setXMLfromJSON(source, "xml");
@@ -283,10 +283,10 @@ public class PangeaeSearch {
 //				dataCount = getDataCount(source);
 //				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
 //					dataCount = "N/A";
-				dsLink = getDSLink(source);
+				dsLink = getValue(source, "metadatalink"); 
 				if (dsLink.trim().isEmpty() || dsLink.trim().length()==0)
 					dsLink = "N/A";
-				dlLink = getDLLink(source);
+				dsLink = getValue(source, "datalink"); 
 				if (dlLink.trim().isEmpty() || dlLink.trim().length()==0)
 					dlLink = "N/A";
 				dataRights = getDataRights(source);
@@ -313,6 +313,7 @@ public class PangeaeSearch {
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
+//			System.out.print(ret);
 			ret.put("facet", parseFacet(rawResult));
 
 		} catch (Exception e) {
