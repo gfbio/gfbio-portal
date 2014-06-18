@@ -23,17 +23,14 @@ public class PangeaeSearch {
 	static String region = "";
 	static String title = "";
 	static String authors = "";
-	static String citationdate = "";
+	static String citedDate = "";
 	static String investigator = "";
 	static String description = "";
 	static String dataCenter = "";
 	static String project = "";
 	static String parameter = "";
-//	static String taxonomy = "N/A";
-//	static String dataCount = "";
-	static String dsLink = "";
-	static String dlLink = "";
-	static String dataRights = "";
+	static String taxonomy = "N/A";
+	static String dataCount = "";
 	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
 
@@ -129,56 +126,19 @@ public class PangeaeSearch {
 		return ret;
 	}
 
-//	protected static String getDataCount(JSONObject source) {
-//		String ret = "";
-//		try {
-//			if (doc != null) {
-//				NodeList nl = doc.getElementsByTagName("dc:format");
-//				if (nl.getLength() > 0) {
-//					String format = nl.item(0).getTextContent();
-//					if (format != "") {
-//						int start = format.indexOf(",");
-//						int end = format.indexOf("data points");
-//						if (start >= 0 && end > start) {
-//							ret = format.substring(start + 1, end);
-//						}
-//					}
-//				}
-//			}
-//		} catch (Exception e) {
-//			System.out.println(e);
-//			e.printStackTrace();
-//		}
-//		return ret;
-//
-//	}
-	protected static String getDataRights(JSONObject source) {
+	protected static String getDataCount(JSONObject source) {
 		String ret = "";
 		try {
 			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("dc:rights");
+				NodeList nl = doc.getElementsByTagName("dc:format");
 				if (nl.getLength() > 0) {
-					ret = nl.item(0).getTextContent();
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-
-	}
-	protected static String getDSLink(JSONObject source) {
-		String ret = "";
-		try {
-			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("linkage");
-				for (int i =0; i < nl.getLength(); i++){
-					String type = nl.item(i).getAttributes().getNamedItem("type").getNodeValue();
-					System.out.println(type);
-					if (type.trim().equals("metadata")){
-						ret = nl.item(i).getTextContent();
-						System.out.println(ret);
+					String format = nl.item(0).getTextContent();
+					if (format != "") {
+						int start = format.indexOf(",");
+						int end = format.indexOf("data points");
+						if (start >= 0 && end > start) {
+							ret = format.substring(start + 1, end);
+						}
 					}
 				}
 			}
@@ -190,29 +150,6 @@ public class PangeaeSearch {
 
 	}
 
-	protected static String getDLLink(JSONObject source) {
-		String ret = "";
-		try {
-			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("linkage");
-				for (int i =0; i < nl.getLength(); i++){
-					String type = nl.item(i).getAttributes().getNamedItem("type").getNodeValue();
-					System.out.println(type);
-					if (type.trim().equals("data")){
-						ret = nl.item(i).getTextContent();
-						System.out.println(ret);
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-
-	}
-	
-	//TODO: remove all XML parsing code, when Uwe update the JSON results
 	protected static void setXMLfromJSON(JSONObject source, String name) {
 		try {
 			if (source.has(name)) {
@@ -253,16 +190,16 @@ public class PangeaeSearch {
 				region = getValue(source, "region");
 				if (region.trim().isEmpty() || region.trim().length()==0)
 					region = "N/A";
-//				String[] citation = getCitation(source);
-				title = getValue(source, "citation.title");
+				String[] citation = getCitation(source);
+				title = citation[0];
 				if (title.trim().isEmpty() || title.trim().length()==0)
 					title = "N/A";
-				authors = getValue(source, "citation.authors");
+				authors = citation[1];
 				if (authors.trim().isEmpty() || authors.trim().length()==0)
 					authors = "N/A";
-				citationdate = getValue(source, "citation.date");
-				if (citationdate.trim().isEmpty() || citationdate.trim().length()==0)
-					citationdate = "N/A";
+				citedDate = citation[2];
+				if (citedDate.trim().isEmpty() || citedDate.trim().length()==0)
+					citedDate = "N/A";
 				setXMLfromJSON(source, "xml");
 				investigator = getValue(source, "investigator");
 				if (investigator.trim().isEmpty() || investigator.trim().length()==0)
@@ -279,21 +216,11 @@ public class PangeaeSearch {
 				parameter = getValue(source, "parameter");
 				if (parameter.trim().isEmpty() || parameter.trim().length()==0)
 					parameter = "N/A";
-//				taxonomy = "N/A";
-//				dataCount = getDataCount(source);
-//				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
-//					dataCount = "N/A";
-				dsLink = getValue(source, "metadatalink"); 
-				if (dsLink.trim().isEmpty() || dsLink.trim().length()==0)
-					dsLink = "N/A";
-				dsLink = getValue(source, "datalink"); 
-				if (dlLink.trim().isEmpty() || dlLink.trim().length()==0)
-					dlLink = "N/A";
-				dataRights = getDataRights(source);
-				if (dataRights.trim().isEmpty() || dataRights.trim().length()==0)
-					dataRights = "N/A";
-				
-				
+				taxonomy = "N/A";
+				dataCount = getDataCount(source);
+				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
+					dataCount = "N/A";
+
 				JSONObject result = new JSONObject();
 				result.put("title", title.trim());
 				result.put("authors", authors.trim());
@@ -301,19 +228,15 @@ public class PangeaeSearch {
 				result.put("dataCenter", dataCenter.trim());
 				result.put("region", region.trim());
 				result.put("project", project.trim());
-				result.put("citation", citationdate.trim());
+				result.put("citedDate", citedDate.trim());
 				result.put("parameter", parameter.trim());
-//				result.put("taxonomy", taxonomy.trim());
+				result.put("taxonomy", taxonomy.trim());
 				result.put("investigator", investigator.trim());
 				result.put("score", score);
-//				result.put("dataCount", dataCount.trim());
-				result.put("dsLink", dsLink.trim());
-				result.put("dlLink", dlLink.trim());
-				result.put("dataRights", dataRights.trim());
+				result.put("dataCount", dataCount.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
-//			System.out.print(ret);
 			ret.put("facet", parseFacet(rawResult));
 
 		} catch (Exception e) {
@@ -332,7 +255,7 @@ public class PangeaeSearch {
 			result.put("region",getFacetTerm("region",facets));
 			result.put("project",getFacetTerm("project",facets));
 			result.put("parameter",getFacetTerm("parameter",facets));
-//			result.put("taxonomy",getFacetTerm("taxonomy",facets));
+			result.put("taxonomy",getFacetTerm("taxonomy",facets));
 			result.put("investigator",getFacetTerm("investigator",facets));
 			ret.put("facet", result);
 			System.out.println(ret);

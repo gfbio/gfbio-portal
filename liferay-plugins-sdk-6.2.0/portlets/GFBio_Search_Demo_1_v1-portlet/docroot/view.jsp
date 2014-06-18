@@ -5,9 +5,7 @@
 
 <portlet:resourceURL id="searchURL" var="searchURL" escapeXml="false" />
 <script src="${pageContext.request.contextPath}/js/jquery-1.11.0.min.js"
-	type="text/javascript">
-</script>
-
+	type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"
 	type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables.js"
@@ -33,39 +31,33 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var keyword = document.getElementById("gfbioSearchInput").value;
-
-		console.log('view.jsp');
 		getSearchResult(keyword);
 	});
 
 	function gfbioQuery() {
-		console.log('gfbioQuery');
 		$('#tableId').DataTable().clear();
 		var keyword = document.getElementById("gfbioSearchInput").value;
 		getSearchResult(keyword);
 	}
 	
 	function getSearchResult(keyword){
-<%-- 		createDatatable("<%=searchURL%>/GFBioSearch",keyword,"<portlet:namespace />"); --%>
 		$.ajax({
-			
 			"url": "<%=searchURL%>"
 			+ "/GFBioSearch",
-			"data" : {
-				"<portlet:namespace />mode" : "getResult",
-					"<portlet:namespace />queryString" : encodeURI(keyword)
-			},
-			"dataSrc" : "dataset",
-			"type" : "POST",
+		"data" : {
+			"<portlet:namespace />mode" : "getResult",
+				"<portlet:namespace />queryString" : keyword
+		},
+		"dataSrc" : "dataset",
+		"type" : "POST",
 
-	        success : function(d) {
-// 	        	console.log(d);
-	            var jsonDataset = eval("(function(){return " + d + ";})()");
-	            var dataset = jsonDataset.dataset;
-	            facet = jsonDataset.facet;
-	            createDatatable(dataset);
-				createFacetTree(facet);
-	        }
+        success : function(data) {
+            var jsonDataset = eval("(function(){return " + data + ";})()");
+            var dataset = jsonDataset.dataset;
+            facet = jsonDataset.facet;
+            createDatatable(dataset,facet);
+			createFacetTree(facet);
+        }	
 		});
 	}
 
@@ -99,8 +91,10 @@
 					<th>Project</th>
 					<th>Year</th>
 					<th>Parameter</th>
+					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
+					<th>Data Count</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -114,8 +108,10 @@
 					<th>Project</th>
 					<th>Year</th>
 					<th>Parameter</th>
+					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
+					<th>Data Count</th>
 					<th></th>
 				</tr>
 			</tfoot>
@@ -125,5 +121,5 @@
 	<div style="clear: both"></div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/search.js"
+<script src="${pageContext.request.contextPath}/js/main.js"
 	type="text/javascript"></script>

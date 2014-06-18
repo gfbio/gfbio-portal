@@ -35,6 +35,7 @@ public class GFBioSearch extends GenericPortlet {
 			String keyword = request.getParameter("queryString");
 			String mode = request.getParameter("mode");
 
+			System.out.println(mode);
 			String queryJSON = "";
 			if (mode.equals("getResult")){
 				queryJSON = String.format(queryString, maxResult, keyword,facetString);
@@ -45,7 +46,7 @@ public class GFBioSearch extends GenericPortlet {
 
 			JSONObject searchResult = PangeaeSearch.HttpPost(queryJSON);
 			JSONObject json = new JSONObject();
-			System.out.println("searchResult"+searchResult);
+			System.out.println(searchResult);
 			if (mode.equals("getResult")){
 				json=	PangeaeSearch.parsedResult(searchResult);
 			}
