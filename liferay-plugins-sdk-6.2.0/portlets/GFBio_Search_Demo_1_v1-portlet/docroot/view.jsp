@@ -5,7 +5,9 @@
 
 <portlet:resourceURL id="searchURL" var="searchURL" escapeXml="false" />
 <script src="${pageContext.request.contextPath}/js/jquery-1.11.0.min.js"
-	type="text/javascript"></script>
+	type="text/javascript">
+</script>
+
 <script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"
 	type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables.js"
@@ -31,10 +33,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		var keyword = document.getElementById("gfbioSearchInput").value;
+
+		console.log('view.jsp');
 		getSearchResult(keyword);
 	});
 
 	function gfbioQuery() {
+		console.log('gfbioQuery');
 		$('#tableId').DataTable().clear();
 		var keyword = document.getElementById("gfbioSearchInput").value;
 		getSearchResult(keyword);
@@ -60,7 +65,7 @@
 	            facet = jsonDataset.facet;
 	            createDatatable(dataset);
 				createFacetTree(facet);
-	        }	
+	        }
 		});
 	}
 
@@ -120,5 +125,5 @@
 	<div style="clear: both"></div>
 </div>
 
-<script src="${pageContext.request.contextPath}/js/main.js"
+<script src="${pageContext.request.contextPath}/js/search.js"
 	type="text/javascript"></script>
