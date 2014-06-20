@@ -4,7 +4,7 @@
 	<portlet>
 		<portlet-name>GFBio_Terminology_portlet</portlet-name>
 		<display-name>GFBio Terminology Portlet</display-name>
-		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
+		<portlet-class>gfbio.portal.terminology.GFBioTerminology</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/view.jsp</value>

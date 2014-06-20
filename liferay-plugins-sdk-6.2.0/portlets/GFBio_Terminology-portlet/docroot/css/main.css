@@ -1,0 +1,6 @@
+body.wait *, body.wait
+{
+    cursor: progress !important;
+}
+
+.content {display:none;}
