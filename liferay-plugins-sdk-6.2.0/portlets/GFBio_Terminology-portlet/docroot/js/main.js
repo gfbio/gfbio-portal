@@ -187,6 +187,7 @@ function searchReset(){
 
 
 function writeScopeButton(){
+	// remove change event listener before adding new
 	$('#relatedTermsScope').off('change');
 	clearContext('relatedTermsScope');
 	var displaytext = "<input type='radio' id='narrower' name='relatedTermsScope' checked='checked'/>"+

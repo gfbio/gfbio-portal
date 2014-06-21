@@ -83,6 +83,7 @@ function listTermInfo(){
 					clearContext('search_result');
 					clearContext('termDetail');
 					clearContext('relatedTermsScope');
+					clearContext('downloadTermDetail');
 					clearContext('relatedTermsResult');
 
 					writeTerminologyInfo(d,'termInfo_result');
@@ -112,6 +113,7 @@ function terminologySearch(){
 			success : function(d) {
 				clearContext('termInfo_result');
 				clearContext('termDetail');
+				clearContext('downloadTermDetail');
 				clearContext('relatedTermsScope');
 				clearContext('relatedTermsResult');
 				
@@ -130,26 +132,47 @@ function showTermDetail(uri,terminology){
 		"type" : "POST",
 
 		success : function(d) {
-// 			console.log("showTermDetail: "+d);
 			var jsonDataset = eval("(function(){return " + d
 					+ ";})()");
 			var termDetail = jsonDataset.termDetail;
 			var relatedTerms = jsonDataset.relatedTerms;
 			// display term detail
 			writeTermsDetail(termDetail);
+			// display download term detail
+			writeDownloadTerm(uri,terminology);
 			// display relatedTerms
 			writeScopeButton();
 			writeRelatedTermsResult(relatedTerms);
 			
+			// add event listener when scope is changed
 			$("#relatedTermsScope").buttonset().change(
 					function(e){onScopeTermRelatedChange(e,uri,terminology);});
 			    
 		}
 	});
 }
-	function onScopeTermRelatedChange(e,termuri,terminology){
-		console.log(e.target.id);
-		console.log(termuri);
+function writeDownloadTerm(uri,terminology){
+	var displaytext = "<label>Format:";
+	displaytext += "<select id='format' style='width: auto;'>"+
+					"<option value='json' selected>JSON</option>"+
+					"<option value='csv'>CSV</option></select>";
+	displaytext += "<input id='downloadTerm' type='button' value='Download'"+
+					"style='font-weight: bold; width: auto;'"+
+					"onclick='javascript: creatLink(\""+uri+"\",\""+terminology+"\")' />";
+	displaytext +="</label>";
+	var div = document.getElementById('downloadTermDetail');
+	div.innerHTML = displaytext;
+}
+function creatLink(uri,terminology) {
+	var serverurl = "http://terminologies.gfbio.org/api/terminologies/";
+	var formatSelect = document.getElementById("format");
+	var format = formatSelect.options[formatSelect.selectedIndex].value;
+	var url = serverurl+terminology+"/term?uri="+uri;
+	if (format == "csv") url += "&format=csv"; 
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+function onScopeTermRelatedChange(e,termuri,terminology){
 	    var hierarchy = e.target.id;
 		$.ajax({
 			"url": "<%=terminologyURL%>/GFBioTerminology",
@@ -162,7 +185,6 @@ function showTermDetail(uri,terminology){
 			"type" : "POST",
 
 			success : function(d) {
-// 				console.log("onScopeTermRelatedChange: "+d);
 				var jsonDataset = eval("(function(){return " + d
 						+ ";})()");
 				writeRelatedTermsResult(jsonDataset);
@@ -201,23 +223,10 @@ function showTermDetail(uri,terminology){
 						<option value="true">True</option>
 				</select></td>
 			</tr>
-			<!-- 			<tr> -->
-			<!-- 				<td colspan="2" style="text-align:center;">Result display</td> -->
-			<!-- 			</tr> -->
 			<!-- 			<tr><td>Format:</td> -->
 			<!-- 				<td><select id="format"> -->
 			<!-- 					<option value="json" selected>JSON</option> -->
 			<!-- 					<option value="csv">CSV</option></select> -->
-			<!-- 				</td> -->
-			<!-- 			</tr> -->
-			<!-- 			<tr><td>Hierarchy:</td> -->
-			<!-- 				<td> -->
-			<!-- 					<select id="hierarchy"> -->
-			<!-- 					<option value="narrower" selected title="Retrieves the terms that are one level narrower than a given one.">Narrower</option> -->
-			<!-- 					<option value="allnarrower" title="Retrieves all terms that are narrower of a given one including each possible path to the leaves of the hierarchy.">All Narrower</option> -->
-			<!-- 					<option value="broader" title="Retrieves the terms that are one level broader than a given one.">Broader</option> -->
-			<!-- 					<option value="allbroader" title="Retrieves all terms that are broader of a given one including each possible path to the top.">All Broader</option> -->
-			<!-- 					</select> -->
 			<!-- 				</td> -->
 			<!-- 			</tr> -->
 		</table>
@@ -232,6 +241,8 @@ function showTermDetail(uri,terminology){
 	<div id="termInfo_result"></div>
 
 	<div id="termDetail"></div>
+	<br>
+	<div id="downloadTermDetail"></div>
 	<br>
 	<div id="relatedTermsScope"></div>
 	<div id="relatedTermsResult"></div>

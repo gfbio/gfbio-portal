@@ -43,10 +43,10 @@ public class GFBioTerminology extends GenericPortlet {
 			
 			JSONObject json = new JSONObject();
 			String query = "";
-			System.out.println(mode);
-			System.out.println(terminologies);
-			System.out.println(hierarchy);
-			System.out.println(termuri);
+//			System.out.println(mode);
+//			System.out.println(terminologies);
+//			System.out.println(hierarchy);
+//			System.out.println(termuri);
 			if (mode.equals("search")) {
 				query = "search?query=" + keyword;
 				if (!terminologies.trim().equals("")) {
@@ -83,7 +83,7 @@ public class GFBioTerminology extends GenericPortlet {
 					query+= "/allbroader?uri=";
 				}
 				query += termuri;
-				System.out.println(query);
+//				System.out.println(query);
 				json = HttpGet(query);
 			}
 			System.out.println(json);
