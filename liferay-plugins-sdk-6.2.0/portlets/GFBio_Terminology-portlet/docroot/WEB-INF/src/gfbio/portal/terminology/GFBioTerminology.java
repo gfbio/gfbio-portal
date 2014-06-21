@@ -35,14 +35,26 @@ public class GFBioTerminology extends GenericPortlet {
 			String keyword = request.getParameter("queryString");
 			String mode = request.getParameter("mode");
 			String terminologies = request.getParameter("terminologies");
+			String matchType = request.getParameter("matchType");
+			String firstHit = request.getParameter("firstHit");
+//			String format = request.getParameter("format");
+			String hierarchy = request.getParameter("hierarchy");
+			String termuri = request.getParameter("termuri");
 			
 			JSONObject json = new JSONObject();
 			String query = "";
+			System.out.println(mode);
+			System.out.println(terminologies);
+			System.out.println(hierarchy);
+			System.out.println(termuri);
 			if (mode.equals("search")) {
 				query = "search?query=" + keyword;
 				if (!terminologies.trim().equals("")) {
 					query += "&terminologies=" + terminologies;
+					if (firstHit.equals("true")) query+="&first_hit=true";
 				}
+				if (matchType.equals("exact")) query+="&match_type=exact";
+				System.out.println(query);
 				json = HttpGet(query);
 			} else if (mode.equals("getTerminologiesList")) {
 				query = "";
@@ -52,6 +64,27 @@ public class GFBioTerminology extends GenericPortlet {
 				json.put("terminologyInfo", HttpGet(query));
 				query = terminologies + "/allterms";
 				json.put("allTerm", HttpGet(query));
+			} else if (mode.equals("getTermDetail")) {
+				query = terminologies+"/term?uri="+termuri;
+//				if (format.equals("csv")) query+="&format=csv";
+				json.put("termDetail", HttpGet(query));
+				query = terminologies+"/narrower?uri="+termuri;
+
+				json.put("relatedTerms", HttpGet(query));
+			} else if (mode.equals("getTermRelated")){
+				query = terminologies;
+				if (hierarchy.equals("narrower")) {
+					query+= "/narrower?uri=";
+				}else if(hierarchy.equals("allnarrower")) {
+					query+= "/allnarrower?uri=";
+				}else if(hierarchy.equals("broader")) {
+					query+= "/broader?uri=";
+				}else {
+					query+= "/allbroader?uri=";
+				}
+				query += termuri;
+				System.out.println(query);
+				json = HttpGet(query);
 			}
 			System.out.println(json);
 			PrintWriter writer = response.getWriter();
@@ -66,6 +99,7 @@ public class GFBioTerminology extends GenericPortlet {
 		JSONObject ret = null;
 		try {
 			URL url = new URL(serverurl + query);
+			System.out.println(serverurl + query);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");

@@ -3,4 +3,15 @@ body.wait *, body.wait
     cursor: progress !important;
 }
 
-.content {display:none;}
+#relatedTermsScope .ui-button-text
+{
+	display: inline !important; 
+}
+#relatedTermsScope .ui-button
+{
+	display: inline !important; 
+}
+#relatedTermsScope .ui-widget 
+{
+	display: inline !important; 
+}​
