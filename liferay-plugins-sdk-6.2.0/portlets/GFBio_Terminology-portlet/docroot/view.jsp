@@ -57,6 +57,23 @@ $(document).ready(function() {
 			 $( this ).dialog( "close" );
 		 }
 	});
+	 $( "#termDetail" ).dialog({
+		 autoOpen: false,
+		 height: 'auto',
+		 maxHeight: $(window).height()-200,
+		 width: 'auto',
+		 maxWidth: $(window).width()-200,
+		 show: "slide",
+		 modal: true,
+		 buttons: {
+			 "OK": function(){
+				 $( this ).dialog( "close" );
+			 }
+		 },
+		 close: function() {
+			 $( this ).dialog( "close" );
+		 }
+	});
 });
 // show processing mouse while waiting for ajax result
 $(document).ajaxStart(function ()
@@ -82,11 +99,8 @@ function listTermInfo(){
 				success : function(d) {
 					clearContext('search_result');
 					clearContext('termDetail');
-					clearContext('relatedTermsScope');
-					clearContext('downloadTermDetail');
-					clearContext('relatedTermsResult');
 
-					writeTerminologyInfo(d,'termInfo_result');
+					writeTerminologyInfo(d,'termInfo_result',terminology);
 				}
 			});
 }
@@ -113,15 +127,12 @@ function terminologySearch(){
 			success : function(d) {
 				clearContext('termInfo_result');
 				clearContext('termDetail');
-				clearContext('downloadTermDetail');
-				clearContext('relatedTermsScope');
-				clearContext('relatedTermsResult');
 				
 				writeTerminologyResult(d,'search_result');
 			}
 		});
 	}
-function showTermDetail(uri,terminology){
+function showTermDetail(termName, uri,terminology){
 	$.ajax({
 		"url": "<%=terminologyURL%>/GFBioTerminology",
 		"data" : {
@@ -137,40 +148,17 @@ function showTermDetail(uri,terminology){
 			var termDetail = jsonDataset.termDetail;
 			var relatedTerms = jsonDataset.relatedTerms;
 			// display term detail
-			writeTermsDetail(termDetail);
-			// display download term detail
-			writeDownloadTerm(uri,terminology);
-			// display relatedTerms
-			writeScopeButton();
+			writeTermsDetail(termName, termDetail,uri, terminology);
 			writeRelatedTermsResult(relatedTerms);
 			
 			// add event listener when scope is changed
 			$("#relatedTermsScope").buttonset().change(
 					function(e){onScopeTermRelatedChange(e,uri,terminology);});
+
+			$("#termDetail").dialog("open");
 			    
 		}
 	});
-}
-function writeDownloadTerm(uri,terminology){
-	var displaytext = "<label>Format:";
-	displaytext += "<select id='format' style='width: auto;'>"+
-					"<option value='json' selected>JSON</option>"+
-					"<option value='csv'>CSV</option></select>";
-	displaytext += "<input id='downloadTerm' type='button' value='Download'"+
-					"style='font-weight: bold; width: auto;'"+
-					"onclick='javascript: creatLink(\""+uri+"\",\""+terminology+"\")' />";
-	displaytext +="</label>";
-	var div = document.getElementById('downloadTermDetail');
-	div.innerHTML = displaytext;
-}
-function creatLink(uri,terminology) {
-	var serverurl = "http://terminologies.gfbio.org/api/terminologies/";
-	var formatSelect = document.getElementById("format");
-	var format = formatSelect.options[formatSelect.selectedIndex].value;
-	var url = serverurl+terminology+"/term?uri="+uri;
-	if (format == "csv") url += "&format=csv"; 
-	var win = window.open(url, '_blank');
-	win.focus();
 }
 function onScopeTermRelatedChange(e,termuri,terminology){
 	    var hierarchy = e.target.id;
@@ -223,27 +211,16 @@ function onScopeTermRelatedChange(e,termuri,terminology){
 						<option value="true">True</option>
 				</select></td>
 			</tr>
-			<!-- 			<tr><td>Format:</td> -->
-			<!-- 				<td><select id="format"> -->
-			<!-- 					<option value="json" selected>JSON</option> -->
-			<!-- 					<option value="csv">CSV</option></select> -->
-			<!-- 				</td> -->
-			<!-- 			</tr> -->
 		</table>
 	</div>
 	<div id="search_result"></div>
 	<br> <label>Terminology Information: <select
-		id="terminologyInfoSelect" style="width: auto">
+		id="terminologyInfoSelect" style="width: auto" >
 	</select> <input id="getTerminologyInfoButton" type="button" value="Go!"
-		style="font-weight: bold; width: auto;"
+		style="font-weight: bold; width: auto;" 
 		onclick="javascript:listTermInfo();" /></label>
 
 	<div id="termInfo_result"></div>
-
-	<div id="termDetail"></div>
-	<br>
-	<div id="downloadTermDetail"></div>
-	<br>
-	<div id="relatedTermsScope"></div>
-	<div id="relatedTermsResult"></div>
+	
+	<div id="termDetail" title="Term details:"></div>
 </div>

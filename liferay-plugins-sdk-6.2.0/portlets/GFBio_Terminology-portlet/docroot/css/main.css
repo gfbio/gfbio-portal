@@ -2,7 +2,10 @@ body.wait *, body.wait
 {
     cursor: progress !important;
 }
-
+#relatedTermsScope 
+{
+	display: inline !important; 
+}
 #relatedTermsScope .ui-button-text
 {
 	display: inline !important; 
@@ -14,4 +17,11 @@ body.wait *, body.wait
 #relatedTermsScope .ui-widget 
 {
 	display: inline !important; 
+}
+.fitcontent{
+    padding:0px !important;
+    margin:0px !important;
+}
+.font-bold{
+	font-weight:bold;
 }​

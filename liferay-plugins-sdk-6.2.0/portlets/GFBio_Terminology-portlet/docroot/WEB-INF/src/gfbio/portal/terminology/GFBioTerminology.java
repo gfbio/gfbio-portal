@@ -37,7 +37,6 @@ public class GFBioTerminology extends GenericPortlet {
 			String terminologies = request.getParameter("terminologies");
 			String matchType = request.getParameter("matchType");
 			String firstHit = request.getParameter("firstHit");
-//			String format = request.getParameter("format");
 			String hierarchy = request.getParameter("hierarchy");
 			String termuri = request.getParameter("termuri");
 			
