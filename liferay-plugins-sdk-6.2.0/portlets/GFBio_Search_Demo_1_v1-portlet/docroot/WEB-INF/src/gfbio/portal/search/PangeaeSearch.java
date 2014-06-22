@@ -2,10 +2,6 @@ package gfbio.portal.search;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
@@ -14,24 +10,28 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 @SuppressWarnings("deprecation")
 public class PangeaeSearch {
 	static String region = "";
 	static String title = "";
 	static String authors = "";
-	static String citedDate = "";
+	static String citationDate = "";
 	static String investigator = "";
 	static String description = "";
 	static String dataCenter = "";
 	static String project = "";
 	static String parameter = "";
-	static String taxonomy = "N/A";
+//	static String taxonomy = "N/A";
 	static String dataCount = "";
-	static Document doc;
+	static String timeStamp ="";
+	static String dataLink ="";
+	static String metadataLink ="";
+	static Double maxLongitude =0.0;
+	static Double minLongitude =0.0;
+	static Double maxLatitude =0.0;
+	static Double minLatitude =0.0;
+//	static Document doc;
 	static String url = "http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
 
 	public static JSONObject HttpPost(String query) {
@@ -82,99 +82,19 @@ public class PangeaeSearch {
 		}
 		return ret;
 	}
-
-	protected static String[] getCitation(JSONObject source) {
-		String[] ret = new String[3];
-		try {
-			JSONArray array = null;
-			if (source.has("citation")) {
-				array = source.getJSONArray("citation");
-				if (array.length() > 0) {
-					ret[0] = (String) array.get(0);
-
-					String authors = "";
-					for (int i = 1; i < array.length() - 3; i++) {
-						if (i > 1)
-							authors += "; ";
-						authors += array.get(i).toString();
-					}
-					ret[1] = authors;
-
-					ret[2] = (String) array.get(array.length() - 1);
-				}
-			}
-		} catch (JSONException e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	protected static String getDescription(JSONObject source) {
-		String ret = "";
-		try {
-			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("dc:description");
-				if (nl.getLength() > 0) {
-					ret = nl.item(0).getTextContent();
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-	}
-
-	protected static String getDataCount(JSONObject source) {
-		String ret = "";
-		try {
-			if (doc != null) {
-				NodeList nl = doc.getElementsByTagName("dc:format");
-				if (nl.getLength() > 0) {
-					String format = nl.item(0).getTextContent();
-					if (format != "") {
-						int start = format.indexOf(",");
-						int end = format.indexOf("data points");
-						if (start >= 0 && end > start) {
-							ret = format.substring(start + 1, end);
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
-		return ret;
-
-	}
-
-	protected static void setXMLfromJSON(JSONObject source, String name) {
+	protected static Double getDouble(JSONObject source, String name) {
+		Double ret = 0.0;
 		try {
 			if (source.has(name)) {
-				String xml = source.getString("xml");
-				doc = getXMLDocument(xml);
+				Object obj = source.get(name);
+				ret = (Double) obj;
 			}
 		} catch (JSONException e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+		return ret;
 	}
-
-	protected static Document getXMLDocument(String xml) {
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder;
-		Document document = null;
-		try {
-			builder = factory.newDocumentBuilder();
-			document = builder.parse(new InputSource(new StringReader(xml)));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return document;
-	}
-
 	public static JSONObject parsedResult(JSONObject rawResult) {
 		JSONObject ret = new JSONObject();
 		try {
@@ -190,21 +110,20 @@ public class PangeaeSearch {
 				region = getValue(source, "region");
 				if (region.trim().isEmpty() || region.trim().length()==0)
 					region = "N/A";
-				String[] citation = getCitation(source);
-				title = citation[0];
+				title = getValue(source, "citation.title");
 				if (title.trim().isEmpty() || title.trim().length()==0)
 					title = "N/A";
-				authors = citation[1];
+				authors = getValue(source, "citation.authors");
 				if (authors.trim().isEmpty() || authors.trim().length()==0)
 					authors = "N/A";
-				citedDate = citation[2];
-				if (citedDate.trim().isEmpty() || citedDate.trim().length()==0)
-					citedDate = "N/A";
-				setXMLfromJSON(source, "xml");
+				citationDate = getValue(source, "citation.date");
+				if (citationDate.trim().isEmpty() || citationDate.trim().length()==0)
+					citationDate = "N/A";
+//				setXMLfromJSON(source, "xml");
 				investigator = getValue(source, "investigator");
 				if (investigator.trim().isEmpty() || investigator.trim().length()==0)
 					investigator = "N/A";
-				description = getDescription(source);
+				description = getValue(source, "description");
 				if (description.trim().isEmpty() || description.trim().length()==0)
 					description = "N/A";
 				dataCenter = getValue(source, "dataCenter");
@@ -216,10 +135,23 @@ public class PangeaeSearch {
 				parameter = getValue(source, "parameter");
 				if (parameter.trim().isEmpty() || parameter.trim().length()==0)
 					parameter = "N/A";
-				taxonomy = "N/A";
-				dataCount = getDataCount(source);
-				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
-					dataCount = "N/A";
+				timeStamp = getValue(source, "internal-datestamp");
+				if (timeStamp.trim().isEmpty() || timeStamp.trim().length()==0)
+					timeStamp = "N/A";
+				dataLink = getValue(source, "datalink");
+				if (dataLink.trim().isEmpty() || dataLink.trim().length()==0)
+					dataLink = "N/A";
+				metadataLink = getValue(source, "metadatalink");
+				if (metadataLink.trim().isEmpty() || metadataLink.trim().length()==0)
+					metadataLink = "N/A";
+				maxLatitude = getDouble(source, "maxLatitude");
+				minLatitude = getDouble(source, "minLatitude");
+				maxLongitude = getDouble(source, "maxLongitude");
+				minLongitude = getDouble(source, "minLongitude");
+//				taxonomy = "N/A";
+//				dataCount = getDataCount(source);
+//				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
+//					dataCount = "N/A";
 
 				JSONObject result = new JSONObject();
 				result.put("title", title.trim());
@@ -228,12 +160,19 @@ public class PangeaeSearch {
 				result.put("dataCenter", dataCenter.trim());
 				result.put("region", region.trim());
 				result.put("project", project.trim());
-				result.put("citedDate", citedDate.trim());
+				result.put("citationDate", citationDate.trim());
 				result.put("parameter", parameter.trim());
-				result.put("taxonomy", taxonomy.trim());
+//				result.put("taxonomy", taxonomy.trim());
 				result.put("investigator", investigator.trim());
 				result.put("score", score);
-				result.put("dataCount", dataCount.trim());
+				result.put("timeStamp", timeStamp.trim());
+				result.put("dataLink", dataLink.trim());
+				result.put("metadataLink", metadataLink.trim());
+				result.put("maxLatitude", maxLatitude);
+				result.put("minLatitude", minLatitude);
+				result.put("maxLongitude", maxLongitude);
+				result.put("minLongitude", minLongitude);
+//				result.put("dataCount", dataCount.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);

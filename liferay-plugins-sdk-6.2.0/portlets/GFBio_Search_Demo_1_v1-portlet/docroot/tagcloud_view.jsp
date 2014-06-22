@@ -48,7 +48,7 @@ function hex (c) {
 		return convertToHex(c);
 	}
 $(function () {
-
+	console.log('tagcloud');
 	  Liferay.on(
 	            'facetUpdate',
 	            function(event) {

@@ -3,7 +3,7 @@
 
 <display>
 	<category name="category.sample">
-		<portlet id="GFBio_Search_Demo_1_v1" />
+		<portlet id="GFBio_Search_Demo_1_v1"></portlet>
 		<portlet id="tag-cloud"></portlet>
 	</category>
 </display>

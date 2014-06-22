@@ -5,17 +5,15 @@
 	<portlet>
 		<portlet-name>GFBio_Search_Demo_1_v1</portlet-name>
 		<icon>/icon.png</icon>
-		<header-portlet-css>/css/main.css</header-portlet-css>
-		<footer-portlet-javascript>/js/main.js</footer-portlet-javascript>
+		<header-portlet-css>/css/search.css</header-portlet-css>
+		<footer-portlet-javascript>/js/search.js</footer-portlet-javascript>
 		<css-class-wrapper>GFBio_Search_Demo_1_v1-portlet</css-class-wrapper>
 	</portlet>
 	<portlet>
 		<portlet-name>tag-cloud</portlet-name>
 		<icon>/icon.png</icon>
-		<header-portlet-css>/css/main.css</header-portlet-css>
-		<footer-portlet-javascript>
-			/js/main.js
-		</footer-portlet-javascript>
+		<header-portlet-css>/css/tagcloud.css</header-portlet-css>
+		<footer-portlet-javascript>/js/tagcloud.js</footer-portlet-javascript>
 		<css-class-wrapper>tag-cloud-portlet</css-class-wrapper>
 	</portlet>
 	<role-mapper>

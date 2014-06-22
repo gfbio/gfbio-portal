@@ -16,7 +16,7 @@
 	type="text/javascript"></script>
 
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/main.css">
+	href="<%=request.getContextPath()%>/css/search.css">
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css"
@@ -89,12 +89,17 @@
 					<th>Data Center</th>
 					<th>Region</th>
 					<th>Project</th>
-					<th>Year</th>
+					<th>Citation Date</th>
 					<th>Parameter</th>
-					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
-					<th>Data Count</th>
+					<th>Timestamp</th>
+					<th>Data Link</th>
+					<th>Metadata Link</th>
+					<th>Max Latitude</th>
+					<th>Min Latitude</th>
+					<th>Max Longitude</th>
+					<th>Min Longitude</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -106,16 +111,23 @@
 					<th>Data Center</th>
 					<th>Region</th>
 					<th>Project</th>
-					<th>Year</th>
+					<th>Citation Date</th>
 					<th>Parameter</th>
-					<th>Taxonomy</th>
 					<th>Investigator</th>
 					<th>Score</th>
-					<th>Data Count</th>
+					<th>Timestamp</th>
+					<th>Data Link</th>
+					<th>Metadata Link</th>
+					<th>Max Latitude</th>
+					<th>Min Latitude</th>
+					<th>Max Longitude</th>
+					<th>Min Longitude</th>
 					<th></th>
 				</tr>
 			</tfoot>
 		</table>
+		<input id="pubSelectedData" name="pubSelectedData"
+		type="button" value="Publish selected data" style="font-weight: bold; width:100%"/>
 	</div>
 
 	<div style="clear: both"></div>
