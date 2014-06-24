@@ -391,7 +391,7 @@ function createExtraRow(d) {
 			+ createTR('Full title',d.title)
 			+ createTR('Authors',d.authors)
 			+ createTR('Data Center', d.dataCenter)
-			+ createTR('Citation',d.citation)
+//			+ createTR('Citation',d.citation)
 			+ createTR('Description',d.description)
 			+ createTR('Investigator',d.investigator)
 			+ createTR('Project',d.project)
@@ -401,9 +401,9 @@ function createExtraRow(d) {
 			+ createTR('MaxLongitude',d.maxLongitude)
 			+ createTR('MinLongitude',d.minLongitude)
 			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>')
-			+ createTR('Link', '<a href="'+d.dsLink+'" target="_newtab">'+d.dsLink+'</a>')
+			+ createTR('Link', '<a href="'+d.metadataLink+'" target="_newtab">'+d.metadataLink+'</a>')
 //			+ createTR('License', d.dataRights)
-			+ createTR('Download', '<a href="'+d.dlLink+'">Dataset Download Link</a>')
+			+ createTR('Download', '<a href="'+d.dataLink+'">'+d.dataLink+'</a>')
 			
 			+ '</table>';
 }
