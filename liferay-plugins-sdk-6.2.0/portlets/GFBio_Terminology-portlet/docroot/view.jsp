@@ -25,6 +25,7 @@ var allnarrowerHint = "Retrieves all terms that are narrower of a given one incl
 var broaderHint = "Retrieves the terms that are one level broader than a given one.";
 var allbroaderHint = "Retrieves all terms that are broader of a given one including each possible path to the top.";
 $(document).ready(function() {
+	$( "#terminologyTabs" ).tabs();
 	$.ajax({
 		"url": "<%=terminologyURL%>"
 		+ "/GFBioTerminology",
@@ -180,47 +181,62 @@ function onScopeTermRelatedChange(e,termuri,terminology){
 		});
 	}
 </script>
-<div id="terminology_portlet">
-	<label>Terminology Search: <input id="terminologySearchInput"
-		value="biomass" /> <input id="terminologyButton" type="button"
-		value="Go!" style="font-weight: bold"
-		onclick="javascript:terminologySearch();" /> <a
-		href="javascript:showSearchOption();"> Option</a></label>
-	<div id="searchOption" title="Search Option">
-		<table>
-			<tr style="vertical-align: top">
-				<td>Scope:</td>
-				<td><select id="searchTerminologiesSelect" style="width: 100%"
-					size="4" multiple="multiple" onchange="excludeFirstOption(this)"
-					title="To specify the terminologies to search.">
-				</select></td>
-			</tr>
-			<tr>
-				<td>Match type:</td>
-				<td><select id="matchType"
-					title="Looks for exact and/or partial matches.">
-						<option value="included" selected>Included</option>
-						<option value="exact">Exact</option>
-				</select></td>
-			</tr>
-			<tr>
-				<td>First hit:</td>
-				<td><select id="firstHit"
-					title="To stop at the first terminology where a match is found.">
-						<option value="false" selected>False</option>
-						<option value="true">True</option>
-				</select></td>
-			</tr>
-		</table>
-	</div>
-	<div id="search_result"></div>
-	<br> <label>Terminology Information: <select
-		id="terminologyInfoSelect" style="width: auto" >
-	</select> <input id="getTerminologyInfoButton" type="button" value="Go!"
-		style="font-weight: bold; width: auto;" 
-		onclick="javascript:listTermInfo();" /></label>
-
-	<div id="termInfo_result"></div>
+<!-- <div id="terminology_portlet"> -->
 	
-	<div id="termDetail" title="Term details:"></div>
+	
+	<div id="terminologyTabs">
+	<ul>
+	<li><a href="#termSearchTab">Terminology Search:</a></li>
+	<li><a href="#termInfoTab">Terminology Information:</a></li>
+	</ul>
+	<div id="termSearchTab">
+		<label><input id="terminologySearchInput"
+			value="biomass" /> <input id="terminologyButton" type="button"
+			value="Go!" style="font-weight: bold"
+			onclick="javascript:terminologySearch();" /> <a
+			href="javascript:showSearchOption();" 
+			title="Configuration" class="configIcon" 
+			style='display:inline-block; vertical-align:middle;'></a>
+			</label>
+		<div id="searchOption" title="Search Configuration">
+			<table>
+				<tr style="vertical-align: top">
+					<td>Vocabulary:</td>
+					<td><select id="searchTerminologiesSelect" style="width: 100%"
+						size="4" multiple="multiple" onchange="excludeFirstOption(this)"
+						title="To specify the terminologies to search.">
+					</select></td>
+				</tr>
+				<tr>
+					<td>Match type:</td>
+					<td><select id="matchType"
+						title="Looks for exact and/or partial matches.">
+							<option value="included" selected>Included</option>
+							<option value="exact">Exact</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>First hit:</td>
+					<td><select id="firstHit"
+						title="To stop at the first terminology where a match is found.">
+							<option value="false" selected>False</option>
+							<option value="true">True</option>
+					</select></td>
+				</tr>
+			</table>
+		</div>
+		<div id="search_result"></div>
+	</div>
+	<div id="termInfoTab">
+		<label><select
+			id="terminologyInfoSelect" style="width: auto" >
+		</select> <input id="getTerminologyInfoButton" type="button" value="Go!"
+			style="font-weight: bold; width: auto;" 
+			onclick="javascript:listTermInfo();" /></label>
+	
+		<div id="termInfo_result"></div>
+		
+		<div id="termDetail" title="Term details:"></div>
+	</div>
 </div>
+<!-- </div> -->

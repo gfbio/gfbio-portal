@@ -1,86 +1,110 @@
+var connectionFailMsg = "Connection to terminology server failed. Please try again later.";
 function writeTerminologyResult(d, output) {
 	var jsonDataset = eval("(function(){return " + d + ";})()");
-
-	var results = jsonDataset.results;
-	var bindings = results.bindings;
-	var displaytext = "<table style='width:100%'>";
-	var i = 0;
-	// loop for each result
-	jQuery.each(bindings, function() {
-		var graph = this.graph.value;
-		var name = this.label.value;
-		var uri = this.uri.value;
-
-		var terminology = "";
-		displaytext += "<tr><td>";
-		if (graph != "") {
-			var shortGraph = graph.substring(graph.lastIndexOf("/") + 1);
-			displaytext += shortGraph + ": ";
-			terminology = shortGraph;
-		}
-		displaytext += "</td><td>";
-		displaytext += "<a href='javascript:showTermDetail(\""
+	// dummy data
+//	jsonDataset = {'results':{'bindings':[{'graph':{'value':'graph1'},'label':{'value':'name1'},'uri':{'value':'http://uri1'}},
+//	                                      {'graph':{'value':'graph2'},'label':{'value':'name2'},'uri':{'value':'http://uri2'}}]}};
+	if (jsonDataset != null){
+		var results = jsonDataset.results;
+		var bindings = results.bindings;
+		var displaytext = "<table style='width:100%'>";
+		var i = 0;
+		// loop for each result
+		jQuery.each(bindings, function() {
+			console.log(this.graph);
+			var graph = this.graph.value;
+			var name = this.label.value;
+			var uri = this.uri.value;
+	
+			var terminology = "";
+			displaytext += "<tr><td>";
+			if (graph != "") {
+				var shortGraph = graph.substring(graph.lastIndexOf("/") + 1);
+				displaytext += shortGraph + ": ";
+				terminology = shortGraph;
+			}
+			displaytext += "</td>";
+			displaytext += "<td><a href='javascript:showTermDetail(\""
 				+name+"\",\"" + uri + "\",\""
-				+ terminology + "\")'>" + name + "</a></td>";
-		displaytext += "<td><a href='" + uri + "' target='_blank'>" + uri
-				+ "</a></td>";
-		displaytext += "</tr>";
-		i++;
-	});
-	displaytext += "</table>";
-
-	// show total number of result(s)
-	if (i == 0) {
-		displaytext = "No result.";
-	} else {
-		displaytext = "Total term(s) : " + i + "</br>" + displaytext;
-	}
-	var div = document.getElementById(output);
-	div.innerHTML = "<pre><div style='height:300px; overflow-y:scroll;'>"
-			+ displaytext + "</div></pre>";
+				+ terminology + "\")' title='Show more details.' "+
+				"class='showDetails'"+"></a></td>";
+			displaytext += "<td>"+name +"</td>";
+			displaytext += "<td><a href='" + uri + 
+						"' target='_blank'>" 
+						+ uri + "</a>"+
+						"<a href='" + uri + 
+						"' target='_blank'  class='externalLinkIcon'></a>"+"</td>";
+			displaytext += "</tr>";
+			i++;
+		});
+		displaytext += "</table>";
+	
+		// show total number of result(s)
+		if (i == 0) {
+			displaytext = "No result.";
+		} else {
+			displaytext = "Total term(s) : " + i + "</br>" + displaytext;
+		}
+		var div = document.getElementById(output);
+		div.innerHTML = "<pre><div style='height:300px; overflow-y:scroll;'>"
+				+ displaytext + "</div></pre>";
+	}else alert(connectionFailMsg);
 }
 function writeTerminologyInfo(d, output, terminologyName) {
 	var jsonDataset = eval("(function(){return " + d + ";})()");
 	var terminologyInfo = jsonDataset.terminologyInfo;
 	var allTerm = jsonDataset.allTerm;
-
-	var infotext = "<pre><div style='width:100%; max-height:150px; overflow-y:scroll'>"
+	var infotext = "";
+	
+	if (terminologyInfo != null){
+	
+		infotext = "<pre><div style='width:100%; max-height:150px; overflow-y:scroll'>"
 					+"<font class='font-bold'>"+terminologyName
 					+" Information: </font><table style='width:100%'>";
-	// get info
-	var results = terminologyInfo.results;
-	var bindings = results.bindings;
-	jQuery.each(bindings, function() {
-		var attribute = this.attribute.value;
-		var value = this.value.value;
-		var atttype = this.attribute.type;
-		var valtype = this.value.type;
+		// get info
+		var results = terminologyInfo.results;
+		var bindings = results.bindings;
+		jQuery.each(bindings, function() {
+			var attribute = this.attribute.value;
+			var value = this.value.value;
+//		var atttype = this.attribute.type;
+			var valtype = this.value.type;
 
-		var shortAttr = attribute.substring(attribute.lastIndexOf("/") + 1);
-		if (shortAttr.contains("#")) {
-			shortAttr = shortAttr.substring(shortAttr.lastIndexOf("#")+1);
-		}
-		// if (atttype == "uri"){
-		// infotext += "<tr><td><a href='"+attribute+"' target='_blank'>" +
-		// shortAttr
-		// + ":</a></td>";}
-		// else {
-		infotext += "<tr><td>" + shortAttr + ":</td>";
-		// }
-		if (valtype == "uri") {
-			infotext += "<td><a href='" + value + "' target='_blank'>" + value
-					+ "</a></td></tr>";
-		} else {
-			infotext += "<td>" + value + "</td></tr>";
-		}
-	});
-	infotext += "</table></div></pre>";
+			var shortAttr = attribute.substring(attribute.lastIndexOf("/") + 1);
+			if (shortAttr.contains("#")) {
+				shortAttr = shortAttr.substring(shortAttr.lastIndexOf("#")+1);
+			}
+			// if (atttype == "uri"){
+			// infotext += "<tr><td><a href='"+attribute+"' target='_blank'>" +
+			// shortAttr
+			// + ":</a></td>";}
+			// else {
+			infotext += "<tr><td>" + shortAttr + ":</td>";
+			// }
+			if (valtype == "uri") {
+				infotext += "<td><a href='" + value + "' target='_blank'>" + value
+						+ "</a>";
 
+				infotext += "<a href='" + value + 
+						"' target='_blank'  class='externalLinkIcon'></a></td>";
+			} else {
+				infotext += "<td>" + value + "</td>";
+			}
+			infotext += "</tr>";
+		});
+		infotext += "</table></div></pre>";
+
+	}
+	else alert(connectionFailMsg);
+	
 	var allTermText = writeAllTerm(allTerm);
 	var div = document.getElementById(output);
 	div.innerHTML = infotext + allTermText;
 }
 function writeAllTerm(allTerm) {
+	// dummy data
+//	allTerm = {'results':{'bindings':[{'label':{'value':'name1'},'uri':{'value':'http://uri1'}},
+//	                                  {'label':{'value':'name2'},'uri':{'value':'http://uri2'}}]}};
 
 	var terminology = getSelectedTerminologies('terminologyInfoSelect');
 	var displaytext = "<table style='width:100%'>";
@@ -92,9 +116,19 @@ function writeAllTerm(allTerm) {
 		var name = this.label.value;
 		var uri = this.uri.value;
 
-		displaytext += "<tr><td><a href='javascript:showTermDetail(\""+name+"\",\"" + uri
-				+ "\",\"" + terminology + "\")'>" + name
-				+ "</a></td><td><a href='"+uri+"' target='_blank'>" + uri + "</a></td></tr>";
+		displaytext += "<tr>";
+
+		displaytext += "<td><a href='javascript:showTermDetail(\""
+			+name+"\",\"" + uri + "\",\""
+			+ terminology + "\")' title='Show more details.' "+
+			"class='showDetails'"+"></a></td>";
+		
+		displaytext +="<td>" + name + "</td>";
+		
+		displaytext += "<td><a href='"+uri+"' target='_blank'>"+uri 
+				+ "</a><a href='"+uri+"' target='_blank' class='externalLinkIcon'></a></td>";
+		displaytext += "</tr>";
+		
 		i++;
 	});
 	displaytext += "</table>";
@@ -116,6 +150,7 @@ function writeTerminologyMultipleSelection(d) {
 	var options = "<option value='' selected>All</option>";
 	var jsonDataset = eval("(function(){return " + d + ";})()");
 
+	if (jsonDataset != null){
 	var results = jsonDataset.results;
 	var bindings = results.bindings;
 	jQuery.each(bindings, function() {
@@ -126,6 +161,8 @@ function writeTerminologyMultipleSelection(d) {
 				+ "</option>";
 	});
 	searchTerminologiesSelect.innerHTML = options;
+	}
+	else alert(connectionFailMsg);
 }
 function writeTerminologySingleSelection(d) {
 
@@ -133,7 +170,7 @@ function writeTerminologySingleSelection(d) {
 			.getElementById("terminologyInfoSelect");
 	var options = "";
 	var jsonDataset = eval("(function(){return " + d + ";})()");
-
+	if (jsonDataset != null){
 	var results = jsonDataset.results;
 	var bindings = results.bindings;
 	jQuery.each(bindings, function() {
@@ -144,6 +181,8 @@ function writeTerminologySingleSelection(d) {
 				+ "</option>";
 	});
 	terminologyInfoSelect.innerHTML = options;
+	}
+	else alert(connectionFailMsg);
 }
 function clearContext(id) {
 
