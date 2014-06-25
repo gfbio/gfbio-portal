@@ -34,7 +34,7 @@
 	<portlet>
 		<portlet-name>tag-cloud</portlet-name>
 		<display-name>Tag Cloud</display-name>
-		<portlet-class>gfbio.portal.search.tagCloud</portlet-class>
+		<portlet-class>gfbio.portal.search.TagCloud</portlet-class>
 		<init-param>
 			<name>view-template</name>
 			<value>/tagcloud_view.jsp</value>

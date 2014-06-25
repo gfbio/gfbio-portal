@@ -7,7 +7,7 @@ import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 
-public class tagCloud extends GenericPortlet
+public class TagCloud extends GenericPortlet
 {
 	protected static final String JSP_VIEW = "/tagcloud_view.jsp";
 

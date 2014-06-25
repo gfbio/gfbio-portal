@@ -158,6 +158,11 @@ function createDatatable(dataset) {
 		    }
 		}
 	});
+	setFireSelectedData(oTable);
+}
+
+function setFireSelectedData(oTable){
+
 	// for multiple selection
 	$('#tableId tbody').off("click");
     $('#tableId tbody').on( 'click', 'tr', function () {
@@ -176,7 +181,7 @@ function createDatatable(dataset) {
         			"maxLongitude": value.maxLongitude,
         			"minLongitude": value.minLongitude};
         	jsonData.results.push(result);
-//        	console.log(value.metadataLink+" "+value.timeStamp);
+        	console.log('fire selected data');
         });
     	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
     } );
@@ -192,6 +197,7 @@ function createDatatable(dataset) {
 //        }
 //    } );
 }
+
 function addExtraRow() {
 	var elems = document.getElementsByTagName('td');
 	var elm = null;
@@ -387,7 +393,7 @@ function checkAllTree(facet) {
 	});
 }
 function createExtraRow(d) {
-	return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'
+	var data = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'
 			+ createTR('Full title',d.title)
 			+ createTR('Authors',d.authors)
 			+ createTR('Data Center', d.dataCenter)
@@ -400,12 +406,15 @@ function createExtraRow(d) {
 			+ createTR('MinLatitude',d.minLatitude)
 			+ createTR('MaxLongitude',d.maxLongitude)
 			+ createTR('MinLongitude',d.minLongitude)
-			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>')
-			+ createTR('Link', '<a href="'+d.metadataLink+'" target="_newtab">'+d.metadataLink+'</a>')
+			+ createTR('Repository', 'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>');
+	if (d.metadataLink != "N/A")
+		data += createTR('Link', '<a href="'+d.metadataLink+'" target="_newtab">'+d.metadataLink+'</a>');
 //			+ createTR('License', d.dataRights)
-			+ createTR('Download', '<a href="'+d.dataLink+'">'+d.dataLink+'</a>')
+	if (d.dataLink != "N/A")	
+		data += createTR('Download', '<a href="'+d.dataLink+'">'+d.dataLink+'</a>');
 			
-			+ '</table>';
+	data += '</table>';
+	return data;
 }
 
 function createTR(name,data){
