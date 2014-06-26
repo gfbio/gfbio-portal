@@ -5,19 +5,11 @@
 <portlet:defineObjects />
 <portlet:resourceURL id="terminologyURL" var="terminologyURL"
 	escapeXml="false" />
-<script src="${pageContext.request.contextPath}/js/jquery-1.11.0.min.js"
-	type="text/javascript">
-</script>
-<script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"
-	type="text/javascript">
-</script>
 <script src="${pageContext.request.contextPath}/js/main.js"
 	type="text/javascript"></script>
 
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/css/main.css"></link>
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/jquery-ui.css"></link>
 
 <script type="text/javascript">
 var narrowerHint = "Retrieves the terms that are one level narrower than a given one.";
