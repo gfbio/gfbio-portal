@@ -5,8 +5,8 @@
 	var portletAjaxURL = '<portlet:resourceURL id="tagcloudURL" escapeXml="false" />';
 </script>
 
-<script src="<%=request.getContextPath()%>/js/jquery.tagcloud.0-0-1.js"
-	type="text/javascript"></script>
+<%-- <script src="<%=request.getContextPath()%>/js/jquery.tagcloud.0-0-1.js"
+	type="text/javascript"></script> --%>
 <script type="text/javascript">
 function hex (c) {
 	  var s = "0123456789abcdef";
