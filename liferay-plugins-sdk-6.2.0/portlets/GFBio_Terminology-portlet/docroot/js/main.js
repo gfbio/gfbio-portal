@@ -349,6 +349,13 @@ function creatLink(uri, terminology) {
 	var url = serverurl + terminology + "/term?uri=" + uri;
 	if (format == "csv")
 		url += "&format=csv";
-	var win = window.open(url, '_blank');
-	win.focus();
+//	var win = window.open(url, '_blank');
+//	win.focus();
+	onDownload(url);
+}
+
+
+function onDownload(link) {
+    document.location = 'data:Application/octet-stream,' +
+                         encodeURIComponent(link);
 }
