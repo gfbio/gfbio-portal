@@ -411,10 +411,15 @@ function createExtraRow(d) {
 		data += createTR('Link', '<a href="'+d.metadataLink+'" target="_newtab">'+d.metadataLink+'</a>');
 //			+ createTR('License', d.dataRights)
 	if (d.dataLink != "N/A")	
-		data += createTR('Download', '<a href="'+d.dataLink+'">'+d.dataLink+'</a>');
+		data += createTR('Download', '<a href="javascript:onDownload(\''+d.dataLink+'\');">'+d.dataLink+'</a>');
 			
 	data += '</table>';
 	return data;
+}
+
+function onDownload(link) {
+    document.location = 'data:Application/octet-stream,' +
+                         encodeURIComponent(link);
 }
 
 function createTR(name,data){
