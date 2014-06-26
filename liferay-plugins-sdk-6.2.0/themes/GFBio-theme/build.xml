@@ -2,7 +2,7 @@
 <!DOCTYPE project>
 
 <project name="GFBio-theme" basedir="." default="deploy">
-	<import file="D:\liferay\liferay-plugins-sdk-6.2.0\liferay-plugins-sdk-6.2.0\themes/build-common-theme.xml" />
+	<import file="..\build-common-theme.xml" />
 
 	<property name="theme.parent" value="classic" />
 </project>
