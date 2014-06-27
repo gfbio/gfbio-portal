@@ -42,10 +42,6 @@ public class GFBioTerminology extends GenericPortlet {
 			
 			JSONObject json = new JSONObject();
 			String query = "";
-//			System.out.println(mode);
-//			System.out.println(terminologies);
-//			System.out.println(hierarchy);
-//			System.out.println(termuri);
 			if (mode.equals("search")) {
 				query = "search?query=" + keyword;
 				if (!terminologies.trim().equals("")) {
@@ -54,22 +50,21 @@ public class GFBioTerminology extends GenericPortlet {
 				}
 				if (matchType.equals("exact")) query+="&match_type=exact";
 				System.out.println(query);
-				json = HttpGet(query);
+				json = HttpGet(serverurl + query);
 			} else if (mode.equals("getTerminologiesList")) {
 				query = "";
-				json = HttpGet(query);
+				json = HttpGet(serverurl + query);
 			} else if (mode.equals("listAllTerm")) {
 				query = terminologies;
-				json.put("terminologyInfo", HttpGet(query));
+				json.put("terminologyInfo", HttpGet(serverurl + query));
 				query = terminologies + "/allterms";
-				json.put("allTerm", HttpGet(query));
+				json.put("allTerm", HttpGet(serverurl + query));
 			} else if (mode.equals("getTermDetail")) {
 				query = terminologies+"/term?uri="+termuri;
-//				if (format.equals("csv")) query+="&format=csv";
-				json.put("termDetail", HttpGet(query));
+				json.put("termDetail", HttpGet(serverurl + query));
 				query = terminologies+"/narrower?uri="+termuri;
 
-				json.put("relatedTerms", HttpGet(query));
+				json.put("relatedTerms", HttpGet(serverurl + query));
 			} else if (mode.equals("getTermRelated")){
 				query = terminologies;
 				if (hierarchy.equals("narrower")) {
@@ -83,7 +78,15 @@ public class GFBioTerminology extends GenericPortlet {
 				}
 				query += termuri;
 //				System.out.println(query);
-				json = HttpGet(query);
+				json = HttpGet(serverurl + query);
+			} else if (mode.equals("getDownloadFile")){
+				query = keyword;
+				if (query.endsWith("csv")){
+					json.put("response", HttpGetString(query));
+				}
+				else{
+					json = HttpGet(query);
+				}
 			}
 			System.out.println(json);
 			PrintWriter writer = response.getWriter();
@@ -97,8 +100,8 @@ public class GFBioTerminology extends GenericPortlet {
 	public static JSONObject HttpGet(String query) {
 		JSONObject ret = null;
 		try {
-			URL url = new URL(serverurl + query);
-			System.out.println(serverurl + query);
+			URL url = new URL(query);
+			System.out.println(query);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 			conn.setRequestMethod("GET");
 			conn.setRequestProperty("Accept", "application/json");
@@ -121,6 +124,39 @@ public class GFBioTerminology extends GenericPortlet {
 
 			conn.disconnect();
 			ret = new JSONObject(out);
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+	}
+	public static String HttpGetString(String query) {
+		String ret = "";
+		try {
+			URL url = new URL(query);
+			System.out.println(query);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			conn.setRequestProperty("Accept", "application/json");
+
+			if (conn.getResponseCode() != 200) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+			String output;
+			System.out.println("Output from Server .... \n");
+			String out = "";
+			while ((output = br.readLine()) != null) {
+				// System.out.println(output);
+				out += output;
+			}
+
+			conn.disconnect();
+			ret = out;
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();

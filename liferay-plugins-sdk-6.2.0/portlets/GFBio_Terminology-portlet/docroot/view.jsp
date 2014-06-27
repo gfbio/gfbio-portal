@@ -5,7 +5,19 @@
 <portlet:defineObjects />
 <portlet:resourceURL id="terminologyURL" var="terminologyURL"
 	escapeXml="false" />
-<script src="${pageContext.request.contextPath}/js/main.js"
+
+<!-- Remove this script after adding new theme.	 -->
+<script src="${pageContext.request.contextPath}/js/jquery-1.11.0.min.js"
+	type="text/javascript">
+</script>
+<script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"
+	type="text/javascript">
+</script>
+<link rel="stylesheet" type="text/css"
+	href="<%=request.getContextPath()%>/css/jquery-ui.css"></link>
+<!-- 	---------------------------------------- -->
+
+<script src="<%=request.getContextPath()%>/js/main.js"
 	type="text/javascript"></script>
 
 <link rel="stylesheet" type="text/css"
@@ -16,7 +28,7 @@ var narrowerHint = "Retrieves the terms that are one level narrower than a given
 var allnarrowerHint = "Retrieves all terms that are narrower of a given one including each possible path to the leaves of the hierarchy.";
 var broaderHint = "Retrieves the terms that are one level broader than a given one.";
 var allbroaderHint = "Retrieves all terms that are broader of a given one including each possible path to the top.";
-$(document).ready(function() {
+window.onload=function() {
 	$( "#terminologyTabs" ).tabs();
 	$.ajax({
 		"url": "<%=terminologyURL%>"
@@ -67,17 +79,18 @@ $(document).ready(function() {
 			 $( this ).dialog( "close" );
 		 }
 	});
-});
-// show processing mouse while waiting for ajax result
-$(document).ajaxStart(function ()
-		{
-		    $('body').addClass('wait');
+	// show processing mouse while waiting for ajax result
+	 $(document).ajaxStart(function ()
+	 		{
+	 		    $('body').addClass('wait');
 
-		}).ajaxComplete(function () {
+	 		}).ajaxComplete(function () {
 
-		    $('body').removeClass('wait');
+	 		    $('body').removeClass('wait');
 
-		});
+	 		});
+};
+
 
 function listTermInfo(){
 	var terminology = getSelectedTerminologies("terminologyInfoSelect");
@@ -172,11 +185,49 @@ function onScopeTermRelatedChange(e,termuri,terminology){
 			}
 		});
 	}
+
+function creatLink(uri, terminology) {
+	var serverurl = "http://terminologies.gfbio.org/api/terminologies/";
+	var formatSelect = document.getElementById("format");
+	var format = formatSelect.options[formatSelect.selectedIndex].value;
+	var url = serverurl + terminology + "/term?uri=" + uri;
+	if (format == "csv"){
+		url += "&format=csv";
+		SaveToDisk(url,"term.csv");
+	}else SaveToDisk(url, "term.json");
+// 	console.log(url);
+	
+}
+
+function SaveToDisk(fileURL, fileName) {
+		$.ajax({
+			"url": "<%=terminologyURL%>/GFBioTerminology",
+			"data" : {
+				"<portlet:namespace />mode" : "getDownloadFile",
+					"<portlet:namespace />queryString" : encodeURI(fileURL)
+			},
+			"dataSrc" : "dataset",
+			"type" : "POST",
+			
+	        success : function(data) {
+// 	            console.log(data);
+	            var datatype = "text/csv";
+	            if (fileName.endsWith('csv')){
+	    			var jsonDataset = eval("(function(){return " + data
+	    					+ ";})()");
+	    			data = jsonDataset.response;
+	    			datatype = "application/json";
+	            }
+	            download(fileName,data, datatype);
+	        }	
+		});
+}
 </script>
 <!-- <div id="terminology_portlet"> -->
 	
 	
-	<div id="terminologyTabs">
+<div id="terminologyTabs">
+<output></output>
 	<ul>
 	<li><a href="#termSearchTab">Terminology Search:</a></li>
 	<li><a href="#termInfoTab">Terminology Information:</a></li>

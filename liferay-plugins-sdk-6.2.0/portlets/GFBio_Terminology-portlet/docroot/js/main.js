@@ -342,20 +342,29 @@ function appendDownloadTerm(uri, terminology) {
 	displaytext += "</td></tr>";
 	return displaytext;
 }
-function creatLink(uri, terminology) {
-	var serverurl = "http://terminologies.gfbio.org/api/terminologies/";
-	var formatSelect = document.getElementById("format");
-	var format = formatSelect.options[formatSelect.selectedIndex].value;
-	var url = serverurl + terminology + "/term?uri=" + uri;
-	if (format == "csv")
-		url += "&format=csv";
-//	var win = window.open(url, '_blank');
-//	win.focus();
-	onDownload(url);
-}
 
 
-function onDownload(link) {
-    document.location = 'data:Application/octet-stream,' +
-                         encodeURIComponent(link);
-}
+function download(filename, data ,datatype){
+	var container = document.querySelector('#terminologyTabs');
+	var output = container.querySelector('output');
+	
+	  window.URL = window.webkitURL || window.URL;
+
+	  var prevLink = output.querySelector('a');
+	  if (prevLink) {
+	    window.URL.revokeObjectURL(prevLink.href);
+	    output.innerHTML = '';
+	  }
+
+	  var bb = new Blob([data], {type: datatype});
+
+	  var a = document.createElement('a');
+	  a.download = filename;
+	  a.href = window.URL.createObjectURL(bb);
+
+	  a.dataset.downloadurl = [datatype, a.download, a.href].join(':');
+
+	  output.appendChild(a);
+		a.click();
+	  output.innerHTML = '';
+};
