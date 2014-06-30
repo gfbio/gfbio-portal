@@ -1,35 +1,22 @@
 AUI().ready(
+	'liferay-hudcrumbs', 'liferay-navigation-interaction', 'liferay-sign-in-modal',
+	function(A) {
+		var navigation = A.one('#navigation');
 
-	/*
-	This function gets loaded when all the HTML, not including the portlets, is
-	loaded.
-	*/
+		if (navigation) {
+			navigation.plug(Liferay.NavigationInteraction);
+		}
 
-	function() {
-	}
-);
+		var siteBreadcrumbs = A.one('#breadcrumbs');
 
-Liferay.Portlet.ready(
+		if (siteBreadcrumbs) {
+			siteBreadcrumbs.plug(A.Hudcrumbs);
+		}
 
-	/*
-	This function gets loaded after each and every portlet on the page.
+		var signIn = A.one('li.sign-in a');
 
-	portletId: the current portlet's id
-	node: the Alloy Node object of the current portlet
-	*/
-
-	function(portletId, node) {
-	}
-);
-
-Liferay.on(
-	'allPortletsReady',
-
-	/*
-	This function gets loaded when everything, including the portlets, is on
-	the page.
-	*/
-
-	function() {
+		if (signIn && signIn.getData('redirect') !== 'true') {
+			signIn.plug(Liferay.SignInModal);
+		}
 	}
 );

@@ -18,9 +18,7 @@
 
 $theme.include($body_top_include)
 
-#if ($is_signed_in)
-	#dockbar()
-#end
+#dockbar()
 
 <div class="container-fluid" id="wrapper">
 	<header id="banner" role="banner">
@@ -28,23 +26,20 @@ $theme.include($body_top_include)
 			<h1 class="site-title">
 				<a class="$logo_css_class" href="$site_default_url" title="#language_format ("go-to-x", [$site_name])">
 					<img alt="$logo_description" height="$site_logo_height" src="$site_logo" width="$site_logo_width" />
+
+					#if ($show_site_name)
+						<span class="site-name" title="#language_format ("go-to-x", [$site_name])">
+							$site_name
+						</span>
+					#end
 				</a>
 
-				#if ($show_site_name)
-					<span class="site-name" title="#language_format ("go-to-x", [$site_name])">
-						$site_name
-					</span>
-				#end
 			</h1>
 
 			<h2 class="page-title">
 				<span>$the_title</span>
 			</h2>
 		</div>
-
-		#if (!$is_signed_in)
-			<a data-redirect="$is_login_redirect_required" href="$sign_in_url" id="sign-in" rel="nofollow">$sign_in_text</a>
-		#end
 
 		#if ($has_navigation || $is_signed_in)
 			#parse ("$full_templates_path/navigation.vm")
@@ -78,10 +73,10 @@ $theme.include($bottom_include)
 
 #js ("$javascript_folder/jquery-1.10.2.js")
 #js ("$javascript_folder/jquery-1.10.2-ui.js")
+#js ("$javascript_folder/jquery.tagcloud.0-0-1.js")
 #js ("$javascript_folder/jquery.dataTables.js")
 #js ("$javascript_folder/dataTables.colVis.js")
 #js ("$javascript_folder/jstree.js")
-#js ("$javascript_folder/jquery.tagcloud.0-0-1.js")
 
 </body>
 
