@@ -21,8 +21,14 @@
 ##Contao##########################
 
 <img src="$images_folder/layout/gf_bio_body_bg.jpg" style="width:100%; position:fixed; z-index:-1000">
-  				
+  	
+<div id="dock">				
+				#dockbar()
+</div>
+	
 <div id="header-bg"></div>
+
+
 
 <div id="OwnHeader">
 	<div id="Own-Header">
@@ -46,9 +52,7 @@
 				
 			
 			
-			<div id="dock">				
-				#dockbar()
-			</div>	
+				
 				
 		
 			<div id="nav">	
