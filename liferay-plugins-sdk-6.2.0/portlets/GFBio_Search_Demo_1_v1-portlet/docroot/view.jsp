@@ -11,10 +11,42 @@
 	href="<%=request.getContextPath()%>/css/tree/style.css" />
 
 <script type="text/javascript">
-	$(document).ready(function() {
+window.onload=function() {
 		var keyword = document.getElementById("gfbioSearchInput").value;
 		getSearchResult(keyword);
-	});
+
+		console.log('tagcloud');
+		  Liferay.on(
+		            'facetUpdate',
+		            function(event) {
+						var facet = event.ipcData;
+		        	    var items = [];
+
+		        	    var i = 0;
+		        	    
+		        	    $.each(facet, function (id, option) {
+		        	    	var color =  ['#C24641','#FF8040','#ADA96E','#008080','#157DEC','#810541'];//getColor(i,6);   
+		        	        var listString='';
+		        	    	$.each(option, function (id2, option2) {
+		        	        	listString+='<a href="#" rel="'
+		        	        	+option2.count+'"><font color="'+color[i]+'">'
+		        	        	+option2.name+'</font></a>&nbsp;&nbsp;&nbsp;';
+		        	        });
+		        	        items.push(listString);
+
+		        	    	 i= i+1;
+		        	    });  
+		        	    
+		        		$('#cloud').append(items.join(''));
+
+		        		$.fn.tagcloud.defaults = {
+		        				  size: {start: 10, end: 16, unit: 'pt'}
+		        				  //color: {start: '#cde', end: '#f52'}
+		        				};
+		        		  $('#cloud a').tagcloud();
+		            }
+		    );
+	};
 
 	function gfbioQuery() {
 		$('#tableId').DataTable().clear();
@@ -43,7 +75,6 @@
 		});
 	}
 
-
 </script>
 
 
@@ -61,55 +92,6 @@
 		</div>
 	</div>
 	<div id="search_result_table" class="divright">
-		<table style="border: 0; cellpadding: 0; cellspacing: 0;" id="tableId"
-			class="display">
-			<thead class="ui-state-default">
-				<tr>
-					<th>Title</th>
-					<th>Author(s)</th>
-					<th>Description</th>
-					<th>Data Center</th>
-					<th>Region</th>
-					<th>Project</th>
-					<th>Citation Date</th>
-					<th>Parameter</th>
-					<th>Investigator</th>
-					<th>Score</th>
-					<th>Timestamp</th>
-					<th>Data Link</th>
-					<th>Metadata Link</th>
-					<th>Max Latitude</th>
-					<th>Min Latitude</th>
-					<th>Max Longitude</th>
-					<th>Min Longitude</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tfoot>
-				<tr>
-					<th>Title</th>
-					<th>Author(s)</th>
-					<th>Description</th>
-					<th>Data Center</th>
-					<th>Region</th>
-					<th>Project</th>
-					<th>Citation Date</th>
-					<th>Parameter</th>
-					<th>Investigator</th>
-					<th>Score</th>
-					<th>Timestamp</th>
-					<th>Data Link</th>
-					<th>Metadata Link</th>
-					<th>Max Latitude</th>
-					<th>Min Latitude</th>
-					<th>Max Longitude</th>
-					<th>Min Longitude</th>
-					<th></th>
-				</tr>
-			</tfoot>
-		</table>
-		<input id="pubSelectedData" name="pubSelectedData"
-		type="button" value="Publish selected data" style="font-weight: bold; width:100%"/>
 	</div>
 
 	<div style="clear: both"></div>

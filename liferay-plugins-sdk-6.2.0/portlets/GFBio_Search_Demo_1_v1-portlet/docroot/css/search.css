@@ -1,4 +1,3 @@
-<<<<<<< .mine
 input[type=search] {
 	width: 25%;
 	min-width: 200px;
@@ -23,15 +22,15 @@ select[name=tableId_length] {
 	/*    width:auto; */
 }
 
-div.container {
-	width: 80%;
-}
+/* #search_portlet { */
+/* 	width: 80%; */
+/* } */
 
 .search_portlet {
 	height: auto;
 }
-ul{
-	margin: 10px 0px 10px 0px !important; 
+.facetUL {
+	margin: 10px 0px 10px 0px; 
 }
 td.details-control {
     background: url('../images/details_open.png') no-repeat center center;
@@ -41,49 +40,3 @@ tr.shown td.details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
 
-
-=======
-
-
-input[type=search] {
-	width: 25%;
-	min-width: 200px;
-}
-
-select[name=tableId_length] {
-	width: 20%;
-	min-width: 80px;
-}
-
-.divleft {
-	width: 19%;
-	float: left;
-	overflow-x:scroll;
-	margin-top:50px;
-   
-}
-
-.divright {
-	width: 80%;
-	float: right;
-	/*    width:auto; */
-}
-
-div.container {
-	width: 80%;
-}
-
-.search_portlet {
-	height: auto;
-}
-ul{
-	margin: 10px 0px 10px 0px !important; 
-}
-td.details-control {
-    background: url('../images/details_open.png') no-repeat center center;
-    cursor: pointer;
-}
-tr.shown td.details-control {
-    background: url('../images/details_close.png') no-repeat center center;
-}
->>>>>>> .theirs

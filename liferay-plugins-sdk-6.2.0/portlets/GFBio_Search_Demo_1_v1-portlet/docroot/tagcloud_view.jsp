@@ -37,47 +37,13 @@ function hex (c) {
 	    var alpha = 0.5;                         /* Alpha blending amount */
 	    var c = [];
 
-//    	 	c[0] = (start[0] * alpha) + ((1 - alpha) * end[0]*step/count);
-//    	 	c[1] = (start[1] * alpha) + ((1 - alpha) * end[1]*step/count);
-//    	 	c[2] = (start[2] * alpha) + ((1 - alpha) * end[2]*step/count);
    	 	c[0] = (start[0]) + ( end[0]*step/count);
    	 	c[1] = (start[1]) + ( end[1]*step/count);
    	 	c[2] = (start[2]) + ( end[2]*step/count);
 		return convertToHex(c);
 	}
-$(function () {
-	console.log('tagcloud');
-	  Liferay.on(
-	            'facetUpdate',
-	            function(event) {
-					var facet = event.ipcData;
-	        	    var items = [];
-
-	        	    var i = 0;
-	        	    
-	        	    $.each(facet, function (id, option) {
-	        	    	var color =  ['#C24641','#FF8040','#ADA96E','#008080','#157DEC','#810541'];//getColor(i,6);   
-	        	        var listString='';
-	        	    	$.each(option, function (id2, option2) {
-	        	        	listString+='<a href="#" rel="'
-	        	        	+option2.count+'"><font color="'+color[i]+'">'
-	        	        	+option2.name+'</font></a>&nbsp;&nbsp;&nbsp;';
-	        	        });
-	        	        items.push(listString);
-
-	        	    	 i= i+1;
-	        	    });  
-	        	    
-	        		$('#cloud').append(items.join(''));
-
-	        		$.fn.tagcloud.defaults = {
-	        				  size: {start: 10, end: 16, unit: 'pt'}
-	        				  //color: {start: '#cde', end: '#f52'}
-	        				};
-	        		  $('#cloud a').tagcloud();
-	            }
-	    );
-});
+// 	window.onload=function () {
+// };
  </script> 
 
 <div id="cloud">

@@ -1,6 +1,7 @@
 
 function createDatatable(dataset) {
 
+	writeResultTable();
 	console.log('search.js');
 //	console.log('create datatable:'+dataset);
 //	console.log(searchURL);
@@ -18,8 +19,8 @@ function createDatatable(dataset) {
 //	         }	
 	var oTable = $('#tableId').DataTable({
 		"bDestroy" : true,
-		"bJQueryUI" : true,        
-//		"processing": true,
+		"bJQueryUI" : true,    
+		"processing": true,
 //        "serverSide": true,
 //        "ajax": {
 //        	"url":searchURL,
@@ -289,7 +290,7 @@ function createFacetTree(data) {
 
 function createFacetList(facet) {
 
-	var listString = '<ul>';
+	var listString = '<ul class="facetUL">';
 	$.each(facet, function(id, option) {
 		listString += '<li id="li1_' + id + '">' + id;
 		listString += '<ul>';
@@ -426,4 +427,53 @@ function createTR(name,data){
 	var text = '<tr><td><b>'+name+':</b></td><td>' 
 				+ data + '</td></tr>';
 	return text;
+}
+function writeResultTable(){
+	var displaytext ="<table style='border: 0; cellpadding: 0; cellspacing: 0;' id='tableId' class='display'>";
+		displaytext += "<thead class='ui-state-default'><tr>";				
+		displaytext += "<th>Title</th>";	
+		displaytext += "<th>Author(s)</th>";	
+		displaytext += "<th>Description</th>";	
+		displaytext += "<th>Data Center</th>";	
+		displaytext += "<th>Region</th>";	
+		displaytext += "<th>Project</th>";	
+		displaytext += "<th>Citation Date</th>";	
+		displaytext += "<th>Parameter</th>";	
+		displaytext += "<th>Investigator</th>";	
+		displaytext += "<th>Score</th>";	
+		displaytext += "<th>Timestamp</th>";	
+		displaytext += "<th>Data Link</th>";
+		displaytext += "<th>Metadata Link</th>";	
+		displaytext += "<th>Max Latitude</th>";	
+		displaytext += "<th>Min Latitude</th>";	
+		displaytext += "<th>Max Longitude</th>";	
+		displaytext += "<th>Min Longitude</th>";	
+		displaytext += "<th></th>";	
+		displaytext += "</tr></thead>";	
+		displaytext += "<tfoot><tr>";	
+		displaytext += "<th>Title</th>";	
+		displaytext += "<th>Author(s)</th>";	
+		displaytext += "<th>Description</th>";	
+		displaytext += "<th>Data Center</th>";	
+		displaytext += "<th>Region</th>";	
+		displaytext += "<th>Project</th>";	
+		displaytext += "<th>Citation Date</th>";	
+		displaytext += "<th>Parameter</th>";	
+		displaytext += "<th>Investigator</th>";	
+		displaytext += "<th>Score</th>";	
+		displaytext += "<th>Timestamp</th>";	
+		displaytext += "<th>Data Link</th>";
+		displaytext += "<th>Metadata Link</th>";	
+		displaytext += "<th>Max Latitude</th>";	
+		displaytext += "<th>Min Latitude</th>";	
+		displaytext += "<th>Max Longitude</th>";	
+		displaytext += "<th>Min Longitude</th>";	
+		displaytext += "<th></th>";	
+		displaytext += "</tr></tfoot></table>";	
+		displaytext += "<input id='pubSelectedData' name='pubSelectedData'";
+		displaytext += " type='button' value='Publish selected data'";
+		displaytext += " style='font-weight: bold; width:100%'/>";	
+				 
+	var div = document.getElementById('search_result_table');
+	div.innerHTML = displaytext;
 }
