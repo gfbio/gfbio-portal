@@ -23,7 +23,7 @@ public class PangeaeSearch {
 	static String project = "";
 	static String parameter = "";
 //	static String taxonomy = "N/A";
-	static String dataCount = "";
+	static int dataCount = 0;
 	static String timeStamp ="";
 	static String dataLink ="";
 	static String metadataLink ="";
@@ -82,12 +82,34 @@ public class PangeaeSearch {
 		}
 		return ret;
 	}
+
+	protected static int getInt(JSONObject source, String name) {
+		int ret = 0;
+		try {
+			if (source.has(name)) {
+				Object obj = source.get(name);
+				ret = Integer.parseInt(obj.toString());
+			}
+		} catch (JSONException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+		return ret;
+	}
 	protected static Double getDouble(JSONObject source, String name) {
 		Double ret = 0.0;
 		try {
 			if (source.has(name)) {
 				Object obj = source.get(name);
+				if (obj instanceof JSONArray) {
+					JSONArray array = (JSONArray) obj;
+					for (int i = 0; i < array.length(); i++) {
+						ret = (Double) array.get(i);
+						break;
+					}
+				} else {
 				ret = (Double) obj;
+				}
 			}
 		} catch (JSONException e) {
 			System.out.println(e);
@@ -101,12 +123,13 @@ public class PangeaeSearch {
 			JSONObject hits = rawResult.getJSONObject("hits");
 			JSONArray arrayHits = hits.getJSONArray("hits");
 			JSONArray arrayResult = new JSONArray();
+			dataCount = getInt(hits, "total");
 			for (int iHits = 0; iHits < arrayHits.length(); iHits++) {
 				JSONObject hit = (JSONObject) arrayHits.get(iHits);
 				// String id = hit.getString("_id");
 				Double score = hit.getDouble("_score");
-				JSONObject source = hit.getJSONObject("_source");
-
+				JSONObject source = hit.getJSONObject("fields");
+//				JSONObject source = (JSONObject) arrayHits.get(iHits);
 				region = getValue(source, "region");
 				if (region.trim().isEmpty() || region.trim().length()==0)
 					region = "N/A";
@@ -149,7 +172,6 @@ public class PangeaeSearch {
 				maxLongitude = getDouble(source, "maxLongitude");
 				minLongitude = getDouble(source, "minLongitude");
 //				taxonomy = "N/A";
-//				dataCount = getDataCount(source);
 //				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
 //					dataCount = "N/A";
 
@@ -172,11 +194,12 @@ public class PangeaeSearch {
 				result.put("minLatitude", minLatitude);
 				result.put("maxLongitude", maxLongitude);
 				result.put("minLongitude", minLongitude);
-//				result.put("dataCount", dataCount.trim());
 				arrayResult.put(result);
 			}
 			ret.put("dataset", arrayResult);
-			ret.put("facet", parseFacet(rawResult));
+			ret.put("recordsFiltered", dataCount);
+			ret.put("iTotalRecords", dataCount);
+//			ret.put("facet", parseFacet(rawResult));
 
 		} catch (Exception e) {
 			System.out.println(e);
@@ -197,7 +220,7 @@ public class PangeaeSearch {
 			result.put("taxonomy",getFacetTerm("taxonomy",facets));
 			result.put("investigator",getFacetTerm("investigator",facets));
 			ret.put("facet", result);
-			System.out.println(ret);
+//			System.out.println(ret);
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
