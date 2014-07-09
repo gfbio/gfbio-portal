@@ -61,6 +61,37 @@ window.onload=function() {
 				        $("#QueryButton").click();
 				    }
 				});
+			  $('#gfbioSearchInput').autocomplete({
+				    minLength: 1,
+				    delay: 0,
+				    source: function(request, response) {
+				      $.ajax('http://ws.pangaea.de/es/portals/_suggest', {
+				        contentType: 'application/json; charset=UTF-8',
+				        type: 'POST',
+				        data: JSON.stringify({
+				          'suggest': {
+				            'text': request.term,
+				            'completion': {
+				              'field': 'suggest',
+				              'size': 12,
+				            },
+				          },
+				        }),
+				        dataType: 'json',
+				        success: function(data) {
+				          response($.map(data.suggest[0].options, function(item) {
+				            return item.text;
+				          }));
+				        },
+				      });
+				    },
+				    open: function() {
+				      var maxWidth = $(document).width() - $(this).offset().left - 16;
+				      $(this).autocomplete('widget').css({
+				        'max-width': maxWidth + "px"
+				      });
+				    },
+				  });
 	};
 	 
 	function gfbioQuery() {
