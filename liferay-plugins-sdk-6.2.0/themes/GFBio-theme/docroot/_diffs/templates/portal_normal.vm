@@ -13,6 +13,7 @@
 	
 </head>
 
+
 <body id="top" class="$css_class win firefox gecko fx27" >
 
 
@@ -20,8 +21,14 @@
 ##Contao##########################
 
 <img src="$images_folder/layout/gf_bio_body_bg.jpg" style="width:100%; position:fixed; z-index:-1000">
-  				
+  	
+<div id="dock">				
+				#dockbar()
+</div>
+	
 <div id="header-bg"></div>
+
+
 
 <div id="OwnHeader">
 	<div id="Own-Header">
@@ -45,9 +52,7 @@
 				
 			
 			
-			<div id="dock">				
-				#dockbar()
-			</div>	
+				
 				
 		
 			<div id="nav">	
@@ -70,10 +75,6 @@
 	</div>
 </div>
 ##Contao Ende ##############################################
-		
-
-		
-
 
 
 
@@ -140,6 +141,13 @@ $theme.include($body_bottom_include)
 
 $theme.include($bottom_include)
 
+#js ("$javascript_folder/jquery-1.10.2.js")
+#js ("$javascript_folder/jquery-1.10.2-ui.js")
+#js ("$javascript_folder/jquery.tagcloud.0-0-1.js")
+#js ("$javascript_folder/jquery.dataTables.js")
+#js ("$javascript_folder/dataTables.colVis.js")
+#js ("$javascript_folder/jstree.js")
+
 <script>
 (function($) {
     $(document).ready(function() {
@@ -170,8 +178,7 @@ $theme.include($bottom_include)
   })(jQuery);
 </script>
 
-#js ("$javascript_folder/jquery-1.10.2-ui.js")
-#js ("$javascript_folder/jquery-1.10.2.js")
+
 
 </body>
 

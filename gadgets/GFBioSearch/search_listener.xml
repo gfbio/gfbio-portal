@@ -1,0 +1,40 @@
+<Module><ModulePrefs title="GFBio Search Listener" height="200"><Require feature="pubsub-2"><Param name="topics"> 
+    <Topic title="GFBio Listener" name="gfbio.search.selectedData.listener"
+            description="Listens to GFBio Search data" type="string"
+            subscribe="true"/>
+    </Param></Require></ModulePrefs><Content type="html">
+	 <![CDATA[
+<script type="text/javascript">
+var selectedData;
+
+// Example of setting a parameter to the HubClient used by pubsub-2 feature.
+gadgets.HubSettings.params.HubClient.onSecurityAlert = function(alertSource, alertType) {
+  alert("SECURITY ERROR!");
+  window.location.href = "about:blank";
+};
+
+function callback(topic, data, subscriberData) {
+  console.log(data);
+  document.getElementById("output").innerHTML =
+    "message : " + gadgets.util.escapeString(JSON.stringify(data) + "") + "<br/>" +
+    "received at: " + (new Date()).toString();
+}
+
+function subscribe() {
+  selectedData = gadgets.Hub.subscribe("gfbio.search.selectedData", callback);
+}
+
+function unsubscribe() {
+  gadgets.Hub.unsubscribe(selectedData);
+  document.getElementById("output").innerHTML = "";
+}
+
+</script>
+<div style='text-align: center'>
+<input type="button" value="Subscribe" onclick="subscribe()"/>
+<input type="button" value="Unsubscribe" onclick="unsubscribe()"/>
+</div>
+<div id="output"  style='overflow-y:auto;'>
+</div>
+       ]]>
+</Content></Module>

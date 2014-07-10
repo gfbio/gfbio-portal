@@ -3,190 +3,285 @@
 <%!RenderResponse renderResponse;%>
 <portlet:defineObjects />
 
+<portlet:resourceURL id="searchURL" var="searchURL" escapeXml="false" />
 
-<script type='text/javascript'>
-	var portletAjaxURL = '<portlet:resourceURL id="currentURL" escapeXml="false" />';
-</script>
-<script src="<%=request.getContextPath()%>/js/main.js"
-	type="text/javascript"></script>
-<script src="<%=request.getContextPath()%>/js/jquery-1.11.0.min.js"
-	type="text/javascript"></script>
-<script
-	src="<%=request.getContextPath()%>/js/jquery-ui.min.js"
-	type="text/javascript"></script>
-<script src="<%=request.getContextPath()%>/js/jquery.dataTables.js"
-	type="text/javascript"></script>
-<script
-	src="<%=request.getContextPath()%>/js/dataTables.jqueryui.js"
-	type="text/javascript"></script>
-<script
-	src="<%=request.getContextPath()%>/js/dataTables.colVis.js"
-	type="text/javascript"></script>
-<script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/jquery.checktree_yctin.min.js"></script>
-<script type="text/javascript"
-	src="<%=request.getContextPath()%>/js/jquery.updateWithJSON.min.js"></script>
-	
 <link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/main.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/jquery-ui.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/dataTables.jqueryui.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/dataTables.colVis.css">
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/checktree.css">
+	href="<%=request.getContextPath()%>/css/search.css">
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/tree/style.css" />
 
 <script type="text/javascript">
-	$(document).ready(function() {
+window.onload=function() {
+		// use query term from other page.
+		var urlReq = window.location.search;
+		var startPos = urlReq.indexOf("q_=");
+		if (startPos >=0){
+			var endPos = urlReq.indexOf("&",startPos+3);
+			urlReq = urlReq.substring(startPos+3,endPos);
+			console.log("input: "+urlReq);	
+			var searchInput = document.getElementById("gfbioSearchInput");
+			searchInput.value = urlReq;
+		}
 		var keyword = document.getElementById("gfbioSearchInput").value;
 		getSearchResult(keyword);
-		$("ul.tree").checkTree({
-			// You can add callbacks to the expand, collapse, check, uncheck, and  halfcheck
-			// events of the tree. The element you use as the argument is the LI element of
-			// the object that fired the event.
-			onExpand: function(el) {
-				console.log("expanded ", el.find("label:first").text());
-			},
-			onCollapse: function(el) {
-				console.log("collapsed ", el.find("label:first").text());
-			},
-			onCheck: function(el) {
-				console.log("checked ", el.find("label:first").text());
-			},
-			onUnCheck: function(el) {
-				console.log("un checked ", el.find("label:first").text());
-			},
-			onHalfCheck: function(el) {
-				console.log("half checked ", el.find("label:first").text());
-			}
-		
-			/*
-			// You can set the labelAction variable to either "check" or "expand" 
-			// to change what happens when you click on the label item.
-			// The default is expand, which expands the tree. Check will toggle
-			// the checked state of the items.
-			labelAction: "expand"
-			*/
-			
-			// You can also change what happens when you hover over a label (over and out)
-// 			onLabelHoverOver: function(el) { alert("You hovered over " + el.text()); },
-// 			onLabelHoverOut: function(el) { alert("You hovered out of " + el.text()); }
-			
-		});
-	});
+
+// 		console.log('tagcloud');
+		  Liferay.on(
+		            'facetUpdate',
+		            function(event) {
+						var facet = event.ipcData;
+		        	    var items = [];
+
+		        	    var i = 0;
+		        	    
+		        	    $.each(facet, function (id, option) {
+		        	    	var color =  ['#C24641','#FF8040','#ADA96E','#008080','#157DEC','#810541'];//getColor(i,6);   
+		        	        var listString='';
+		        	    	$.each(option, function (id2, option2) {
+		        	        	listString+='<a href="#" rel="'
+		        	        	+option2.count+'"><font color="'+color[i]+'">'
+		        	        	+option2.name+'</font></a>&nbsp;&nbsp;&nbsp;';
+		        	        });
+		        	        items.push(listString);
+
+		        	    	 i= i+1;
+		        	    });  
+		        	    
+		        		$('#cloud').append(items.join(''));
+
+		        		$.fn.tagcloud.defaults = {
+		        				  size: {start: 10, end: 16, unit: 'pt'}
+		        				  //color: {start: '#cde', end: '#f52'}
+		        				};
+		        		  $('#cloud a').tagcloud();
+		            }
+		    );
+			 $("#gfbioSearchInput").keyup(function(event){
+				    if(event.keyCode == 13){
+				        $("#QueryButton").click();
+				    }
+				});
+			  $('#gfbioSearchInput').autocomplete({
+				    minLength: 1,
+				    delay: 0,
+				    source: function(request, response) {
+				      $.ajax('http://ws.pangaea.de/es/portals/_suggest', {
+				        contentType: 'application/json; charset=UTF-8',
+				        type: 'POST',
+				        data: JSON.stringify({
+				          'suggest': {
+				            'text': request.term,
+				            'completion': {
+				              'field': 'suggest',
+				              'size': 12,
+				            },
+				          },
+				        }),
+				        dataType: 'json',
+				        success: function(data) {
+				          response($.map(data.suggest[0].options, function(item) {
+				            return item.text;
+				          }));
+				        },
+				      });
+				    },
+				    open: function() {
+				      var maxWidth = $(document).width() - $(this).offset().left - 16;
+				      $(this).autocomplete('widget').css({
+				        'max-width': maxWidth + "px"
+				      });
+				    },
+				  });
+	};
+	 
+	function gfbioQuery() {
+		$('#tableId').DataTable().clear();
+		var keyword = document.getElementById("gfbioSearchInput").value;
+		getSearchResult(keyword);
+	}
+
+
+	function getValueByAttribute(list, attr, val){
+	    var result = null;
+	    $.each(list, function(index, item){
+	        if(item[attr].toString() == val.toString()){
+// 	           result = index;
+	           result = list[index].value;
+	           return false;     // breaks the $.each() loop
+	        }
+	    });
+	    return result;
+	}
+
 
 	function getSearchResult(keyword){
+		console.log('getSearchResult');
+		writeResultTable();
+		var oTable = $('#tableId').dataTable( {
+				"bDestroy" : true,
+				"bJQueryUI" : true,    
+		        "bProcessing": true,
+		        "bServerSide": true,
+		        "sAjaxSource": "<%=searchURL%>" + "/GFBioSearch",
+			    "sAjaxDataProp": "dataset",
+			    "type": "POST", 
+				"fnServerParams": function ( aoData ) {
+					var iDisplayStart = getValueByAttribute(aoData,"name","iDisplayStart");
+					var iDisplayLength = getValueByAttribute(aoData,"name","iDisplayLength");
+				       aoData.push( { "name": "<portlet:namespace />mode", "value": "getResult" } );
+				       aoData.push( { "name": "<portlet:namespace />queryString", "value": keyword} );
+				       aoData.push( { "name": "<portlet:namespace />from", "value": iDisplayStart} );
+				       aoData.push( { "name": "<portlet:namespace />size", "value": iDisplayLength} );
+					 },
+					"aoColumns" : [ {
+						"data" : "title",
+						"sWidth" : "30%",
+						"sortable" : false
+					}, {
+						"data" : "authors",
+						"visible" : false,
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "description",
+						"visible" : false,
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "dataCenter",
+						"sWidth" : "25%",
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "region",
+						"visible" : false,
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "project",
+						"sWidth" : "25%",
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "citationDate",
+						"sWidth" : "10%",
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "parameter",
+						"visible" : false,
+						"searchable" : true,
+						"sortable" : false
+					}, {
+						"data" : "investigator",
+						"visible" : false,
+						"sortable" : false
+					}, 
+					{
+						"data" : "score",
+						"visible" : false,
+						"sortable" : false
+					}, 
+					{
+						"data" : "timeStamp",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "dataLink",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "metadataLink",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "maxLatitude",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "minLatitude",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "maxLongitude",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"data" : "minLongitude",
+						"visible" : false,
+						"sortable" : false
+					},
+					{
+						"class" : "details-control",
+						"sortable" : false,
+						"data" : null,
+						"defaultContent" : ""
+					} // last column for +button
+					],
+					"sDom" : 'Clrtip',
+					// display show/hide column button
+					colVis : {
+						exclude : [ 0,10,17]
+					},
+					"order" : [ [ 9, "desc" ] ], // ordered by score
+					"sAutoWidth" : true,
+// 					"sPaginationType" : "full_numbers",
+
+					"fnDrawCallback" : function(oSettings) {
+// 						console.log('drawcallback');
+						// do nothing if table is empty
+					    if (!$(".dataTables_empty")[0]){
+							console.log('table draw callback');
+							addToolTip();
+							addExtraRow();
+					    }
+					}
+		    } );
+			setFireSelectedData(oTable);
+		    
 		$.ajax({
-			"url": portletAjaxURL
+			"url": "<%=searchURL%>"
 			+ "/GFBioSearch",
 		"data" : {
-				"<portlet:namespace />queryString" : keyword
+			"<portlet:namespace />mode" : "getFacet",
+			"<portlet:namespace />queryString" : keyword
 		},
-		"dataSrc" : "dataset",
-		"type" : "GET",
+		"type" : "POST",
 
         success : function(data) {
             var jsonDataset = eval("(function(){return " + data + ";})()");
-            var dataset = jsonDataset.dataset;
-            var facet = jsonDataset.facet;
-            createDatatable(dataset);
-			addToolTip();
-// 			createFacetTree(facet);
+			createFacetTree(jsonDataset);
         }	
 		});
-	
 	}
-	
-	function createFacetTree(facet){
-	    var items = [];
-	    var i =0;
-	    $.each(facet, function (id, option) {
-	    	i= i+1;
-	    	var listString = '<li>'+
-			'<input type="checkbox" name="ids[]" id="p_'+
-			i+'" value="'+i+'"><label>' + 
-			id + '</label>';
-			
-			j= i*10;
-	        $.each(option, function (id2, option2) {
-	        	listString+='<ul><li>';
-	        	listString+='<input type="checkbox" name="ids[]" id="p_'+
-	        				j+'" value="'+j+'">'+
-	        				'<label>'+option2.name+'</label>'; 
-	        	listString+='</li></ul>';
-	        	j= j+1;
-	        });
-	        
-	        listString += '</li>';
-	        items.push(listString);
-	    });  
-	    
-		$('#facetUl').append(items.join(''));
-// 		var $checktree = 
-			$("#facetUl").checkTree();
-// 		$checktree.update();
-	}
-	
-	function gfbioQuery(keyword) {
-		$('#tableId').dataTable().fnClearTable();
-		getSearchResult(keyword);
-}
+
 </script>
 
 
 <div id="search_portlet">
-	<label>Search:&nbsp; <input id="gfbioSearchInput" name="gfbioSearchInput"
-		class="acInput" value="shark" autocomplete="off"> <input
-		id="QueryButton" name="QueryButton" type="button" value="Find Data"
-		style="font-weight: bold" onclick="javascript:gfbioQuery(document.getElementById('gfbioSearchInput').value);" /></label>
+	<label>Search:&nbsp; <input id="gfbioSearchInput"
+		name="gfbioSearchInput" class="acInput" value="tree"
+		autocomplete="off"> <input id="QueryButton" name="QueryButton"
+		type="button" value="Find Data" style="font-weight: bold"
+		onclick="javascript:gfbioQuery();" /></label>
 
-<br />
-<div id="search_result_facet" class="divleft">
-	
-		<ul id="facetUl" class="tree">
-</ul>
-        <br style="clear:both"/>
-</div><div id="search_result_table" class="divright">
-		<table style="border: 0; cellpadding: 0; cellspacing: 0;"
-				id="tableId" class="display" >
-				<thead>
-					<tr>
-						<th>Title</th>
-						<th>Author(s)</th>
-						<th>Description</th>
-						<th>Data Center</th>
-						<th>Region</th>
-						<th>Project</th>
-						<th>Year</th>
-						<th>Parameter</th>
-						<th>Taxonomy</th>
-						<th>Investigator</th>
-						<th>Score</th>
-						<th>Data Count</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<th>Title</th>
-						<th>Author(s)</th>
-						<th>Description</th>
-						<th>Data Center</th>
-						<th>Region</th>
-						<th>Project</th>
-						<th>Year</th>
-						<th>Parameter</th>
-						<th>Taxonomy</th>
-						<th>Investigator</th>
-						<th>Score</th>
-						<th>Data Count</th>
-					</tr>
-				</tfoot>
-			</table>
+	<br />
+	<div id="div_facet_outer" class="divleft">
+		Facet Filter
+		<div id="search_result_facet">
+		</div>
+	</div>
+	<div id="search_result_table" class="divright">
+	</div>
+
+	<div style="clear: both"></div>
 </div>
 
-<div style="clear: both"></div>
-</div>
+<script src="${pageContext.request.contextPath}/js/main.js"
+	type="text/javascript"></script>
