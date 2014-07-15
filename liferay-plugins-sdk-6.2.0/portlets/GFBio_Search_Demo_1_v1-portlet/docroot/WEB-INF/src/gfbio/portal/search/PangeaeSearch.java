@@ -22,7 +22,7 @@ public class PangeaeSearch {
 	static String dataCenter = "";
 	static String project = "";
 	static String parameter = "";
-//	static String taxonomy = "N/A";
+	static String taxonomy = "";
 	static int dataCount = 0;
 	static String timeStamp ="";
 	static String dataLink ="";
@@ -167,11 +167,14 @@ public class PangeaeSearch {
 				metadataLink = getValue(source, "metadatalink");
 				if (metadataLink.trim().isEmpty() || metadataLink.trim().length()==0)
 					metadataLink = "N/A";
+				taxonomy = getValue(source, "taxonomy");
+				if (taxonomy.trim().isEmpty() || taxonomy.trim().length()==0)
+					taxonomy = "N/A";
 				maxLatitude = getDouble(source, "maxLatitude");
 				minLatitude = getDouble(source, "minLatitude");
 				maxLongitude = getDouble(source, "maxLongitude");
 				minLongitude = getDouble(source, "minLongitude");
-//				taxonomy = "N/A";
+
 //				if (dataCount.trim().isEmpty() || dataCount.trim().length()==0)
 //					dataCount = "N/A";
 
@@ -189,6 +192,7 @@ public class PangeaeSearch {
 				result.put("score", score);
 				result.put("timeStamp", timeStamp.trim());
 				result.put("dataLink", dataLink.trim());
+				result.put("taxonomy", taxonomy.trim());
 				result.put("metadataLink", metadataLink.trim());
 				result.put("maxLatitude", maxLatitude);
 				result.put("minLatitude", minLatitude);

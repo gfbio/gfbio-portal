@@ -9,7 +9,6 @@
 	href="<%=request.getContextPath()%>/css/search.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/tree/style.css" />
-
 <script type="text/javascript">
 window.onload=function() {
 		// use query term from other page.
@@ -92,6 +91,7 @@ window.onload=function() {
 				      });
 				    },
 				  });
+
 	};
 	 
 	function gfbioQuery() {
@@ -101,23 +101,10 @@ window.onload=function() {
 	}
 
 
-	function getValueByAttribute(list, attr, val){
-	    var result = null;
-	    $.each(list, function(index, item){
-	        if(item[attr].toString() == val.toString()){
-// 	           result = index;
-	           result = list[index].value;
-	           return false;     // breaks the $.each() loop
-	        }
-	    });
-	    return result;
-	}
-
-
 	function getSearchResult(keyword){
 		console.log('getSearchResult');
 		writeResultTable();
-		var oTable = $('#tableId').dataTable( {
+		var oTable = $('#tableId').DataTable( {
 				"bDestroy" : true,
 				"bJQueryUI" : true,    
 		        "bProcessing": true,
@@ -188,16 +175,6 @@ window.onload=function() {
 						"sortable" : false
 					},
 					{
-						"data" : "dataLink",
-						"visible" : false,
-						"sortable" : false
-					},
-					{
-						"data" : "metadataLink",
-						"visible" : false,
-						"sortable" : false
-					},
-					{
 						"data" : "maxLatitude",
 						"visible" : false,
 						"sortable" : false
@@ -217,6 +194,12 @@ window.onload=function() {
 						"visible" : false,
 						"sortable" : false
 					},
+// 					{
+// 						"class" : "color-control",
+// 						"sortable" : false,
+// 						"data" : null,
+// 						"defaultContent" : "<input class=\"color {valueElement:'myValue'}\" style=\"width:20px;border:0px;\" maxlength=\"0\"><input id=\"myValue\" type=\"hidden\" value=\"66ff00\">"
+// 					},
 					{
 						"class" : "details-control",
 						"sortable" : false,
@@ -227,11 +210,10 @@ window.onload=function() {
 					"sDom" : 'Clrtip',
 					// display show/hide column button
 					colVis : {
-						exclude : [ 0,10,17]
+						exclude : [ 0,9,15]
 					},
 					"order" : [ [ 9, "desc" ] ], // ordered by score
 					"sAutoWidth" : true,
-// 					"sPaginationType" : "full_numbers",
 
 					"fnDrawCallback" : function(oSettings) {
 // 						console.log('drawcallback');
@@ -243,7 +225,34 @@ window.onload=function() {
 					    }
 					}
 		    } );
-			setFireSelectedData(oTable);
+
+		$('#tableId tbody').off("click");
+	    $('#tableId tbody').on( 'click', 'tr', function (e) {
+	    	// prevent selecting the extra row
+	    	if ($(this).hasClass('even') ||$(this).hasClass('odd'))
+	    	{
+	    		$(this).toggleClass('selected');
+	    	}
+	        
+	    } );
+		$('#pubSelectedData').off("click");
+	    $('#pubSelectedData').click( function () {
+	    	var jsonData = {};
+	    	var results = [];
+	    	jsonData.results = results;
+	      	
+	        $.each(oTable.rows('.selected').data(),function(i,value){
+	        	var result = {"metadataLink":value.metadataLink,
+	        			"timeStamp": value.timeStamp,
+	        			"maxLatitude": value.maxLatitude,
+	        			"minLatitude": value.minLatitude,
+	        			"maxLongitude": value.maxLongitude,
+	        			"minLongitude": value.minLongitude};
+	        	jsonData.results.push(result);
+	        	console.log('fire selected data');
+	        });
+	    	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
+	    } );
 		    
 		$.ajax({
 			"url": "<%=searchURL%>"
@@ -260,9 +269,10 @@ window.onload=function() {
         }	
 		});
 	}
-
 </script>
 
+<!-- <input class="color {valueElement:'myValue'}" style="width:20px;border:0px;" maxlength="0">  -->
+<!-- <input id="myValue" type="hidden" value="66ff00"> -->
 
 <div id="search_portlet">
 	<label>Search:&nbsp; <input id="gfbioSearchInput"

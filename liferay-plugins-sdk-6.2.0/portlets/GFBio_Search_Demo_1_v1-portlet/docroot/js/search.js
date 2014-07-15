@@ -1,27 +1,29 @@
-function setFireSelectedData(oTable){
+//function setFireSelectedData(oTable){
 // TODO: prevent detail row selected
 	// for multiple selection
-	$('#tableId tbody').off("click");
-    $('#tableId tbody').on( 'click', 'tr', function () {
-        $(this).toggleClass('selected');
-    } );
-	$('#pubSelectedData').off("click");
-    $('#pubSelectedData').click( function () {
-    	var jsonData = {};
-    	var results = [];
-    	jsonData.results = results;
-        $.each(oTable.rows('.selected').data(),function(i,value){
-        	var result = {"metadataLink":value.metadataLink,
-        			"timeStamp": value.timeStamp,
-        			"maxLatitude": value.maxLatitude,
-        			"minLatitude": value.minLatitude,
-        			"maxLongitude": value.maxLongitude,
-        			"minLongitude": value.minLongitude};
-        	jsonData.results.push(result);
-        	console.log('fire selected data');
-        });
-    	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
-    } );
+//	console.log('2');
+//	$('#tableId tbody').off("click");
+//    $('#tableId tbody').on( 'click', 'tr', function (e) {
+//        $(this).toggleClass('selected');
+//    } );
+//	$('#pubSelectedData').off("click");
+//    $('#pubSelectedData').click( function () {
+//    	var jsonData = {};
+//    	var results = [];
+//    	jsonData.results = results;
+//      	console.log('3');
+//        $.each(oTable.rows('.selected').data(),function(i,value){
+//        	var result = {"metadataLink":value.metadataLink,
+//        			"timeStamp": value.timeStamp,
+//        			"maxLatitude": value.maxLatitude,
+//        			"minLatitude": value.minLatitude,
+//        			"maxLongitude": value.maxLongitude,
+//        			"minLongitude": value.minLongitude};
+//        	jsonData.results.push(result);
+//        	console.log('fire selected data');
+//        });
+//    	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
+//    } );
     
     // for single selection
 //	$('#tableId tbody').on( 'click', 'tr', function () {
@@ -33,7 +35,7 @@ function setFireSelectedData(oTable){
 //            $(this).addClass('selected');
 //        }
 //    } );
-}
+//}
 
 function addExtraRow() {
 	var elems = document.getElementsByTagName('td');
@@ -67,6 +69,7 @@ function addExtraRow() {
 				var extraRow =createExtraRow(row.data());
 				row.child(extraRow).show();
 				tr.addClass('shown');
+				tr.addClass('detail-row');
 			}
 		});
 	}
@@ -146,7 +149,7 @@ function createFacetList(facet) {
 }
 
 function getFilterTable(selectedList) {
-
+//TODO: improve filter function
 	var datacenterFilter = '';
 	var datacenterId = 3;
 	var datacenterCheck = true;
@@ -239,6 +242,7 @@ function createExtraRow(d) {
 			+ createTR('Investigator',d.investigator)
 			+ createTR('Project',d.project)
 			+ createTR('Region',d.region)
+			+ createTR('Taxonomy',d.taxonomy)
 			+ createTR('MaxLatitude',d.maxLatitude)
 			+ createTR('MinLatitude',d.minLatitude)
 			+ createTR('MaxLongitude',d.maxLongitude)
@@ -277,13 +281,12 @@ function writeResultTable(){
 		displaytext += "<th>Parameter</th>";	
 		displaytext += "<th>Investigator</th>";	
 		displaytext += "<th>Score</th>";	
-		displaytext += "<th>Timestamp</th>";	
-		displaytext += "<th>Data Link</th>";
-		displaytext += "<th>Metadata Link</th>";	
+		displaytext += "<th>Timestamp</th>";		
 		displaytext += "<th>Max Latitude</th>";	
 		displaytext += "<th>Min Latitude</th>";	
 		displaytext += "<th>Max Longitude</th>";	
 		displaytext += "<th>Min Longitude</th>";	
+//		displaytext += "<th></th>";	
 		displaytext += "<th></th>";	
 		displaytext += "</tr></thead>";	
 		displaytext += "<tfoot><tr>";	
@@ -297,13 +300,12 @@ function writeResultTable(){
 		displaytext += "<th>Parameter</th>";	
 		displaytext += "<th>Investigator</th>";	
 		displaytext += "<th>Score</th>";	
-		displaytext += "<th>Timestamp</th>";	
-		displaytext += "<th>Data Link</th>";
-		displaytext += "<th>Metadata Link</th>";	
+		displaytext += "<th>Timestamp</th>";		
 		displaytext += "<th>Max Latitude</th>";	
 		displaytext += "<th>Min Latitude</th>";	
 		displaytext += "<th>Max Longitude</th>";	
 		displaytext += "<th>Min Longitude</th>";	
+//		displaytext += "<th></th>";	
 		displaytext += "<th></th>";	
 		displaytext += "</tr></tfoot></table>";	
 		displaytext += "<input id='pubSelectedData' name='pubSelectedData'";
@@ -312,4 +314,16 @@ function writeResultTable(){
 				 
 	var div = document.getElementById('search_result_table');
 	div.innerHTML = displaytext;
+}
+
+
+function getValueByAttribute(list, attr, val){
+    var result = null;
+    $.each(list, function(index, item){
+        if(item[attr].toString() == val.toString()){
+           result = list[index].value;
+           return false;     // breaks the $.each() loop
+        }
+    });
+    return result;
 }
