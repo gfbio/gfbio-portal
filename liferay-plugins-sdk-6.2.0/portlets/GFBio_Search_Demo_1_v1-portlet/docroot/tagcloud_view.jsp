@@ -46,5 +46,5 @@ function hex (c) {
 // };
  </script> 
 
-<div id="cloud">
+<div id="cloud" class="tagcloud">
 </div>
