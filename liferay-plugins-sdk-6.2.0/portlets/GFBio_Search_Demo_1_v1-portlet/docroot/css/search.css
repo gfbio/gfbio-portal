@@ -29,8 +29,8 @@ select[name=tableId_length] {
 .search_portlet {
 	height: auto;
 }
-.facetUL {
-	margin: 10px 0px 10px 0px; 
+.jstree-node, .jstree-children, .jstree-container-ul  {
+	margin: 0px 0px 0px 5px !important; 
 }
 td.details-control {
     background: url('../images/details_open.png') no-repeat center center;
@@ -39,7 +39,6 @@ td.details-control {
 tr.shown td.details-control {
     background: url('../images/details_close.png') no-repeat center center;
 }
-/* td.color-control { */
-/*     vertical-align: middle; */
-/*     cursor: pointer; */
-/* } */
+td.color-control {
+    vertical-align: middle;
+}
