@@ -699,29 +699,6 @@ div.accordion {
 	padding-left: 2%
 }
 
-div.toggler {
-	margin-top: 20px;
-	font: 16px robotolight;
-	color: #39F;
-	cursor: pointer
-}
-
-div.toggler:before {
-	content: '+ '
-}
-
-div.toggler.ui-state-active {
-	font-family: robotoregular;
-	color: #000
-}
-
-div.toggler:hover {
-	color: #000
-}
-
-div.toggler.ui-state-active:before {
-	content: '- '
-}
 
 td {
 	padding: 5px
@@ -1680,69 +1657,59 @@ div#main div.inside {
 	left: 100%;
 }
 
-/* states and images */
-.ui-icon {
-	/* display: block;
+/*Jquery Interaction states*/
+
+div.toggler {
+	margin-top: 20px;
+	font: 16px robotolight;
+	color: #39F;
+	cursor: pointer
+}
+
+div.toggler:before {
+	content: '+ '
+}
+
+div.toggler .ui-icon {
+	display: none;
 	text-indent: -99999px;
 	overflow: hidden;
-	background-repeat: no-repeat; */
+	background-repeat: no-repeat; 
+	height: 0px;
+	weight:0px;
+}
+div.toggler.ui-state-active {
+	font-family: robotoregular;
+	color: #000
 }
 
-.ui-widget-header {
-	/* border: 1px solid #aaaaaa;
-	background: #cccccc url(images/ui-bg_highlight-soft_75_cccccc_1x100.png) 50% 50% repeat-x; */
-	color: #222222;
-	font-weight: bold;
+div.toggler:hover {
+	color: #000
 }
 
-/*Jquery Interaction states*/
-.ui-state-default,
-.ui-widget-content .ui-state-default,
-.ui-widget-header .ui-state-default {
-	/* border: 1px solid #d3d3d3;
-	background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x; */
-	font-weight: normal;
-	color: #555555;
+div.toggler.ui-state-active:before {
+	content: '- '
 }
-.ui-state-default a,
-.ui-state-default a:link,
-.ui-state-default a:visited {
+
+
+div.toggler.ui-state-default{
+	border: 0px;
+	background: none;
+}
+div.toggler.ui-state-default a {
 	color: #555555;
 	text-decoration: none;
 }
-.ui-state-hover,
-.ui-widget-content .ui-state-hover,
-.ui-widget-header .ui-state-hover,
-.ui-state-focus,
-.ui-widget-content .ui-state-focus,
-.ui-widget-header .ui-state-focus {
-	/* border: 1px solid #999999;
-	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x; */
-	font-weight: normal;
-	color: #212121;
+div.toggler.ui-state-hover,
+div.toggler.ui-state-focus,
+div.toggler .ui-state-active {
+	border: 0px;
+	background: none;
 }
-.ui-state-hover a,
-.ui-state-hover a:hover,
-.ui-state-hover a:link,
-.ui-state-hover a:visited,
-.ui-state-focus a,
-.ui-state-focus a:hover,
-.ui-state-focus a:link,
-.ui-state-focus a:visited {
-	color: #212121;
+
+div.toggler .ui-state-active a{
 	text-decoration: none;
 }
-.ui-state-active,
-.ui-widget-content .ui-state-active,
-.ui-widget-header .ui-state-active {
-	/* border: 1px solid #aaaaaa;
-	background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x; */
-	font-weight: normal;
-	color: #212121;
-}
-.ui-state-active a,
-.ui-state-active a:link,
-.ui-state-active a:visited {
-	color: #212121;
-	text-decoration: none;
+div.toggler .ui-accordion-header-icon{
+	background-image: none;
 }
