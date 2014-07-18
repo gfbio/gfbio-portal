@@ -147,6 +147,7 @@ $theme.include($bottom_include)
 #js ("$javascript_folder/jquery.dataTables.js")
 #js ("$javascript_folder/dataTables.colVis.js")
 #js ("$javascript_folder/jstree.js")
+#js ("$javascript_folder/spectrum.js")
 
 <script>
 (function($) {
