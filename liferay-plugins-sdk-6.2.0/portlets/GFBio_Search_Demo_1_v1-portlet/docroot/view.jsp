@@ -175,6 +175,7 @@ window.onload=function() {
 		});
 	}
 
+
 </script>
 
 <div id="search_portlet">

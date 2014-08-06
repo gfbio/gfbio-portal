@@ -1,5 +1,4 @@
 //function setFireSelectedData(oTable){
-// TODO: prevent detail row selected
 // for multiple selection
 //	console.log('2');
 //	$('#tableId tbody').off("click");
@@ -342,9 +341,9 @@ function writeResultTable() {
 	displaytext += "<th></th>";
 	displaytext += "<th></th>";
 	displaytext += "</tr></tfoot></table>";
-	displaytext += "<input id='pubSelectedData' name='pubSelectedData'";
-	displaytext += " type='button' value='Publish selected data'";
-	displaytext += " style='font-weight: bold; width:100%'/>";
+//	displaytext += "<input id='pubSelectedData' name='pubSelectedData'";
+//	displaytext += " type='button' value='Publish selected data'";
+//	displaytext += " style='font-weight: bold; width:100%'/>";
 
 	var div = document.getElementById('search_result_table');
 	div.innerHTML = displaytext;
@@ -398,6 +397,11 @@ function onRowClick(){
     		}
 //	    	  console.log('basket: ');
 //    		console.log(JSON.stringify(document.getElementById("visualBasket").value));
+
+    	    //update visualisation
+    		var jsonData = getSelectedResult();
+    		console.log('fire selected data: ');
+    		Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
     	}
         
     } );
@@ -554,16 +558,58 @@ function setSelectedRowStyle(){
 }
 
 function addColorPicker(){
-
-	  $(".full-spectrum").spectrum(
+	//TODO: choose color for each row
+	var i =0;
+	var color="rgb(204, 204, 204)";
+	$("#tableId tbody tr").each(function(){
+		var row = i%8;
+		i++;
+		switch (row){
+		case 0:
+			color = "rgb(224, 102, 102)";
+			break;
+		case 1:
+			color = "rgb(246, 178, 107)";
+			break;
+		case 2:
+			color = "rgb(255, 217, 102)";
+			break;
+		case 3:
+			color = "rgb(147, 196, 125)";
+			break;
+		case 4:
+			color = "rgb(118, 165, 175)";
+			break;
+		case 5:
+			color = "rgb(109, 158, 235)";
+			break;
+		case 6:
+			color = "rgb(111, 168, 220)";
+			break;
+		case 7:
+			color = "rgb(142, 124, 195)";
+			break;
+		}
+		var elm = $(this).context.childNodes;
+		for (j in elm){
+			var tdClass = elm[j].className;
+			if (tdClass.indexOf("color-control") >= 0){
+				console.log(color);
+				var input = elm[j].childNodes[0];
+				input.value = color;
+				break;
+			}
+		}
+	});
+	  $("input.full-spectrum").spectrum(
 			  {
-		    color: "#e06666",
-//		    showInput: true,
+//			    color: "rgb(244, 204, 204)",
+//			    showInput: true,
 		    showInitial: true,
 		    showPalette: true,
 		    showSelectionPalette: true,
 		    maxPaletteSize: 10,
-//		    preferredFormat: "hex",
+//			    preferredFormat: "hex",
 		    palette: [
 		        ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
 		        "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
@@ -580,7 +626,6 @@ function addColorPicker(){
 		    ],
 		    change: function(color) {
 		        console.log(color.toHexString());
-		        //TODO: update basket when color changed
 		        // read basket value
 		    	var basket = document.getElementById("visualBasket");
 		    	var basketStr = basket.value;
