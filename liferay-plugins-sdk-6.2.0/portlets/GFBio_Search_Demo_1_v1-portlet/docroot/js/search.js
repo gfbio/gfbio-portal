@@ -107,7 +107,7 @@ function addExtraRow() {
 }
 
 function addToolTip() {
-	console.log('add tooltip');
+//	console.log('add tooltip');
 	$('.odd, .even').hover(
 			function() {
 				var table = $('#tableId').dataTable();
@@ -395,7 +395,7 @@ function onRowClick(){
             		basket.value = JSON.stringify(jsonData);
         		}
     		}
-//	    	  console.log('basket: ');
+//	    	console.log('basket: ');
 //    		console.log(JSON.stringify(document.getElementById("visualBasket").value));
 
     	    //update visualisation
@@ -594,7 +594,7 @@ function addColorPicker(){
 		for (j in elm){
 			var tdClass = elm[j].className;
 			if (tdClass.indexOf("color-control") >= 0){
-				console.log(color);
+//				console.log(color);
 				var input = elm[j].childNodes[0];
 				input.value = color;
 				break;
@@ -625,7 +625,6 @@ function addColorPicker(){
 		        "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)"]
 		    ],
 		    change: function(color) {
-		        console.log(color.toHexString());
 		        // read basket value
 		    	var basket = document.getElementById("visualBasket");
 		    	var basketStr = basket.value;
