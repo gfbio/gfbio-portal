@@ -47,7 +47,7 @@
 			<!-- indexer::continue -->
 
 			<div id="logo-gfbio">
-				<a id="logo-gfbio-link" href="/"><img id="logo-gfbio-image" src="$images_folder/layout/gfbiologo-transparent.png" alt="GFBio Logo"></a>
+				<a id="logo-gfbio-link" href="/"><img id="logo-gfbio" src="$images_folder/layout/gfbiologo-transparent.png" alt="GFBio Logo"></a>
 			</div>
 				
 			
@@ -131,7 +131,7 @@ $theme.include($body_top_include)
 	
 			<div id="footer-content">
 				<div class="ce_text footer-copyright block" id="footer-copyright">
-					<p>© 2013-<span>2014 GFBio&nbsp;</span>- All Rights reserved.</p>  
+					<p>&copy; 2013-<span>2014 GFBio&nbsp;</span>- All Rights reserved.</p>  
 	  			</div>
 			</div>
 		</div>
