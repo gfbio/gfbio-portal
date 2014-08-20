@@ -66,7 +66,9 @@ function updateFacet(event){
 function gfbioQuery() {
 	$('#tableId').DataTable().clear();
 	var keyword = document.getElementById("gfbioSearchInput").value;
-	getSearchResult(keyword);
+	var filter = document.getElementById("facetFilter").value;
+	
+	getSearchResult(keyword,filter);
 }
 
 function addExtraRow() {
@@ -123,144 +125,11 @@ function addToolTip() {
 			});
 }
 
-function createFacetTree(data) {
-
-	var listString = createFacetList(data.facet);
-
-	$("#search_result_facet").jstree("destroy");
-	var ul = document.getElementById('search_result_facet');
-	ul.innerHTML = listString;
-
-	$('#search_result_facet').jstree({
-		"checkbox" : {
-			"keep_selected_style" : false,
-			"undetermined" : true
-		},
-		"core" : {
-			"themes" : {
-				"icons" : false
-			}
-		},
-		"plugins" : [ "checkbox" ]
-	});
-
-	checkAllTree(data.facet);
-
-	// broadcast variable to other portlets
-	Liferay.fire('facetUpdate', {
-		ipcData : data.facet
-	});
-
-	$('#search_result_facet').on("changed.jstree", function(e, data) {
-		var str = data.selected + '';
-		var selectedList = str.split(",");
-		getFilterTable(selectedList);
-	});
-}
-
-function createFacetList(facet) {
-
-	var listString = '<ul id="facetUL">';
-	$.each(facet, function(id, option) {
-		listString += '<li id="li1_' + id + '">' + id;
-		listString += '<ul>';
-		$.each(option, function(id2, option2) {
-			var val = option2.name;
-			var count = option2.count;
-			if (val.length > 20)
-				val = val.substring(0, 20);
-			listString += '<li id="li2_' + id + '_' + val + '">';
-			listString += option2.name + ' (' + count + ')</li>';
-		});
-		listString += '</ul>';
-		listString += '</li>';
-	});
-	listString += '</ul>';
-	return listString;
-}
-
-function getFilterTable(selectedList) {
-	// TODO: improve filter function
-	var datacenterFilter = '';
-	var datacenterId = 3;
-	var datacenterCheck = true;
-	var regionFilter = '';
-	var regionId = 4;
-	var regionCheck = true;
-	var projectFilter = '';
-	var projectId = 5;
-	var projectCheck = true;
-	var parameterFilter = '';
-	var parameterId = 7;
-	var parameterCheck = true;
-	var investigatorFilter = '';
-	var investigatorId = 8;
-	var investigatorCheck = true;
-
-	for ( var i = 0; i < selectedList.length; i++) {
-		var id = selectedList[i];
-		var arrayid = id.split("_");
-		if (arrayid[0] == "li1") {
-			if (arrayid[1] == "datacenter") {
-				datacenterCheck = false;
-				datacenterFilter = '';
-			} else if (arrayid[1] == "region") {
-				regionCheck = false;
-				regionFilter = '';
-			} else if (arrayid[1] == "project") {
-				projectCheck = false;
-				projectFilter = '';
-			} else if (arrayid[1] == "parameter") {
-				parameterCheck = false;
-				parameterFilter = '';
-			} else if (arrayid[1] == "investigator") {
-				investigatorCheck = false;
-				investigatorFilter = '';
-			}
-		} else if (arrayid[0] == "li2") {
-			if (arrayid[1] == "datacenter" && datacenterCheck) {
-				if (datacenterFilter != "")
-					datacenterFilter += "|";
-				datacenterFilter += arrayid[2];
-			} else if (arrayid[1] == "region" && regionCheck) {
-				if (regionFilter != "")
-					regionFilter += "|";
-				regionFilter += arrayid[2];
-			} else if (arrayid[1] == "project" && projectCheck) {
-				if (projectFilter != "")
-					projectFilter += "|";
-				projectFilter += arrayid[2];
-			} else if (arrayid[1] == "parameter" && parameterCheck) {
-				if (parameterFilter != "")
-					parameterFilter += "|";
-				parameterFilter += arrayid[2];
-			} else if (arrayid[1] == "investigator" && investigatorCheck) {
-				if (investigatorFilter != "")
-					investigatorFilter += "|";
-				investigatorFilter += arrayid[2];
-			}
-		}
-	}
-	var oTable = $('#tableId').DataTable();
-	console.log(datacenterFilter);
-	oTable.column(datacenterId, true, false).search(datacenterFilter).draw();
-	console.log(regionFilter);
-	oTable.column(regionId).search(regionFilter, true, false).draw();
-	console.log(projectFilter);
-	oTable.column(projectId).search(projectFilter, true, false).draw();
-	console.log(parameterFilter);
-	oTable.column(parameterId).search(parameterFilter, true, false).draw();
-	// console.log(taxonomyFilter);
-	// oTable.column(taxonomyId).search(taxonomyFilter, true, false).draw();
-	console.log(investigatorFilter);
-	oTable.column(investigatorId).search(investigatorFilter, true, false)
-			.draw();
-}
 
 function checkAllTree(facet) {
 	$.each(facet, function(id, option) {
-		$('#search_result_facet').jstree("select_node", "#li1_" + id).jstree(
-				"open_node", $('#li1_region'));
+		$('#search_result_facet').jstree("select_node", "#l1__" + id).jstree(
+				"open_node", $('#l1__region'));
 	});
 }
 function createExtraRow(d) {
@@ -400,7 +269,7 @@ function onRowClick(){
 
     	    //update visualisation
     		var jsonData = getSelectedResult();
-    		console.log('fire selected data: ');
+    		console.log('fire selected data: '+JSON.stringify(jsonData));
     		Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
     	}
         
@@ -414,7 +283,6 @@ function JSONfindAndRemove(array, property, value) {
 	    	  console.log('found '+index);
 	          // Remove from array is not working I don't know why,
 	    	  // just do it another way round
-//	          array.splice(index,1);
 	      }    else{
 	    	  resultArray.push(result);
 	      }
@@ -558,7 +426,6 @@ function setSelectedRowStyle(){
 }
 
 function addColorPicker(){
-	//TODO: choose color for each row
 	var i =0;
 	var color="rgb(204, 204, 204)";
 	$("#tableId tbody tr").each(function(){
