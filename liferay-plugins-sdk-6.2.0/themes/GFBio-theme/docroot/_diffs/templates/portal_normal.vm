@@ -20,7 +20,7 @@
 	
 ##Contao##########################
 
-<img src="$images_folder/layout/gf_bio_body_bg.jpg" style="width:100%; position:fixed; z-index:-1000">
+<img src="$images_folder/layout/gf_bio_body_bg.jpg" alt="Welcome to GFBio - Header image" style="width:100%; position:fixed; z-index:-1000">
   	
 <div id="dock">				
 				#dockbar()
@@ -62,16 +62,17 @@
 			</div>
 			
 			
-			<div class="header-suchfeld" id="header-suchfeld">
-  					<form action="$portal_url/data-portal" method="GET" name="portalForm" id="header-suchfeld" class="header-suchfeld">
-    						<input type="hidden" name="formtype" value="simple" /><label for="acQueryInput_">Find Data</label>
-   						    <input type="text" name="q_" id="acQueryInput_" class="text" value="" autocomplete="off">
-    						<div id="acQueryContainer_" class="acDropdown"></div>
-    						<div class="submit_container">
-      								<input type="image" src="$images_folder/layout/lupe.png" class="submit find-lupe" title="Search" alt="Search">
-    						</div>
-  					</form>
-			</div>
+    			<div class="header-suchfeld" id="header-suchfeld">
+      					<form action="$portal_url/data-portal" method="GET" name="portalForm" id="header-suchfeld-form" class="header-suchfeld">
+        						<input type="hidden" name="formtype" value="simple" /><label for="acQueryInput_">Find Data</label>
+       						    <input type="text" name="q_" id="acQueryInput_" class="text" value="" autocomplete="off">
+        						<div id="acQueryContainer_" class="acDropdown"></div>
+        						<div class="submit_container">
+          								<input type="image" src="$images_folder/layout/lupe.png" class="submit find-lupe" title="Search" alt="Search">
+        						</div>
+      					</form>
+    			</div>
+			
 	</div>
 </div>
 ##Contao Ende ##############################################
@@ -119,7 +120,7 @@ $theme.include($body_top_include)
 					</div>
 		
 					<div class="ce_text block">
-						<p><img src="$images_folder/public/Logos%20Member/GFBiologofooter.png" alt="" width="962" height="140"></p>  
+						<p><img src="$images_folder/public/Logos%20Member/GFBiologofooter.jpg" alt="" width="962" height="140"></p>  
 		  			</div>
 			   </div>
 		</div>
@@ -131,7 +132,7 @@ $theme.include($body_top_include)
 	
 			<div id="footer-content">
 				<div class="ce_text footer-copyright block" id="footer-copyright">
-					<p>© 2013-<span>2014 GFBio&nbsp;</span>- All Rights reserved.</p>  
+					<p>&copy; 2013-<span>2014 GFBio&nbsp;</span>- All Rights reserved.</p>  
 	  			</div>
 			</div>
 		</div>
@@ -178,7 +179,13 @@ $theme.include($bottom_include)
     });
   })(jQuery);
 </script>
+<script>
+var currentURL = <%=themeDisplay.getURLCurrent() %>;
+alert(currentURL);
 
+var portalURL = <%=themeDisplay.getPortalURL() %>;
+alert(portalURL);
+</script>
 
 
 </body>
