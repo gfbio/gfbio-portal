@@ -1,40 +1,3 @@
-//function setFireSelectedData(oTable){
-// for multiple selection
-//	console.log('2');
-//	$('#tableId tbody').off("click");
-//    $('#tableId tbody').on( 'click', 'tr', function (e) {
-//        $(this).toggleClass('selected');
-//    } );
-//	$('#pubSelectedData').off("click");
-//    $('#pubSelectedData').click( function () {
-//    	var jsonData = {};
-//    	var results = [];
-//    	jsonData.results = results;
-//      	console.log('3');
-//        $.each(oTable.rows('.selected').data(),function(i,value){
-//        	var result = {"metadataLink":value.metadataLink,
-//        			"timeStamp": value.timeStamp,
-//        			"maxLatitude": value.maxLatitude,
-//        			"minLatitude": value.minLatitude,
-//        			"maxLongitude": value.maxLongitude,
-//        			"minLongitude": value.minLongitude};
-//        	jsonData.results.push(result);
-//        	console.log('fire selected data');
-//        });
-//    	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
-//    } );
-
-// for single selection
-//	$('#tableId tbody').on( 'click', 'tr', function () {
-//        if ( $(this).hasClass('selected') ) {
-//            $(this).removeClass('selected');
-//        }
-//        else {
-//        	oTable.$('tr.selected').removeClass('selected');
-//            $(this).addClass('selected');
-//        }
-//    } );
-//}
 function updateFacet(event){
 	var facet = event.ipcData;
     var items = [];
@@ -516,4 +479,105 @@ function addColorPicker(){
 		    }
 		}
 	  );	
+}
+
+function createFacetTree(data) {
+
+	var listString = createFacetList(data.facet);
+
+	$("#search_result_facet").jstree("destroy");
+	var ul = document.getElementById('search_result_facet');
+	ul.innerHTML = listString;
+
+	$('#search_result_facet').jstree({
+		"checkbox" : {
+			"keep_selected_style" : false,
+			"undetermined" : true
+		},
+		"core" : {
+			"themes" : {
+				"icons" : false
+			}
+		},
+		"plugins" : [ "checkbox" ]
+	});
+
+	checkAllTree(data.facet);
+
+	// broadcast variable to other portlets
+	Liferay.fire('facetUpdate', {
+		ipcData : data.facet
+	});
+
+	$('#search_result_facet').on("changed.jstree", function(e, data) {
+
+		var tree = data.instance._model.data;
+		var selectedList = data.selected;
+		var filterlist = new Array();
+		for (var node in tree){
+			// match with the selected list
+			var isSelected = false;
+			for(var ind =0; ind<selectedList.length; ind++){
+				var id = selectedList[ind];
+				if (node == id){
+					if (id.indexOf("l1__")==0){ 
+						filterlist.push(id);
+					}
+					else if (id.indexOf("l2__")==0){
+						var val = tree[node].li_attr.value;
+						filterlist.push(node + "__" +val);
+					}
+					else if (id.indexOf("l3__")==0){
+						filterlist.push(id);
+					}
+					// check if id start with "l3__"
+					// if true, then add for exclusion
+					isSelected = true;
+					break;
+				}
+			}
+			if (!isSelected){
+				//add unchecked item for exclusion (l4)
+				if (node.indexOf("l2__")==0){
+					var val = tree[node].li_attr.value;
+					var editedNode = node.replace("l2__","l4__");
+					filterlist.push(editedNode + "__" +val);
+				}
+			}
+		}
+		var selectedList = filterlist.join(",,");
+//			console.log(selectedList);
+		getFilterTable(selectedList);
+	});
+
+}
+
+function getFilterTable(selectedList) {
+	// call Ajax
+//		console.log("Facet List: "+selectedList);
+	var facetFilter = document.getElementById("facetFilter");
+	facetFilter.value = selectedList;
+	gfbioQuery();
+}
+
+function createFacetList(facet) {
+	var listString = '<ul id="facetUL">';
+	$.each(facet, function(id, option) {
+		listString += '<li id="l1__' + id + '">' + id;
+		listString += '<ul>';
+		var i = 1;
+		$.each(option, function(id2, option2) {
+			var val = option2.name;
+			var count = option2.count;
+			listString += '<li id="l2__' + id + '__' + i + '"value="'+val+'">';
+			listString += val + ' (' + count + ')</li>';
+			i += 1; 
+		});
+		// others option
+		listString += '<li id="l3__' + id + '__others" value="others">Others</li>';
+		listString += '</ul>';
+		listString += '</li>';
+	});
+	listString += '</ul>';
+	return listString;
 }

@@ -269,103 +269,144 @@ public class PangeaeSearch {
 	public static JSONObject parseFacetFilter(String filter) {
 		JSONObject facetQuery = new JSONObject();
 		try {
-			if (filter == null)
-				filter = "";
+			if (filter == null)	filter = "";
 			if (filter != "") {
-				JSONArray datacenterFilter = new JSONArray();
-				boolean datacenterCheck = true;
-				JSONArray regionFilter = new JSONArray();
-				boolean regionCheck = true;
-				JSONArray projectFilter = new JSONArray();
-				boolean projectCheck = true;
-				JSONArray parameterFilter = new JSONArray();
-				boolean parameterCheck = true;
-				JSONArray investigatorFilter = new JSONArray();
-				boolean investigatorCheck = true;
-				JSONArray taxonomyFilter = new JSONArray();
-				boolean taxonomyCheck = true;
+				boolean datacenterAll = false;
+				boolean datacenterOthers = false;
+				boolean regionAll = false;
+				boolean regionOthers = false;
+				boolean projectAll = false;
+				boolean projectOthers = false;
+				boolean parameterAll = false;
+				boolean parameterOthers = false;
+				boolean investigatorAll = false;
+				boolean investigatorOthers = false;
+				boolean taxonomyAll = false;
+				boolean taxonomyOthers = false;
+
 				String[] selectedList = filter.split(",,");
 				for (int i = 0; i < selectedList.length; i++) {
 					String id = selectedList[i];
 					String[] arrayid = id.split("__");
 					// if level 1 is checked, then no filter
 					if (arrayid[0].indexOf("l1") == 0) {
-						System.out.println("l1: " + arrayid[1]);
 						if (arrayid[1].indexOf("datacenter") == 0) {
-							datacenterCheck = false;
-							datacenterFilter = null;
+							datacenterAll = true;
 						} else if (arrayid[1].indexOf("region") == 0) {
-							regionCheck = false;
-							regionFilter = null;
+							regionAll = true;
 						} else if (arrayid[1].indexOf("project") == 0) {
-							projectCheck = false;
-							projectFilter = null;
+							projectAll = true;
 						} else if (arrayid[1].indexOf("parameter") == 0) {
-							parameterCheck = false;
-							parameterFilter = null;
+							parameterAll = true;
 						} else if (arrayid[1].indexOf("investigator") == 0) {
-							investigatorCheck = false;
-							investigatorFilter = null;
+							investigatorAll = true;
 						} else if (arrayid[1].indexOf("taxonomy") == 0) {
-							taxonomyCheck = false;
-							taxonomyFilter = null;
+							taxonomyAll = true;
 						}
 					}
 				}
-
-				// find the filter terms
+				// find the include terms
+				JSONArray incArray = new JSONArray();
 				for (int i = 0; i < selectedList.length; i++) {
 					String id = selectedList[i];
 					String[] arrayid = id.split("__");
 					if (arrayid[0].indexOf("l2") == 0) {
-						System.out.println("l2: " + arrayid[3]);
 						// check only if "all" is not selected
+						String facetVal = arrayid[3];
 						if (arrayid[1].indexOf("datacenter") == 0
-								&& datacenterCheck) {
-							datacenterFilter.put(arrayid[3]);
+								&& !datacenterAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("dataCenterFacet", facetVal)));
 						} else if (arrayid[1].indexOf("region") == 0
-								&& regionCheck) {
-							regionFilter.put(arrayid[3]);
+								&& !regionAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("regionFacet", facetVal)));
 						} else if (arrayid[1].indexOf("project") == 0
-								&& projectCheck) {
-							projectFilter.put(arrayid[3]);
+								&& !projectAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("projectFacet", facetVal)));
 						} else if (arrayid[1].indexOf("parameter") == 0
-								&& parameterCheck) {
-							parameterFilter.put(arrayid[3]);
+								&& !parameterAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("parameterFacet", facetVal)));
 						} else if (arrayid[1].indexOf("investigator") == 0
-								&& investigatorCheck) {
-							investigatorFilter.put(arrayid[3]);
+								&& !investigatorAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("investigatorFacet", facetVal)));
 						} else if (arrayid[1].indexOf("taxonomy") == 0
-								&& taxonomyCheck) {
-							taxonomyFilter.put(arrayid[3]);
+								&& !taxonomyAll) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("taxonomyFacet", facetVal)));
+						}
+					}
+				}
+
+				// if start with l3, means including other terms
+				for (int i = 0; i < selectedList.length; i++) {
+					String id = selectedList[i];
+					String[] arrayid = id.split("__");
+					if(arrayid[0].indexOf("l3") == 0) {
+						if (arrayid[1].indexOf("datacenter") == 0) {
+							datacenterOthers = true;
+						} else if (arrayid[1].indexOf("region") == 0) {
+							regionOthers = true;
+						} else if (arrayid[1].indexOf("project") == 0) {
+							projectOthers = true;
+						} else if (arrayid[1].indexOf("parameter") == 0) {
+							parameterOthers = true;
+						} else if (arrayid[1].indexOf("investigator") == 0) {
+							investigatorOthers = true;
+						} else if (arrayid[1].indexOf("taxonomy") == 0) {
+							taxonomyOthers = true;
 						}
 					}
 				}// end for loop
-				if ((datacenterFilter != null) || (regionFilter != null)
-						|| (projectFilter != null) || (parameterFilter != null)
-						|| (taxonomyFilter != null) || (investigatorFilter != null)) {
-
-					JSONObject obj = new JSONObject();
-					if (datacenterFilter != null) {
-						obj.put("dataCenterFacet", datacenterFilter);
+				JSONArray excArray = new JSONArray();
+				// add bool:must_not option from l4
+				for (int i = 0; i < selectedList.length; i++) {
+					String id = selectedList[i];
+					String[] arrayid = id.split("__");
+					if (arrayid[0].indexOf("l4") == 0) {
+						String facetVal = arrayid[3];
+						// check only if "all" is not selected
+						if (arrayid[1].indexOf("datacenter") == 0
+								&& datacenterOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("dataCenterFacet", facetVal)));
+						} else if (arrayid[1].indexOf("region") == 0
+								&& regionOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("regionFacet", facetVal)));
+						} else if (arrayid[1].indexOf("project") == 0
+								&& projectOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("projectFacet", facetVal)));
+						} else if (arrayid[1].indexOf("parameter") == 0
+								&& parameterOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("parameterFacet", facetVal)));
+						} else if (arrayid[1].indexOf("investigator") == 0
+								&& investigatorOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("investigatorFacet", facetVal)));
+						} else if (arrayid[1].indexOf("taxonomy") == 0
+								&& taxonomyOthers) {
+							excArray.put(new JSONObject().put("term", 
+									new JSONObject().put("taxonomyFacet", facetVal)));
+						}
 					}
-					if (regionFilter != null) {
-						obj.put("regionFacet", regionFilter);
-					}
-					if (projectFilter != null) {
-						obj.put("projectFacet", projectFilter);
-					}
-					if (parameterFilter != null) {
-						obj.put("parameterFacet", parameterFilter);
-					}
-					if (taxonomyFilter != null) {
-						obj.put("taxonomyFacet", taxonomyFilter);
-					}
-					if (investigatorFilter != null) {
-						obj.put("investigatorFacet", investigatorFilter);
-					}
-					facetQuery.put("term",obj);
 				}
+
+				JSONObject boolJSON = new JSONObject();
+				if (incArray.length()>0){
+					boolJSON.put("should", incArray);
+				}
+
+				if (excArray.length()>0){
+					boolJSON.put("must_not", excArray);
+				}
+				if (boolJSON.length()>0) facetQuery.put("bool", boolJSON);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -373,4 +414,107 @@ public class PangeaeSearch {
 		return facetQuery;
 	}
 
+	public static JSONArray createFieldArray(){
+		JSONArray jArr = new JSONArray();
+		try {
+			jArr.put("_score");
+			jArr.put("region");
+			jArr.put("investigator");
+			jArr.put("citation.date");
+			jArr.put("xml");
+			jArr.put("format");
+			jArr.put("dataCenter");
+			jArr.put("type");
+			jArr.put("maxLongitude");
+			jArr.put("citation.authors");
+			jArr.put("project");
+			jArr.put("parameter");
+			jArr.put("internal-source");
+			jArr.put("internal-datestamp");
+			jArr.put("datalink");
+			jArr.put("metadatalink");
+			jArr.put("minLatitude");
+			jArr.put("description");
+			jArr.put("citation.source");
+			jArr.put("citation.title");
+			jArr.put("maxLatitude");
+			jArr.put("feature");
+			jArr.put("minLongitude");
+			jArr.put("citation.publisher");
+			jArr.put("taxonomy");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return jArr;
+	}
+	
+	public static JSONObject createJSONQuery(String keyword){
+		JSONObject qJSON = new JSONObject();
+		try {
+			JSONObject obj = new JSONObject();
+			obj.put("query", keyword);
+			qJSON.put("simple_query_string",obj);
+			} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return qJSON;
+	}
+	
+	public static JSONObject createJSONRequest(String keyword,
+			String from, String size, String facet) {
+		JSONObject res = new JSONObject();
+		try {
+			res.put("fields", createFieldArray());
+			res.put("query", createJSONQuery(keyword));
+			res.put("from", from);
+			res.put("size", size);
+			JSONObject filter =  PangeaeSearch.parseFacetFilter(facet);
+			res.put("filter",filter);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+	
+	public static JSONObject createJSONFacet(){
+		JSONObject res = new JSONObject();
+		JSONObject agg = new JSONObject();
+		try {
+			JSONObject term = new JSONObject();
+			term.put("field","dataCenterFacet");
+			term.put("size",10);
+			agg.put("datacenter", new JSONObject().put("terms",term));
+			
+			term = new JSONObject();
+			term.put("field","regionFacet");
+			term.put("size",10);
+			agg.put("region", new JSONObject().put("terms",term));
+			
+			term = new JSONObject();
+			term.put("field","projectFacet");
+			term.put("size",10);
+			agg.put("project", new JSONObject().put("terms",term));
+			
+			term = new JSONObject();
+			term.put("field","parameterFacet");
+			term.put("size",10);
+			agg.put("parameter", new JSONObject().put("terms",term));
+			
+			term = new JSONObject();
+			term.put("field","taxonomyFacet");
+			term.put("size",10);
+			agg.put("taxonomy", new JSONObject().put("terms",term));
+			
+			term = new JSONObject();
+			term.put("field","investigatorFacet");
+			term.put("size",10);
+			agg.put("investigator", new JSONObject().put("terms",term));
+			
+			res.put("aggs",agg);
+			
+			} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
 }
