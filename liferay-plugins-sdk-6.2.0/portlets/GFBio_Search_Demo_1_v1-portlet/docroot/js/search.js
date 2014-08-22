@@ -231,12 +231,17 @@ function onRowClick(){
 //    		console.log(JSON.stringify(document.getElementById("visualBasket").value));
 
     	    //update visualisation
-    		var jsonData = getSelectedResult();
-    		console.log('fire selected data: '+JSON.stringify(jsonData));
-    		Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
+    		updateVisualisation();
     	}
         
     } );
+}
+
+function updateVisualisation(){
+	var jsonData = getSelectedResult();
+	console.log('fire selected data: '+JSON.stringify(jsonData));
+	Liferay.fire('gadget:gfbio.search.selectedData', jsonData);
+	
 }
 
 function JSONfindAndRemove(array, property, value) {
@@ -553,9 +558,14 @@ function createFacetTree(data) {
 }
 
 function getFilterTable(selectedList) {
+	// clear visualBasket
+	var visualBasket = document.getElementById("visualBasket");
+	visualBasket.value = "";
+	updateVisualisation();
 	// call Ajax
 //		console.log("Facet List: "+selectedList);
 	var facetFilter = document.getElementById("facetFilter");
+	
 	facetFilter.value = selectedList;
 	gfbioQuery();
 }
