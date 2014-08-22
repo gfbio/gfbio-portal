@@ -273,16 +273,22 @@ public class PangeaeSearch {
 			if (filter != "") {
 				boolean datacenterAll = false;
 				boolean datacenterOthers = false;
+				boolean datacenterNone = true;
 				boolean regionAll = false;
 				boolean regionOthers = false;
+				boolean regionNone = true;
 				boolean projectAll = false;
 				boolean projectOthers = false;
+				boolean projectNone = true;
 				boolean parameterAll = false;
 				boolean parameterOthers = false;
+				boolean parameterNone = true;
 				boolean investigatorAll = false;
 				boolean investigatorOthers = false;
+				boolean investigatorNone = true;
 				boolean taxonomyAll = false;
 				boolean taxonomyOthers = false;
+				boolean taxonomyNone = true;
 
 				String[] selectedList = filter.split(",,");
 				for (int i = 0; i < selectedList.length; i++) {
@@ -292,51 +298,22 @@ public class PangeaeSearch {
 					if (arrayid[0].indexOf("l1") == 0) {
 						if (arrayid[1].indexOf("datacenter") == 0) {
 							datacenterAll = true;
+							datacenterNone = false;	
 						} else if (arrayid[1].indexOf("region") == 0) {
 							regionAll = true;
+							regionNone = false;
 						} else if (arrayid[1].indexOf("project") == 0) {
 							projectAll = true;
+							projectNone = false;
 						} else if (arrayid[1].indexOf("parameter") == 0) {
 							parameterAll = true;
+							parameterNone = false;
 						} else if (arrayid[1].indexOf("investigator") == 0) {
 							investigatorAll = true;
+							investigatorNone = false;
 						} else if (arrayid[1].indexOf("taxonomy") == 0) {
 							taxonomyAll = true;
-						}
-					}
-				}
-				// find the include terms
-				JSONArray incArray = new JSONArray();
-				for (int i = 0; i < selectedList.length; i++) {
-					String id = selectedList[i];
-					String[] arrayid = id.split("__");
-					if (arrayid[0].indexOf("l2") == 0) {
-						// check only if "all" is not selected
-						String facetVal = arrayid[3];
-						if (arrayid[1].indexOf("datacenter") == 0
-								&& !datacenterAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("dataCenterFacet", facetVal)));
-						} else if (arrayid[1].indexOf("region") == 0
-								&& !regionAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("regionFacet", facetVal)));
-						} else if (arrayid[1].indexOf("project") == 0
-								&& !projectAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("projectFacet", facetVal)));
-						} else if (arrayid[1].indexOf("parameter") == 0
-								&& !parameterAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("parameterFacet", facetVal)));
-						} else if (arrayid[1].indexOf("investigator") == 0
-								&& !investigatorAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("investigatorFacet", facetVal)));
-						} else if (arrayid[1].indexOf("taxonomy") == 0
-								&& !taxonomyAll) {
-							incArray.put(new JSONObject().put("term", 
-									new JSONObject().put("taxonomyFacet", facetVal)));
+							taxonomyNone = false;
 						}
 					}
 				}
@@ -348,63 +325,108 @@ public class PangeaeSearch {
 					if(arrayid[0].indexOf("l3") == 0) {
 						if (arrayid[1].indexOf("datacenter") == 0) {
 							datacenterOthers = true;
+							datacenterNone = false;
 						} else if (arrayid[1].indexOf("region") == 0) {
 							regionOthers = true;
+							regionNone = false;
 						} else if (arrayid[1].indexOf("project") == 0) {
 							projectOthers = true;
+							projectNone = false;
 						} else if (arrayid[1].indexOf("parameter") == 0) {
 							parameterOthers = true;
+							parameterNone = false;
 						} else if (arrayid[1].indexOf("investigator") == 0) {
 							investigatorOthers = true;
+							investigatorNone = false;
 						} else if (arrayid[1].indexOf("taxonomy") == 0) {
 							taxonomyOthers = true;
+							taxonomyNone = false;
 						}
 					}
 				}// end for loop
+				
+				// find the include terms
+				JSONArray incArray = new JSONArray();
+				for (int i = 0; i < selectedList.length; i++) {
+					String id = selectedList[i];
+					String[] arrayid = id.split("__");
+					if (arrayid[0].indexOf("l2") == 0) {
+						// check only if "all" is not selected
+						String facetVal = arrayid[3];
+						if (arrayid[1].indexOf("datacenter") == 0
+								&& (!datacenterAll && !datacenterOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("dataCenterFacet", facetVal)));
+							datacenterNone = false;
+						} else if (arrayid[1].indexOf("region") == 0
+								&& (!regionAll && !regionOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("regionFacet", facetVal)));
+							regionNone = false;
+						} else if (arrayid[1].indexOf("project") == 0
+								&& (!projectAll && !projectOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("projectFacet", facetVal)));
+							projectNone = false;
+						} else if (arrayid[1].indexOf("parameter") == 0
+								&& (!parameterAll && !parameterOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("parameterFacet", facetVal)));
+							parameterNone = false;
+						} else if (arrayid[1].indexOf("investigator") == 0
+								&& (!investigatorAll && !investigatorOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("investigatorFacet", facetVal)));
+							investigatorNone = false;
+						} else if (arrayid[1].indexOf("taxonomy") == 0
+								&& (!taxonomyAll && !taxonomyOthers)) {
+							incArray.put(new JSONObject().put("term", 
+									new JSONObject().put("taxonomyFacet", facetVal)));
+							taxonomyNone = false;
+						}
+					}
+				}
+
 				JSONArray excArray = new JSONArray();
 				// add bool:must_not option from l4
 				for (int i = 0; i < selectedList.length; i++) {
 					String id = selectedList[i];
 					String[] arrayid = id.split("__");
+					JSONObject excObj = new JSONObject();
 					if (arrayid[0].indexOf("l4") == 0) {
 						String facetVal = arrayid[3];
-						// check only if "all" is not selected
-						if (arrayid[1].indexOf("datacenter") == 0
-								&& datacenterOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("dataCenterFacet", facetVal)));
-						} else if (arrayid[1].indexOf("region") == 0
-								&& regionOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("regionFacet", facetVal)));
-						} else if (arrayid[1].indexOf("project") == 0
-								&& projectOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("projectFacet", facetVal)));
-						} else if (arrayid[1].indexOf("parameter") == 0
-								&& parameterOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("parameterFacet", facetVal)));
-						} else if (arrayid[1].indexOf("investigator") == 0
-								&& investigatorOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("investigatorFacet", facetVal)));
-						} else if (arrayid[1].indexOf("taxonomy") == 0
-								&& taxonomyOthers) {
-							excArray.put(new JSONObject().put("term", 
-									new JSONObject().put("taxonomyFacet", facetVal)));
+						
+						if (arrayid[1].indexOf("datacenter") == 0 && !datacenterNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("dataCenterFacet", facetVal));
+							excArray.put(excObj);
+						} else if (arrayid[1].indexOf("region") == 0 && !regionNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("regionFacet", facetVal));
+							excArray.put(excObj);
+						} else if (arrayid[1].indexOf("project") == 0 && !projectNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("projectFacet", facetVal));
+							excArray.put(excObj);
+						} else if (arrayid[1].indexOf("parameter") == 0 && !parameterNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("parameterFacet", facetVal));
+							excArray.put(excObj);
+						} else if (arrayid[1].indexOf("investigator") == 0 && !investigatorNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("investigatorFacet", facetVal));
+							excArray.put(excObj);
+						} else if (arrayid[1].indexOf("taxonomy") == 0 && !taxonomyNone) {
+							excObj = new JSONObject().put("term", 
+									new JSONObject().put("taxonomyFacet", facetVal));
+							excArray.put(excObj);
 						}
 					}
 				}
 
 				JSONObject boolJSON = new JSONObject();
-				if (incArray.length()>0){
-					boolJSON.put("should", incArray);
-				}
-
-				if (excArray.length()>0){
-					boolJSON.put("must_not", excArray);
-				}
+				if (incArray.length()>0 )boolJSON.put("should", incArray);
+				if (excArray.length()>0)boolJSON.put("must_not", excArray);
 				if (boolJSON.length()>0) facetQuery.put("bool", boolJSON);
 
 			}
