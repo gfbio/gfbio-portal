@@ -393,7 +393,7 @@ $dockbarOpenGradientStart: #0EA6F9;
 		
 			@include respond-to(desktop){
 					float:left;
-					padding-top:4em;
+					padding-top:3em;
 					margin-right: -44em;
 					display: inline-block; 
 					text-align: left;
