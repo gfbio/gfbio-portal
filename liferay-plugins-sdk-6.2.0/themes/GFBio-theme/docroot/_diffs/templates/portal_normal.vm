@@ -179,13 +179,7 @@ $theme.include($bottom_include)
     });
   })(jQuery);
 </script>
-<script>
-var currentURL = <%=themeDisplay.getURLCurrent() %>;
-alert(currentURL);
 
-var portalURL = <%=themeDisplay.getPortalURL() %>;
-alert(portalURL);
-</script>
 
 
 </body>
