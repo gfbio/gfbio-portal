@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+	<ModulePrefs title="gcdj_widget" height="400" author="gfbiodev"
+		author_email="dev@gfbio.org">
+		<Require feature="pubsub-2">
+			<Param name="topics">
+          <![CDATA[
+          ]]>
+			</Param>
+		</Require>
+		<Require feature="dynamic-height" />
+	</ModulePrefs>
+	<Content type="html">
+	<![CDATA[
+	<!DOCTYPE html>
+		<html style="height: 100%;">
+			<head  lang="en">
+				<meta charset="UTF-8">
+				<title>A simple wrapper for GCDJ widget testing</title>
+			</head>
+			<body style="height:100%;">
+			<iframe style="width:100%; height:95%;" src="http://minerva.inf-bb.uni-jena.de/gfbio/gcdj_widget-master/example.html" />
+			
+			</body>
+		</html>
+	]]>
+	
+	</Content>
+</Module>

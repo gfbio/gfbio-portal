@@ -4,25 +4,15 @@ import java.io.*;
 
 import javax.portlet.*;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 
 public class GFBioSearch extends GenericPortlet {
 	protected static final String JSP_VIEW = "/view.jsp";
-//	static String queryString = "{\"size\" : %d,\"query\": {\"simple_query_string\": {\"query\": \"%s\"}}%s}";
-	static String queryString = "{\"fields\" : [\"_score\",\"region\",\"investigator\",\"citation.date\","
-			+"\"xml\",\"format\",\"dataCenter\",\"type\",\"maxLongitude\",\"citation.authors\","
-			+"\"project\",\"parameter\",\"internal-source\",\"internal-datestamp\",\"datalink\",\"metadatalink\",\"minLatitude\","
-			+"\"description\",\"citation.source\",\"citation.title\",\"maxLatitude\",\"feature\",\"minLongitude\",\"citation.publisher\"]"
-			+",\"query\": {\"simple_query_string\": {\"query\": \"%s\"}},\"from\":%s,\"size\":%s}";
-	static String facetString = "{\"facets\": {"
-			+ "\"datacenter\": {\"terms\": {\"field\": \"dataCenterFacet\",\"size\": 10}},"
-			+ "\"region\": {\"terms\": {\"field\": \"regionFacet\",\"size\": 10}},"
-			+ "\"project\": {\"terms\": {\"field\": \"projectFacet\",\"size\": 10}},"
-			+ "\"parameter\": {\"terms\": {\"field\": \"parameterFacet\",\"size\": 10}},"
-			+ "\"taxonomy\": {\"terms\": {\"field\": \"taxonomyFacet\",\"size\": 10}},"
-			+ "\"investigator\": {\"terms\": {\"field\": \"investigatorFacet\",\"size\": 10}}}}";
-//	static int maxResult = 50;
 
 	protected void doView(RenderRequest request, RenderResponse response)
 			throws PortletException, IOException {
@@ -39,28 +29,28 @@ public class GFBioSearch extends GenericPortlet {
 			response.setContentType("text/html");
 			String keyword = request.getParameter("queryString");
 			String mode = request.getParameter("mode");
-//			System.out.println(request.getAttributeNames().toString());
+			System.out.println("Keyword: " + keyword);
+			String filter = request.getParameter("filter");
+			// System.out.println("Filter: "+filter);
 
-			String queryJSON = "";
-			if (mode.equals("getResult")){
-//				queryJSON = String.format(queryString, maxResult, keyword,facetString);
+			JSONObject queryJSON = new JSONObject();
+			if (mode.equals("getResult")) {
 				String from = request.getParameter("from");
 				String size = request.getParameter("size");
-				queryJSON = String.format(queryString, keyword,from,size);
-//				System.out.println(queryJSON);
-			}
-			else if(mode.equals("getFacet")){
-				queryJSON = facetString;
+				queryJSON = PangeaeSearch.createJSONRequest(keyword, from, size, filter);
+				// System.out.println(queryJSON);
+			} else if (mode.equals("getFacet")) {
+				queryJSON = PangeaeSearch.createJSONFacet();
 			}
 
-			JSONObject searchResult = PangeaeSearch.HttpPost(queryJSON);
+			JSONObject searchResult = PangeaeSearch.HttpPost(queryJSON
+					.toString());
 			JSONObject json = new JSONObject();
-//			System.out.println(searchResult);
-			if (mode.equals("getResult")){
-				json=	PangeaeSearch.parsedResult(searchResult);
-			}
-			else if (mode.equals("getFacet")){
-				json= PangeaeSearch.parseFacet(searchResult);
+			// System.out.println(searchResult);
+			if (mode.equals("getResult")) {
+				json = PangeaeSearch.parsedResult(searchResult);
+			} else if (mode.equals("getFacet")) {
+				json = PangeaeSearch.parseFacet(searchResult);
 			}
 			System.out.println(json);
 			PrintWriter writer = response.getWriter();

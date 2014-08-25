@@ -4,120 +4,45 @@
 <portlet:defineObjects />
 
 <portlet:resourceURL id="searchURL" var="searchURL" escapeXml="false" />
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css"
 	href="<%=request.getContextPath()%>/css/search.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/css/tree/style.css" />
-
+<link rel="stylesheet"
+	href="<%=request.getContextPath()%>/css/spectrum.css" />
 <script type="text/javascript">
 window.onload=function() {
 		// use query term from other page.
-		var urlReq = window.location.search;
-		var startPos = urlReq.indexOf("q_=");
-		if (startPos >=0){
-			var endPos = urlReq.indexOf("&",startPos+3);
-			urlReq = urlReq.substring(startPos+3,endPos);
-			console.log("input: "+urlReq);	
-			var searchInput = document.getElementById("gfbioSearchInput");
-			searchInput.value = urlReq;
-		}
+		listenToPageRequest();
 		var keyword = document.getElementById("gfbioSearchInput").value;
-		getSearchResult(keyword);
+		getSearchResult(keyword,"");
 
-// 		console.log('tagcloud');
-		  Liferay.on(
-		            'facetUpdate',
-		            function(event) {
-						var facet = event.ipcData;
-		        	    var items = [];
+		// call to server for facet data
+		$.ajax({
+			"url": "<%=searchURL%>" + "/GFBioSearch",
+			"data" : {
+				"<portlet:namespace />mode" : "getFacet",
+				"<portlet:namespace />queryString" : keyword
+			},
+			"type" : "POST",
 
-		        	    var i = 0;
-		        	    
-		        	    $.each(facet, function (id, option) {
-		        	    	var color =  ['#C24641','#FF8040','#ADA96E','#008080','#157DEC','#810541'];//getColor(i,6);   
-		        	        var listString='';
-		        	    	$.each(option, function (id2, option2) {
-		        	        	listString+='<a href="#" rel="'
-		        	        	+option2.count+'"><font color="'+color[i]+'">'
-		        	        	+option2.name+'</font></a>&nbsp;&nbsp;&nbsp;';
-		        	        });
-		        	        items.push(listString);
-
-		        	    	 i= i+1;
-		        	    });  
-		        	    
-		        		$('#cloud').append(items.join(''));
-
-		        		$.fn.tagcloud.defaults = {
-		        				  size: {start: 10, end: 16, unit: 'pt'}
-		        				  //color: {start: '#cde', end: '#f52'}
-		        				};
-		        		  $('#cloud a').tagcloud();
-		            }
-		    );
-			 $("#gfbioSearchInput").keyup(function(event){
-				    if(event.keyCode == 13){
-				        $("#QueryButton").click();
-				    }
-				});
-			  $('#gfbioSearchInput').autocomplete({
-				    minLength: 1,
-				    delay: 0,
-				    source: function(request, response) {
-				      $.ajax('http://ws.pangaea.de/es/portals/_suggest', {
-				        contentType: 'application/json; charset=UTF-8',
-				        type: 'POST',
-				        data: JSON.stringify({
-				          'suggest': {
-				            'text': request.term,
-				            'completion': {
-				              'field': 'suggest',
-				              'size': 12,
-				            },
-				          },
-				        }),
-				        dataType: 'json',
-				        success: function(data) {
-				          response($.map(data.suggest[0].options, function(item) {
-				            return item.text;
-				          }));
-				        },
-				      });
-				    },
-				    open: function() {
-				      var maxWidth = $(document).width() - $(this).offset().left - 16;
-				      $(this).autocomplete('widget').css({
-				        'max-width': maxWidth + "px"
-				      });
-				    },
-				  });
+			success : function(data) {
+				var jsonDataset = eval("(function(){return " + data + ";})()");
+				createFacetTree(jsonDataset);
+			}
+		});
+		// create tag cloud from facet
+		Liferay.on('facetUpdate', function(event) { updateFacet(event);});
+		
+		listenToEnterPress();
+		setAutoComplete();
 	};
-	 
-	function gfbioQuery() {
-		$('#tableId').DataTable().clear();
-		var keyword = document.getElementById("gfbioSearchInput").value;
-		getSearchResult(keyword);
-	}
-
-
-	function getValueByAttribute(list, attr, val){
-	    var result = null;
-	    $.each(list, function(index, item){
-	        if(item[attr].toString() == val.toString()){
-// 	           result = index;
-	           result = list[index].value;
-	           return false;     // breaks the $.each() loop
-	        }
-	    });
-	    return result;
-	}
-
-
-	function getSearchResult(keyword){
-		console.log('getSearchResult');
+	
+	function getSearchResult(keyword,filter){
+		console.log('getSearchResult: '+keyword);
 		writeResultTable();
-		var oTable = $('#tableId').dataTable( {
+		var oTable = $('#tableId').DataTable( {
 				"bDestroy" : true,
 				"bJQueryUI" : true,    
 		        "bProcessing": true,
@@ -132,8 +57,9 @@ window.onload=function() {
 				       aoData.push( { "name": "<portlet:namespace />queryString", "value": keyword} );
 				       aoData.push( { "name": "<portlet:namespace />from", "value": iDisplayStart} );
 				       aoData.push( { "name": "<portlet:namespace />size", "value": iDisplayLength} );
+				       aoData.push( { "name": "<portlet:namespace />filter", "value": filter} );
 					 },
-					"aoColumns" : [ {
+				"aoColumns" : [ {
 						"data" : "title",
 						"sWidth" : "30%",
 						"sortable" : false
@@ -188,16 +114,6 @@ window.onload=function() {
 						"sortable" : false
 					},
 					{
-						"data" : "dataLink",
-						"visible" : false,
-						"sortable" : false
-					},
-					{
-						"data" : "metadataLink",
-						"visible" : false,
-						"sortable" : false
-					},
-					{
 						"data" : "maxLatitude",
 						"visible" : false,
 						"sortable" : false
@@ -218,70 +134,59 @@ window.onload=function() {
 						"sortable" : false
 					},
 					{
+						"class" : "color-control",
+						"sortable" : false,
+						"data" : null,
+						"defaultContent" : "<input type='text' class='full-spectrum'/>"
+					},
+					{
 						"class" : "details-control",
 						"sortable" : false,
 						"data" : null,
 						"defaultContent" : ""
 					} // last column for +button
 					],
-					"sDom" : 'Clrtip',
-					// display show/hide column button
-					colVis : {
-						exclude : [ 0,10,17]
+				"sDom" : 'Clrtip',
+				// display show/hide column button
+				colVis : {
+						exclude : [ 0,9,15,16]
 					},
-					"order" : [ [ 9, "desc" ] ], // ordered by score
-					"sAutoWidth" : true,
-// 					"sPaginationType" : "full_numbers",
+				"order" : [ [ 9, "desc" ] ], // ordered by score
+				"sAutoWidth" : true,
 
-					"fnDrawCallback" : function(oSettings) {
-// 						console.log('drawcallback');
-						// do nothing if table is empty
-					    if (!$(".dataTables_empty")[0]){
-							console.log('table draw callback');
-							addToolTip();
-							addExtraRow();
-					    }
-					}
+				"fnDrawCallback" : function(oSettings) {
+					// do nothing if table is empty
+				    if (!$(".dataTables_empty")[0]){
+						console.log('table draw callback');
+						addToolTip();
+						addExtraRow();
+						addColorPicker();
+						setSelectedRowStyle();
+				    }
+				}	
 		    } );
-			setFireSelectedData(oTable);
-		    
-		$.ajax({
-			"url": "<%=searchURL%>"
-			+ "/GFBioSearch",
-		"data" : {
-			"<portlet:namespace />mode" : "getFacet",
-			"<portlet:namespace />queryString" : keyword
-		},
-		"type" : "POST",
-
-        success : function(data) {
-            var jsonDataset = eval("(function(){return " + data + ";})()");
-			createFacetTree(jsonDataset);
-        }	
-		});
+		onRowClick();
 	}
 
 </script>
-
 
 <div id="search_portlet">
 	<label>Search:&nbsp; <input id="gfbioSearchInput"
 		name="gfbioSearchInput" class="acInput" value="tree"
 		autocomplete="off"> <input id="QueryButton" name="QueryButton"
 		type="button" value="Find Data" style="font-weight: bold"
-		onclick="javascript:gfbioQuery();" /></label>
-
-	<br />
+		onclick="javascript:gfbioQuery();" /></label> <br />
 	<div id="div_facet_outer" class="divleft">
 		Facet Filter
-		<div id="search_result_facet">
-		</div>
+		<div id="search_result_facet" class="search-facet"></div>
 	</div>
-	<div id="search_result_table" class="divright">
-	</div>
+	<div id="search_result_table" class="divright"></div>
 
 	<div style="clear: both"></div>
 </div>
+
+<input type="hidden" id="visualBasket" value="">
+<input type="hidden" id="facetFilter" value="">
 
 <script src="${pageContext.request.contextPath}/js/main.js"
 	type="text/javascript"></script>
