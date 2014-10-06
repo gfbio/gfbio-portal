@@ -14,6 +14,7 @@
 	href="<%= request.getContextPath() %>/css/spectrum.css" />
 <script type="text/javascript">
 var oTable;
+// window.onload  ... is a critical bug, because it overwrites all other eventhandlers from page outside portlet
 window.onload=function() {
 		// use query term from other page.
 		listenToPageRequest();
