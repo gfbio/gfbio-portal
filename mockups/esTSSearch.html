@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>mockup unified search</title>
+        <!--FIXME Attention the "http" term is a problem if you want a https connection-->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+       <!-- <script src="//ws.pangaea.de/jslibs/toolbox.js" ></script> -->
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/flick/jquery-ui.css">
+
+        <style type="text/css">
+          #searchResult li { margin-bottom: .7em; }
+          #searchResult .info { font-size: smaller; }
+          #searchResult .citation { font-size: larger; }
+          #searchResult .creator { font-weight: bold; }
+          #searchResult .date { font-weight: bold; }
+          #searchResult .desc { font: inherit; border-collapse: collapse; border: 0; margin: 0; padding: 0}
+          #searchResult .desc-left { font-style: italic; margin: 0; padding: 0; padding-right: .5em; vertical-align: top; text-align: left; white-space: nowrap; }
+          #searchResult .desc-right { margin: 0; padding: 0; vertical-align: top; text-align: left; }
+        </style>
+<!--embedded js FIXme move to a own file-->
+        <script type="text/javascript">
+
+// //ws.pangaea.de/es/dataportal-gfbio/pansimple/_search
+// FIXME move to a central external class
+
+var INDEX = 'dataportal-gfbio';
+var TARGET = 'resultWindow';
+
+$(document).ready(function() {
+  $('#queryInput').autocomplete({
+    minLength: 1,
+    delay: 0,
+    source: function(request, response) {
+       //FIXME http only for local browser usage 
+      $.ajax('http://ws.pangaea.de/es/portals/_suggest', {
+        contentType: 'application/json; charset=UTF-8',
+        type: 'POST',
+        data: JSON.stringify({
+          'suggest': {
+            'text': request.term,
+            'completion': {
+              'field': 'suggest',
+              'size': 12,
+            },
+          },
+        }),
+        dataType: 'json',
+        success: function(data) {
+          response($.map(data.suggest[0].options, function(item) {
+            return item.text;
+          }));
+        },
+      });
+    },
+    open: function() {
+      var maxWidth = $(document).width() - $(this).offset().left - 16;
+      $(this).autocomplete('widget').css({
+        'max-width': maxWidth + "px"
+      });
+    },
+  });
+
+  $('#searchForm').submit(function() {
+    $('#queryInput').autocomplete('close');
+    var query = $('#queryInput').val();
+    if (query.trim() == '') {
+      $('#searchResult').html(''); // clear results
+      $('#terminologyResult').html(''); // clear results
+      return false;
+    }
+    //TODO create a external java script formatter 
+    var searchRequest = {
+     "from" : 0,
+     "size" : 10,
+     "_source" : "html-1",
+     "query" : {
+      "function_score" : {
+       "query" : {
+         "simple_query_string" : {
+          "fields" : ["fulltext", "citation^3"],
+          "default_operator" : "or",
+          "query" : query,
+          "analyzer" : "classic"
+         }
+       },
+       "functions" : [{
+         "field_value_factor" : {
+          "field" : "boost"
+         }
+        }
+       ],
+       "score_mode" : "multiply"
+      }
+     }
+    };
+    $.ajax('http://ws.pangaea.de/es/' + INDEX + '/pansimple/_search', {
+      contentType: 'application/json; charset=UTF-8',
+      type: 'POST',
+      data: JSON.stringify(searchRequest),
+      dataType: 'json',
+      success: function(data) {
+        var resultHtml = [];
+        if (data.hits && data.hits.hits) {
+          resultHtml.push('<p>', data.hits.total, ' datasets found in ', data.took, 'ms.</p>');
+          resultHtml.push('<ol>');
+          data.hits.hits.forEach(function(entry) {
+            var html = entry['_source']['html-1']
+              .replace(/@target@/g, TARGET) // use regex to replace *all* occurences!
+              .replace('<'+'!--@footer@-'+'->', ' - Score: ' + Math.round(entry._score / data.hits.max_score * 100.0) + '%');
+            resultHtml.push('<li>', html, '</li>');
+          });
+          resultHtml.push('</ol>');
+        }
+        $('#searchResult').html(resultHtml.join(''));
+      },
+    });
+
+    $.getJSON('http://terminologies.gfbio.org/api/beta/terminologies/search', { 'query' : query }, function(data) {
+      var items = [];
+      if (data.results) {
+        items = $.map(data.results, function(entry) {
+          return (entry.label && entry.label.value) ? entry.label.value : undefined;
+        });
+      }
+      $('#terminologyResult').text(items.join(', '));
+    });
+
+    return false; // don't execute form on webserver
+
+  });
+});
+
+</script>
+</head>
+
+<body>
+<h1>the great unified search mockup</h1>
+
+<div id="essearch">
+  <form  id="searchForm" class="header-suchfeld">
+    <label for="queryInput">Find Data: </label><input type="search" id="queryInput" class="text" value="" autocomplete="off">
+    <input type="submit" value="Search">
+  </form>
+</div>
+
+<div id="terminologyResult"></div>
+<div id="searchResult"></div>
+
+
+</body>
+</html>
