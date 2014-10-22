@@ -121,7 +121,7 @@ $(document).ready(function() {
       if (data.results) {
 	
          data.results.forEach(function(entry){
-         items.append($('<li></li>').append("founded at " +entry.terminology.value +" : " +entry.label.value).append($('<a> SW Link </a>').attr("href", entry.uri.value)))
+         items.append($('<li></li>').append("found in " +entry.terminology.value +" : " +entry.label.value+" ").append($('<a>SW Link</a>').attr("href", entry.uri.value)))
 });
       }
 
