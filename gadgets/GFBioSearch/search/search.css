@@ -33,11 +33,11 @@ select[name=tableId_length] {
 	margin: 0px 0px 0px 5px !important;
 }
 td.details-control {
-	background: url('../images/details_open.png') no-repeat center center;
+	background: url('images/details_open.png') no-repeat center center;
 	cursor: pointer;
 }
 tr.shown td.details-control {
-	background: url('../images/details_close.png') no-repeat center center;
+	background: url('images/details_close.png') no-repeat center center;
 }
 td.color-control {
 	vertical-align: middle;
