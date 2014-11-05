@@ -1,0 +1,72 @@
+input[type=search] {
+	width: 25%;
+	min-width: 200px;
+}
+
+select[name=tableId_length] {
+	width: 20%;
+	min-width: 80px;
+}
+
+/* .divleft { */
+/* 	width: 19%; */
+/* 	float: left; */
+/* 	overflow-x:scroll; */
+/* 	margin-top:50px; */
+
+/* } */
+
+/* .divright { */
+/* 	width: 80%; */
+/* 	float: right; */
+/* 	/*    width:auto; */
+/* } */
+
+/* #search_portlet { */
+/* 	width: 80%; */
+/* } */
+
+.search_portlet {
+	height: auto;
+}
+.jstree-node, .jstree-children, .jstree-container-ul  {
+	margin: 0px 0px 0px 5px !important;
+}
+td.details-control {
+	background: url('../images/details_open.png') no-repeat center center;
+	cursor: pointer;
+}
+tr.shown td.details-control {
+	background: url('../images/details_close.png') no-repeat center center;
+}
+td.color-control {
+	vertical-align: middle;
+}
+/* li.moreOption .jstree-checkbox {  */
+/* 	display:none;} */
+
+/* #facetDialogTabs { */
+/* 	padding: 0px; */
+/* 	background: none; */
+/* 	border-width: 0px; */
+/* } */
+/* #facetDialogTabs .ui-tabs-nav { */
+/* 	padding-left: 0px; */
+/* 	background: transparent; */
+/* 	border-width: 0px 0px 1px 0px; */
+/* 	-moz-border-radius: 0px; */
+/* 	-webkit-border-radius: 0px; */
+/* 	border-radius: 0px; */
+/* } */
+/* #facetDialogTabs .ui-tabs-nav li { */
+/* 	margin-top: 0.6em; */
+/* 	font-size: 60%; */
+/* } */
+/* #facetDialogTabs .ui-tabs-nav li.ui-tabs-selected, */
+/* #facetDialogTabs .ui-tabs-nav li.ui-state-active { */
+/* 	margin-top: 0em; */
+/* 	font-size: 80%; */
+/* } */
+.invisible{
+	display:none;
+}
