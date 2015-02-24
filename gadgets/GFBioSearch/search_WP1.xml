@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-	<ModulePrefs title="gfbiosearch_widget" author="gfbiodev"
-		author_email="dev@gfbio.org" scrolling="true">
+	<ModulePrefs title="Search Widget" author="gfbiodev"
+			author_email="dev@gfbio.org" >
 		<Require feature="pubsub-2">
 			<Param name="topics">
 				<![CDATA[
-        <Topic title="GFBio Search" name="gadget:gfbio.search.selectedData" publish="true"/>
+        <Topic title="GFBio Search" name="gfbio.search.selectedData" publish="true" subscribe="true"/>
           ]]>
 			</Param>
 		</Require>
@@ -14,395 +14,426 @@
 	<Content type="html">
 		<![CDATA[
 	<!DOCTYPE html>
-		<html style="height: 100%;">
+		<html style="min-height: 350px;">
 			<head  lang="en">
 				<meta charset="UTF-8">
 				<title>GFBio Search widget</title>
-				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/jquery-1.10.2.js"	type="text/javascript"></script>
-				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/jquery-1.10.2-ui.js"	type="text/javascript"></script>
-				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/jquery.dataTables.js"	type="text/javascript"></script>
-				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/spectrum.js"	type="text/javascript"></script>
-				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/search.css" />
-				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/spectrum.css" />
-				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/dataTables.jqueryui.css" />
-				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/jquery.dataTables.css" />
-				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbiows/search/jquery-ui.css" />
+				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
+				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
+				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery.dataTables.js"	type="text/javascript"></script>
+				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/spectrum.js"	type="text/javascript"></script>
+				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/esTSSearch/TMS.js" type="text/javascript"></script>
+				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/search.css" />
+				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/spectrum.css" />
+				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/dataTables.jqueryui.css" />
+				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery.dataTables.css" />
+				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery-ui.css" />
 			</head>
-			<body style="height:100%;">
-				<div id="search_portlet">
-					<label>Search:&nbsp; <input id="gfbioSearchInput"
-						name="gfbioSearchInput" class="acInput" value=""
-						autocomplete="off"> <input id="QueryButton" name="QueryButton"
-						type="button" value="Find Data" style="font-weight: bold"
-						onclick="javascript:gfbioQuery();" /></label> <br />
+			<body style="min-height:350px;">
+				<div id="search_gadget">
+					<label>Search:&nbsp; 
+						<input id="gfbioSearchInput"
+						name="gfbioSearchInput" 
+						type="search" 
+						class="acInput" value=""
+						autocomplete="off"/> 
+						<input id="QueryButton" name="QueryButton"
+						type="button" value="" class="acButton"
+						onclick="javascript:newQuery();" />
+
+					</label> <div style="height:10px"></div>
 					<div id="search_result_table"></div>
 
 				</div>
-
-				<input id="visualBasket" type="hidden" value="">
+				<input id="visualBasket" type="hidden" value=""/>
 			</body>
 			<script type="text/javascript">
 			
+				gadgets.HubSettings.onConnect = function(hub, suc, err) {
+					//console.log('pong');
+					gadgets.Hub.subscribe("gfbio.search.facetfilter", receiveRequest);
+					var q = getQueryVariable('q_');
+					if (q != '') {
+						//console.log("q_= "+q);
+						var searchbox = document.getElementById("gfbioSearchInput");
+						searchbox.value = q;
+						newQuery();
+					}
+				};
+				
+				function receiveRequest(topic, data, subscriberData) {
+					console.log('5:'+data);
+					var facetFilters = data.filtered;
+					var filteredArray = [];
+					//console.log(':Search: receive facet filter - '+JSON.stringify(facetFilters));
+					for (var i = 0; i < facetFilters.length; i++) {
+						var facetFilter = facetFilters[i];
+						var filterStr = "{\"term\":{\""+facetFilter.facetCat+"\":\""+facetFilter.facetTerm+"\"}}"
+						//console.log(':Search: filterStr - '+filterStr);
+						var filterTerm = JSON.parse(filterStr);
+						filteredArray.push(filterTerm);
+					}
+					filterQuery(filteredArray);
+				};
 				$(document).ready(function() {
 					listenToEnterPress();
 					setAutoComplete();
+					//adjust();
+				});
+				/*
+				$(document).on('input', '.acInput', function() {
+				    $(this)[tog(this.value)]('x');
+				}).on('mouseover', '.x', function(e) {
+				    $(this).addClass('onX');   
+				}).on('mouseout', '.x', function(e) {
+				    $(this).removeClass('onX');   
+				}).on('click', '.onX', function(){
+				    $(this).removeClass('x onX').val('').change();
+				});
+				*/
+				$( document ).ajaxComplete(function( event, xhr, settings ) {
 					adjust();
 				});
 				
-				function gfbioQuery() {
-						// clear visualBasket
-						var visualBasket = document.getElementById("visualBasket");
-						visualBasket.value = "";
-						updateVisualisation();
+				function newQuery() {
+					// clear visualBasket
+					var visualBasket = document.getElementById("visualBasket");
+					visualBasket.value = "";
+					updateVisualisation();
 					$('#tableId').DataTable().clear();
 					var keyword = document.getElementById("gfbioSearchInput").value;
-				//	var filter = document.getElementById("facetFilter").value;
-					var filter = "";
+					var filter = [];
+					
+					if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facetreset', 'reset');
+					
+					$('#gfbioSearchInput').autocomplete('close');
+					
+					getSearchResult(keyword,filter);
+				}
+				
+				
+				function filterQuery(filter) {
+					// keep only filtered items
+					//var visualBasket = document.getElementById("visualBasket");
+					//visualBasket.value = "";
+					//updateVisualisation();
+					$('#tableId').DataTable().clear();
+					var keyword = document.getElementById("gfbioSearchInput").value;
+					
 					getSearchResult(keyword,filter);
 				}
 				
 				function getSearchResult(keyword,filter) {
-						console.log('getSearchResult: '+keyword);
-						writeResultTable();
-						var oTable = $('#tableId').DataTable( {
-										"bDestroy" : true,
-										"bJQueryUI" : true,
-										"bProcessing": true,
-										"bServerSide": true,
-										"sAjaxSource":'http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search',
-										"bRetrieve": true,
-										"fnServerData": fnServerObjectToArray(keyword), 
+					//console.log(':Search: getSearchResult: '+keyword);
+					if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
+					writeResultTable();
+					var oTable = $('#tableId').DataTable( {
+									"bDestroy" : true,
+									"bPaginate": true,
+									"bJQueryUI" : true,
+									"bProcessing": true,
+									"bServerSide": true,
+									"sAjaxSource":'http://ws.pangaea.de/es/dataportal-gfbio/pansimple/_search',
+									"bRetrieve": true,
+									"fnServerData": fnServerObjectToArray(keyword,filter), 
 									 
-										"aoColumns" : [ 
-											{
-												"data" : "score",
-												"visible" : false,
-												"sortable" : false
-											},
-											{
-												"data" : "title",
-												"sortable" : false,
-											}, 
-											{
-												"class" : "color-control",
-												"sortable" : false,
-												"data" : null,
-												"defaultContent" : "<input type='text' class='full-spectrum'/>",
-											},
-											{	// last column for +button
-												"class" : "details-control",
-												"sortable" : false,
-												"data" : null,
-												"defaultContent" : "",
-											} 
-											],
-										"sDom" : 'lrtip',
-										"order" : [ [ 0, "desc" ] ], // ordered by score
-										"sAutoWidth" : true,
-
-										"fnDrawCallback" : function(oSettings) {
-											// do nothing if table is empty
-											if (!$(".dataTables_empty")[0]) {
-												console.log('table draw callback');
-												addToolTip();
-												addExtraRow();
-												addColorPicker();
-												setSelectedRowStyle();
-												adjust();
-											}
+									"aoColumns" : [ 
+										{
+											"data" : "score",
+											"visible" : false,
+											"sortable" : false
+										},
+										{
+											"data" : "html",
+											"visible" : true,
+											"sortable" : false
+										},
+										{
+											"class" : "color-control",
+											"sortable" : false,
+											"data" : null,
+											"defaultContent" : "<input type='text' class='full-spectrum'/><div id='cart' class='cart_unselected invisible' title='Click to add/remove dataset to/from VAT (for registered user).'/>",
 										}
-									} );
-								onRowClick();
-					}
+									],
+									"sDom" : '<"top"l<"divline"ip>>rt<"bottom"<"divline"ip>><"clear">',//'lrtip',
+									//"order" : [ [ 0, "desc" ] ], 
+									"sAutoWidth" : true,
+
+									"fnDrawCallback" : function(oSettings) {
+										// do nothing if table is empty
+										//console.log(':Search: table draw callback');
+					    				if (!$(".dataTables_empty")[0]) {
+											addColorPicker();
+											setSelectedRowStyle();
+											//adjust();
+										}
+									},
+									"fnRowCallback": function (nRow, aData, iDisplayIndex) {
+											showCartIcon(nRow,aData);
+									},
+    									"oLanguage": {
+      										"sLengthMenu": "Show _MENU_ entries per page"
+    									}
+								} );
+					onRowClick();
+
+				}
 					
 				function onRowClick() {
-					$('#tableId tbody').off("click");
-					$('#tableId tbody').on( 'click', 'tr', function(e) {
-						// prevent selecting the extra row
-						if ($(this).hasClass('even') ||$(this).hasClass('odd'))
-						{
-							$(this).toggleClass('selected');
-							var basket = document.getElementById("visualBasket");
-							var basketStr = basket.value;
-							var jsonData = {};
-							var selected = [];
-							if ($(this).hasClass('selected')) {
-								// add to basket
-								if (basketStr=="") {
-									jsonData.selected = selected;
-								}else {
-									jsonData = JSON.parse(basketStr);
-								}
+					$('#tableId tbody').off('click');
+					$('#tableId tbody').on('click', '#cart', function(e) {
+						var cell = $(this).parent();
+						var row = cell.parent();
+						var icol = row.children().index(cell);
+						var irow = row.parent().children().index(row);
+						
+						row.toggleClass('selected');
+						
+						var basket = document.getElementById("visualBasket");
+						var basketStr = basket.value;
+						var jsonData = {};
+						var selected = [];
+						if (row.hasClass('selected')) {
+							$(this).attr('class','cart_selected');
+							$($(".sp-replacer")[irow]).removeClass("invisible");
+							// add to basket
+							if (basketStr=="") {
+								jsonData.selected = selected;
+							}else {
+								jsonData = JSON.parse(basketStr);
+							}
 
-								var nRow = $(this).context;
+							var nRow = row[0];
+							var tRows = $('#tableId').DataTable().rows();
+							var resultArray = createResultArray(nRow,tRows);
+							jsonData.selected.push(resultArray);
+							basket.value = JSON.stringify(jsonData);
+						}else {
+							$(this).attr('class','cart_unselected');
+							$($(".sp-replacer")[irow]).addClass("invisible");
+							// remove from basket
+							if (basketStr!="") {
+								jsonData = JSON.parse(basketStr);
+								// get row index to find metadatalink as id
+								var nRow = row[0];
 								var tRows = $('#tableId').DataTable().rows();
 								var resultArray = createResultArray(nRow,tRows);
-								jsonData.selected.push(resultArray);
+								jsonData.selected = JSONfindAndRemove(jsonData.selected,'metadataLink',resultArray.metadataLink);
 								basket.value = JSON.stringify(jsonData);
-							}else {
-								// remove from basket
-								if (basketStr!="") {
-									jsonData = JSON.parse(basketStr);
-									var nRow = $(this).context;
-									var tRows = $('#tableId').DataTable().rows();
-									var resultArray = createResultArray(nRow,tRows);
-									jsonData.selected = JSONfindAndRemove(jsonData.selected,'metadataLink',resultArray.metadataLink);
-									basket.value = JSON.stringify(jsonData);
-								}
 							}
-				//	    	console.log('basket: ');
-				//    		console.log(JSON.stringify(document.getElementById("visualBasket").value));
-
-							//update visualisation
-							updateVisualisation();
 						}
+			//	    	console.log(':Search: basket: ');
+			//    		console.log(JSON.stringify(document.getElementById("visualBasket").value));
 
+						//update visualisation
+						updateVisualisation();
 					} );
 				}
 
 				function updateVisualisation() {
 					var jsonData = getSelectedResult();
-					console.log('fire selected data: '+JSON.stringify(jsonData));
-					gadgets.Hub.publish('gadget:gfbio.search.selectedData', jsonData);
-
+					//console.log(':Search: fire selected data: '+JSON.stringify(jsonData));
+					if (gadgets.Hub.isConnected() && JSON.stringify(jsonData.selected) != "[]"){
+						gadgets.Hub.publish('gfbio.search.selectedData', jsonData);
+					}
 				}
 				var oTable;
 					function createQueryFieldArray() {
 						var jArr = [];
 							jArr.push("_score");
-							jArr.push("citation.title");
-							jArr.push("citation.authors");
-							jArr.push("description");
-							jArr.push("dataCenter");
-							jArr.push("region");
-							jArr.push("project");
-							jArr.push("citation.date");
-							jArr.push("parameter");
-							jArr.push("investigator");
+							//jArr.push("citation.title");
+							//jArr.push("citation.authors");
+							//jArr.push("description");
+							//jArr.push("dataCenter");
+							//jArr.push("region");
+							//jArr.push("project");
+							//jArr.push("citation.date");
+							//jArr.push("parameter");
+							//jArr.push("investigator");
 							jArr.push("internal-datestamp");
 							jArr.push("maxLatitude");
 							jArr.push("minLatitude");
 							jArr.push("maxLongitude");
 							jArr.push("minLongitude");
-							jArr.push("taxonomy");
-							jArr.push("datalink");
+							//jArr.push("taxonomy");
+							//jArr.push("datalink");
 							jArr.push("metadatalink");
-				// 			jArr.push("xml");
-				// 			jArr.push("format");
-				// 			jArr.push("type");
-				// 			jArr.push("internal-source");
-				// 			jArr.push("citation.source");
-				// 			jArr.push("feature");
-				// 			jArr.push("citation.publisher");
+				            		jArr.push("html-1");
 						return jArr;
 					}
-					function fnServerObjectToArray(keyword){
+					function getFilteredQuery(keyword,filterArray){
+						return {
+							"filtered":{
+									"query":{
+		        					"simple_query_string": {
+        								"query":keyword,
+										"fields": [ "fulltext", "fulltext.folded^.7", "citation^3", "citation.folded^2.1" ],
+										"default_operator": "and"
+									}
+								},
+   								"filter":{
+   								    "and":{
+   								        "filters":filterArray
+   								    }
+   								}
+							}
+						}
+					}
+					function applyBoost(query) {
+						return {
+							"function_score": {
+							 "query": query,
+							 "functions": [{
+							   "field_value_factor": {
+								 "field": "boost"
+							   }
+							 }],
+							 "score_mode": "multiply"
+						   }
+						 }
+					}
+					function getCompleteQuery(boostedQuery,iDisplayStart,iDisplayLength,queryfield){
+						return {
+								  'query': 
+									boostedQuery
+								  ,
+								  'from':iDisplayStart,
+								  'size':iDisplayLength,
+								  'fields': queryfield,
+								  'aggs': {
+									'author': {
+								  		'terms': {
+								  		'field': 'citation.authorFacet',
+								  		'size': 50
+								  		}
+                                      					},
+									'year': {
+								  		'terms': {
+								  		'field': 'citation.yearFacet',
+								  		'size': 50
+								  		}
+                                    },
+								  	'region': {
+								  		'terms': {
+								  		'field': 'regionFacet',
+								  		'size': 50
+								  		}
+                                     },
+                         			'dataCenter': {
+                         				'terms': {
+	                       				'field': 'dataCenterFacet',
+        	              				'size': 50
+                           				}
+             		                }
+			                     }
+							}
+					}
+					function fnServerObjectToArray(keyword,filterArray){
 						return function (sSource, aoData, fnCallback){
 
-								var iDisplayStart = getValueByAttribute(aoData,"name","iDisplayStart");
-								var iDisplayLength = getValueByAttribute(aoData,"name","iDisplayLength");
-
-								console.log(iDisplayStart);
-								console.log(iDisplayLength);
-								var queryfield = createQueryFieldArray();
-								console.log(queryfield);
+							var iDisplayStart = getValueByAttribute(aoData,"name","iDisplayStart");
+							var iDisplayLength = getValueByAttribute(aoData,"name","iDisplayLength");
+							var queryfield = createQueryFieldArray();
+							//console.log('queryField: '+queryfield);
+							var filteredQuery = getFilteredQuery(keyword,filterArray);
+							var boostedQuery = applyBoost(filteredQuery);
+							var completeQuery = getCompleteQuery(boostedQuery,iDisplayStart,iDisplayLength,queryfield);
 							$.ajax(sSource, {
 								contentType: 'application/json; charset=UTF-8',
 								type: 'POST',
-								data: 
-									JSON.stringify({
-								  'query': {
-									'simple_query_string': {
-										"query":keyword
-									},
-								  },
-								  'from':iDisplayStart,
-								  'size':iDisplayLength,
-								  'fields': queryfield
-								}),
+								data: JSON.stringify(completeQuery),
 								dataType: 'json',
 								success: function(json) {
 									var datasrc = json.hits.hits;
+									// display facet only if the search return more than 1 result
+									if (datasrc.length >0){
+										console.log('1:'+datasrc.length);
+										var facet = json.aggregations;
+										console.log(facet);
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', facet);
+									}
+									else {
+										console.log('2');
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', '');
+									}
 									var res = [];
 									for (var i = 0, iLen = datasrc.length; i < iLen; i++) {
 										var inner = new Object();
 										var score = datasrc[i]._score;
 										var sourceObj = datasrc[i].fields;
-										console.log(sourceObj);
+										//console.log(sourceObj);
 										inner.score  = score;
-										inner.title  = sourceObj["citation.title"];
-										inner.authors = sourceObj["citation.authors"];
-										inner.description = sourceObj["description"];
-										inner.dataCenter = sourceObj["dataCenter"];
-										inner.region = sourceObj["region"];
-										inner.project = sourceObj["project"];
-										inner.citationDate = sourceObj["citation.date"];
-										inner.parameter = sourceObj["parameter"];
-										inner.investigator = sourceObj["investigator"];
-										inner.timeStamp = sourceObj["internal-datestamp"][0];
+										if (sourceObj["citation.title"] !== undefined)
+											inner.title  = sourceObj["citation.title"];
+										else inner.title = "";
+										if (sourceObj["citation.authors"] !== undefined)
+											inner.authors = sourceObj["citation.authors"];
+										else inner.authors = "";
+										if (sourceObj["description"] !== undefined)
+											inner.description = sourceObj["description"];
+										else inner.description = "";
+										if (sourceObj["dataCenter"] !== undefined)
+											inner.dataCenter = sourceObj["dataCenter"];
+										else inner.dataCenter = "";
+										if (sourceObj["region"] !== undefined)
+											inner.region = sourceObj["region"];
+										else inner.region = "";
+										if (sourceObj["project"] !== undefined)
+											inner.project = sourceObj["project"];
+										else inner.project = "";
+										if (sourceObj["citation.date"] !== undefined)
+											inner.citationDate = sourceObj["citation.date"];
+										else inner.citationDate = "";
+										if (sourceObj["parameter"] !== undefined)
+											inner.parameter = sourceObj["parameter"];
+										else inner.parameter = "";
+										if (sourceObj["investigator"] !== undefined)
+											inner.investigator = sourceObj["investigator"];
+										else inner.investigator = "";
+										if (sourceObj["internal-datestamp"] !== undefined)
+											inner.timeStamp = sourceObj["internal-datestamp"][0];
+										else inner.timeStamp = "";
 										if (sourceObj["maxLatitude"] !== undefined)
 											inner.maxLatitude = sourceObj["maxLatitude"][0];
-										else inner.maxLatitude = "";
+										else inner.maxLatitude = undefined;
 										if (sourceObj["minLatitude"] !== undefined)
 											inner.minLatitude = sourceObj["minLatitude"][0];
-										else inner.minLatitude = "";
+										else inner.minLatitude = undefined;
 										if (sourceObj["maxLongitude"] !== undefined)
 											inner.maxLongitude = sourceObj["maxLongitude"][0];
-										else inner.maxLongitude = "";
+										else inner.maxLongitude = undefined;
 										if (sourceObj["minLongitude"] !== undefined)
 											inner.minLongitude = sourceObj["minLongitude"][0];
-										else inner.minLongitude = "";
+										else inner.minLongitude = undefined;
 										if (sourceObj["taxonomy"] !== undefined)
 											inner.taxonomy = sourceObj["taxonomy"];
 										else inner.taxonomy = "";
-										inner.dataLink = sourceObj["datalink"];
-										inner.metadataLink = sourceObj["metadatalink"][0];
+										if (sourceObj["datalink"])
+										    inner.dataLink = sourceObj["datalink"];
+										else inner.dataLink = "";
+										
+										if (sourceObj["metadatalink"])
+										    inner.metadataLink = sourceObj["metadatalink"][0];
+										else inner.metadataLink = "";
+										
+										if (sourceObj["html-1"]){
+											var html = sourceObj["html-1"][0];
+											inner.html = html.replace("@target@","_blank").replace("<table","<table class=\"html-1\"");
+										}
+										else inner.html = "";
+										
 										res.push(inner);
 									}
 									json.iTotalRecords = json.hits.total;
 									json.iTotalDisplayRecords = json.hits.total;
 									json.data = res;
-				//                     console.log(resObj);
 									fnCallback(json);
 								}
 							});
 						};
 					};
+				
 
-					
-
-				function gfbioQuery() {
-						// clear visualBasket
-						var visualBasket = document.getElementById("visualBasket");
-						visualBasket.value = "";
-						updateVisualisation();
-					$('#tableId').DataTable().clear();
-					var keyword = document.getElementById("gfbioSearchInput").value;
-				//	var filter = document.getElementById("facetFilter").value;
-					var filter = "";
-					getSearchResult(keyword,filter);
-				}
-
-				function addExtraRow() {
-					var elems = document.getElementsByTagName('td');
-					var elm = null;
-					// check if the event has been added
-					for ( var i in elems) {
-						if ((' ' + elems[i].className + ' ').indexOf(' details-control ') > -1) {
-							elm = elems[i];
-						}
-					}
-					var ev = $._data(elm, 'events');
-					if (ev && ev.click) {
-						console.log('click bound');
-					} else {
-						$('.details-control').click(function(evt) {
-							evt.stopPropagation();
-							evt.preventDefault();
-							console.log('show detail clicked');
-							var tr = $(this).closest('tr');
-							var oTable = $('#tableId').DataTable();
-							var row = oTable.row(tr);
-
-							console.log(row.child.isShown());
-							if (row.child.isShown()) {
-								// This row is already open - close it
-								row.child.hide();
-								tr.removeClass('shown');
-							} else {
-								// Open this row
-								var extraRow = createExtraRow(row.data());
-								row.child(extraRow).show();
-								tr.addClass('shown');
-								tr.addClass('detail-row');
-							}
-						});
-					}
-				}
-
-				function addToolTip() {
-				//	console.log('add tooltip');
-					$('.odd, .even').hover(
-							function() {
-								var table = $('#tableId').dataTable();
-								var iRow = table.fnGetPosition(this);
-								var sCitation = "";
-								var sDescription = "";
-								if (table.length > 0) {
-									sCitation = table.fnGetData(iRow)["authors"];
-									sDescription = table.fnGetData(iRow)["description"];
-								}
-								this.setAttribute('title', "Author(s):" + sCitation
-										+ "\n\nDescription: " + sDescription);
-							});
-				}
-
-
-				function checkAllTree(facet) {
-					$.each(facet, function(id, option) {
-						$('#search_result_facet').jstree("select_node", "#l1__" + id).jstree(
-								"open_node", $('#l1__region'));
-					});
-				}
-				function createExtraRow(d) {
-					if (!d.authors) d.authors = "N/A";
-					if (!d.dataCenter) d.dataCenter = "N/A";
-					if (!d.description) d.description = "N/A";
-					if (!d.investigator) d.investigator = "N/A";
-					if (!d.project) d.project = "N/A";
-					if (!d.region) d.region = "N/A";
-					if (!d.taxonomy) d.taxonomy = "N/A";
-					if (!d.maxLatitude) d.maxLatitude = "N/A";
-					if (!d.minLatitude) d.minLatitude = "N/A";
-					if (!d.maxLongitude) d.maxLongitude = "N/A";
-					if (!d.minLongitude) d.minLongitude = "N/A";
-					if (!d.maxLongitude) d.maxLongitude = "N/A";
-					if (!d.metadataLink) d.metadataLink = "N/A";
-					if (!d.dataLink) d.dataLink = "N/A";
-					if (!d.citationDate) d.citationDate = "N/A";
-					if (!d.parameter) d.parameter = "N/A";
-					if (!d.timeStamp) d.timeStamp = "N/A";
-
-					
-					var data = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'
-				//			+ createTR('Full title', d.title)
-							+ createTR('Authors', d.authors)
-							+ createTR('Data Center', d.dataCenter)
-							+ createTR('Description', d.description)
-							+ createTR('Investigator', d.investigator)
-							+ createTR('Project', d.project)
-							+ createTR('Region', d.region)
-							+ createTR('Taxonomy', d.taxonomy)
-							+ createTR('MaxLatitude', d.maxLatitude)
-							+ createTR('MinLatitude', d.minLatitude)
-							+ createTR('MaxLongitude', d.maxLongitude)
-							+ createTR('MinLongitude', d.minLongitude)
-							+ createTR('Citation Date', d.citationDate)
-							+ createTR('Parameter', d.parameter)
-							+ createTR('Internal Timestamp', d.timeStamp)
-				//			+ createTR('Repository',
-				//					'PANGAEA : <a href="http://www.pangaea.de/">http://www.pangaea.de/</a>');
-					if (d.metadataLink)
-						data += createTR('Link', '<a href="' + d.metadataLink
-								+ '" target="_newtab">' + d.metadataLink + '</a>');
-					// + createTR('License', d.dataRights)
-					if (d.dataLink)
-						data += createTR('Download', '<a href="javascript:onDownload(\''
-								+ d.dataLink + '\');">' + d.dataLink + '</a>');
-
-					data += '</table>';
-					return data;
-				}
-
-				function onDownload(link) {
-					document.location = 'data:Application/octet-stream,'
-							+ encodeURIComponent(link);
-				}
-
-				function createTR(name, data) {
-					var text = '<tr><td><b>' + name + ':</b></td><td>' + data + '</td></tr>';
-					return text;
-				}
 				function writeResultTable() {
 					var displaytext = "<table style='border: 0; cellpadding: 0; cellspacing: 0;' id='tableId' class='display'>";
 					var div = document.getElementById('search_result_table');
@@ -424,13 +455,12 @@
 					var resultArray = [];
 					   $.each(array, function(index, result) {
 						  if (result[property] == value) {
-							  console.log('found '+index);
 							  // Remove from array is not working I don't know why,
 							  // just do it another way round
 						  }    else {
 							  resultArray.push(result);
 						  }
-				});
+						});
 					   return resultArray;
 				}
 
@@ -469,20 +499,10 @@
 				function listenToEnterPress() {
 					 $("#gfbioSearchInput").keyup(function(event) {
 							if (event.keyCode == 13) {
+								$('#gfbioSearchInput').autocomplete('close');
 								$("#QueryButton").click();
 							}
 						});
-				}
-				function listenToPageRequest() {
-					var urlReq = window.location.search;
-					var startPos = urlReq.indexOf("q_=");
-					if (startPos >=0) {
-						var endPos = urlReq.indexOf("&",startPos+3);
-						urlReq = urlReq.substring(startPos+3,endPos);
-						console.log("input: "+urlReq);
-						var searchInput = document.getElementById("gfbioSearchInput");
-						searchInput.value = urlReq;
-					}
 				}
 
 				function setAutoComplete() {
@@ -562,7 +582,7 @@
 							 $.each(displayedResult, function(ind2, res2) {
 								var displayedLink = res2.metadataLink;
 								if (selectedLink == displayedLink) {
-										console.log('found selected row: '+ind2);
+										//console.log('found selected row: '+ind2);
 										// if yes, toggle class to selected.
 										var row = tb.rows().nodes()[ind2];
 										row.className +=' selected';
@@ -607,11 +627,13 @@
 						var elm = $(this).context.childNodes;
 						for (j in elm) {
 							var tdClass = elm[j].className;
+							if (tdClass  !== undefined){
 							if (tdClass.indexOf("color-control") >= 0) {
 				//				console.log(color);
 								var input = elm[j].childNodes[0];
 								input.value = color;
 								break;
+							}
 							}
 						}
 					});
@@ -659,19 +681,44 @@
 										}
 									});
 									basket.value = JSON.stringify(jsonData);
+									updateVisualisation();
 								}
 							}
 						}
 					  );
+					$(".sp-replacer").addClass("invisible").attr("title","Select color to display on VAT (for registered user).");
 				}
-
-				function capitaliseFirstLetter(string)
-				{
-					return string.charAt(0).toUpperCase() + string.slice(1);
+				function showCartIcon(nRow,aData){
+					//console.log(aData.maxLatitude+' '+aData.maxLongitude+' '+aData.minLatitude+' '+aData.minLongitude);
+					if (((aData.maxLatitude!=undefined)||(aData.minLatitude!=undefined))&&((aData.maxLongitude!=undefined)||(aData.minLongitude!=undefined))){
+						var elmRow = $(nRow);
+						var elmTD = $(elmRow[0].lastElementChild);
+						var elmDiv = $(elmTD[0].lastElementChild); 
+						elmDiv.removeClass('invisible');
+					}
 				}
+				
 				function adjust() {
-				   gadgets.window.adjustHeight();
-				   console.log('auto adjust height');
+				   //console.log('auto adjust height');
+				   var height = $('#search_gadget').height()+20;
+				   if (height < 350){ 
+						height = 350;
+				   }
+					gadgets.window.adjustHeight(height);
+				}
+				function tog(v){return v?'addClass':'removeClass';} 
+				
+				function getQueryVariable(variable) {
+					var query = document.referrer;
+					var vars = query.split('&');
+					for (var i = 0; i < vars.length; i++) {
+						var pair = vars[i].split('=');
+						if (decodeURIComponent(pair[0]) == variable) {
+							return decodeURIComponent(pair[1]);
+						}
+					}
+					//console.log('Query variable %s not found', variable);
+					return '';
 				}
 			</script>
 		</html>
