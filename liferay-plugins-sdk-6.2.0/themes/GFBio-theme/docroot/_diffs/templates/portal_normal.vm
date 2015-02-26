@@ -132,7 +132,7 @@ $theme.include($body_top_include)
 	
 			<div id="footer-content">
 				<div class="ce_text footer-copyright block" id="footer-copyright">
-					<p>&copy; 2013-<span>2014 GFBio&nbsp;</span>- All Rights reserved.</p>  
+					<p>&copy; 2013-<span>2015 GFBio&nbsp;</span>- All Rights reserved.</p>  
 	  			</div>
 			</div>
 		</div>
@@ -144,12 +144,6 @@ $theme.include($bottom_include)
 
 #js ("$javascript_folder/jquery-1.10.2.js")
 #js ("$javascript_folder/jquery-1.10.2-ui.js")
-#js ("$javascript_folder/jquery.tagcloud.0-0-1.js")
-#js ("$javascript_folder/jquery.dataTables.js")
-#js ("$javascript_folder/dataTables.colVis.js")
-#js ("$javascript_folder/jstree.js")
-#js ("$javascript_folder/spectrum.js")
-
 <script>
 (function($) {
     $(document).ready(function() {

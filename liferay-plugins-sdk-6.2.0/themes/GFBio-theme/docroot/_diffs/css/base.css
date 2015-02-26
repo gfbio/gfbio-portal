@@ -16,8 +16,10 @@ body.html-editor {
 }
 
 .html-editor.portlet-message-boards {
-	@include hyphenation;
-	word-wrap: break-word;
+/* 	@include hyphenation; */
+/* 	word-wrap: break-word; */
+/* 	word-break: none !important; */
+/* 	text-align:justify; */
 
 	blockquote {
 		background: #EEF0F2 url(../images/message_boards/quoteleft.png) no-repeat 5px 5px;

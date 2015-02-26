@@ -616,8 +616,19 @@ $dockbarOpenGradientStart: #0EA6F9;
 	}
 
 	.portlet-asset-publisher .asset-content, .portlet-asset-publisher .asset-summary, .portlet-asset-publisher .asset-title, .portlet-asset-publisher .header-title, .portlet-asset-publisher li.title-list, .portlet-blogs .entry-body, .portlet-blogs .entry-title, .portlet-blogs .header-title, .portlet-journal-content .journal-content-article, .portlet-message-boards .header-title, .portlet-message-boards .thread-body {
-		@include hyphenation;
+/* 		@include hyphenation; */
+	word-break: none !important;
+/* 	text-align:justify; */
 	}
+	p.span8{
+		text-align:justify; 
+	}
+	h1, h2, h3, h4{
+		text-align:left; 
+	}
+	.span8 .journal-content-article{
+		margin-left:40px;
+	} 
 
 	.portlet-icons {
 		float: none;

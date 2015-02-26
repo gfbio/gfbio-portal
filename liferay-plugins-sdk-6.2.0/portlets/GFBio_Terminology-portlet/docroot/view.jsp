@@ -5,17 +5,8 @@
 <portlet:defineObjects />
 <portlet:resourceURL id="terminologyURL" var="terminologyURL"
 	escapeXml="false" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-<!-- Remove this script after adding new theme.	 -->
-<script src="${pageContext.request.contextPath}/js/jquery-1.11.0.min.js"
-	type="text/javascript">
-</script>
-<script src="${pageContext.request.contextPath}/js/jquery-ui.min.js"
-	type="text/javascript">
-</script>
-<link rel="stylesheet" type="text/css"
-	href="<%=request.getContextPath()%>/css/jquery-ui.css"></link>
-<!-- 	---------------------------------------- -->
 
 <script src="<%=request.getContextPath()%>/js/main.js"
 	type="text/javascript"></script>
@@ -47,8 +38,8 @@ window.onload=function() {
 	 
 	 $( "#searchOption" ).dialog({
 		 autoOpen: false,
-		 height:320,
-		 width: 350,
+		 height:350,
+		 width: 380,
 		 modal: true,
 		 buttons: {
 			 "OK": function(){
@@ -89,6 +80,8 @@ window.onload=function() {
 	 		    $('body').removeClass('wait');
 
 	 		});
+
+		listenToEnterPress();
 };
 
 
@@ -118,6 +111,7 @@ function terminologySearch(){
 	var matchType = matchTypeSelect.options[matchTypeSelect.selectedIndex].value;
 	var firstHitSelect = document.getElementById("firstHit");
 	var firstHit = firstHitSelect.options[firstHitSelect.selectedIndex].value;
+	var betaTerminology = document.getElementById("betaServer").checked;
 
 	$.ajax({
 		"url": "<%=terminologyURL%>" + "/GFBioTerminology",
@@ -126,14 +120,14 @@ function terminologySearch(){
 				"<portlet:namespace />queryString" : encodeURI(searchTerm),
 				"<portlet:namespace />terminologies" : encodeURI(term),
 				"<portlet:namespace />matchType" : matchType,
-				"<portlet:namespace />firstHit" : firstHit
+				"<portlet:namespace />firstHit" : firstHit,
+				"<portlet:namespace />betaTerminology" : betaTerminology
 			},
 			"type" : "POST",
 
 			success : function(d) {
 				clearContext('termInfo_result');
 				clearContext('termDetail');
-				
 				writeTerminologyResult(d,'search_result');
 			}
 		});
@@ -195,8 +189,6 @@ function creatLink(uri, terminology) {
 		url += "&format=csv";
 		SaveToDisk(url,"term.csv");
 	}else SaveToDisk(url, "term.json");
-// 	console.log(url);
-	
 }
 
 function SaveToDisk(fileURL, fileName) {
@@ -210,7 +202,6 @@ function SaveToDisk(fileURL, fileName) {
 			"type" : "POST",
 			
 	        success : function(data) {
-// 	            console.log(data);
 	            var datatype = "text/csv";
 	            if (fileName.endsWith('csv')){
 	    			var jsonDataset = eval("(function(){return " + data
@@ -223,7 +214,6 @@ function SaveToDisk(fileURL, fileName) {
 		});
 }
 </script>
-<!-- <div id="terminology_portlet"> -->
 	
 	
 <div id="terminologyTabs">
@@ -234,7 +224,7 @@ function SaveToDisk(fileURL, fileName) {
 	</ul>
 	<div id="termSearchTab">
 		<label><input id="terminologySearchInput"
-			value="biomass" /> <input id="terminologyButton" type="button"
+			value="lepidoptera" /> <input id="terminologyButton" type="button"
 			value="Go!" style="font-weight: bold"
 			onclick="javascript:terminologySearch();" /> <a
 			href="javascript:showSearchOption();" 
@@ -268,6 +258,9 @@ function SaveToDisk(fileURL, fileName) {
 				</tr>
 			</table>
 		</div>
+		<p><input type="checkbox" id="betaServer" value="betaServer"> Search in beta terminology</p>
+		
+			 
 		<div id="search_result"></div>
 	</div>
 	<div id="termInfoTab">
