@@ -62,6 +62,7 @@
 				};
 				
 				function receiveRequest(topic, data, subscriberData) {
+					console.log('5:'+data);
 					var facetFilters = data.filtered;
 					var filteredArray = [];
 					//console.log(':Search: receive facet filter - '+JSON.stringify(facetFilters));
@@ -107,7 +108,7 @@
 					
 					$('#gfbioSearchInput').autocomplete('close');
 					
-					getSearchResult(keyword,filter, "newQuery");
+					getSearchResult(keyword,filter);
 				}
 				
 				
@@ -119,16 +120,16 @@
 					$('#tableId').DataTable().clear();
 					var keyword = document.getElementById("gfbioSearchInput").value;
 					
-					getSearchResult(keyword,filter, "filterQuery");
+					getSearchResult(keyword,filter);
 				}
 				
-				function getSearchResult(keyword,filter,origin) {
+				function getSearchResult(keyword,filter) {
 					//console.log(':Search: getSearchResult: '+keyword);
-					if ( origin == "newQuery")
-					    if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
+					if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
 					writeResultTable();
 					var oTable = $('#tableId').DataTable( {
 									"bDestroy" : true,
+									"bPaginate": true,
 									"bJQueryUI" : true,
 									"bProcessing": true,
 									"bServerSide": true,
@@ -154,7 +155,7 @@
 											"defaultContent" : "<input type='text' class='full-spectrum'/><div id='cart' class='cart_unselected invisible' title='Click to add/remove dataset to/from VAT (for registered user).'/>",
 										}
 									],
-									"sDom" : 'lrtip',
+									"sDom" : '<"top"l<"divline"ip>>rt<"bottom"<"divline"ip>><"clear">',//'lrtip',
 									//"order" : [ [ 0, "desc" ] ], 
 									"sAutoWidth" : true,
 
@@ -303,25 +304,25 @@
 									'author': {
 								  		'terms': {
 								  		'field': 'citation.authorFacet',
-								  		'size': 5
+								  		'size': 50
 								  		}
                                       					},
 									'year': {
 								  		'terms': {
 								  		'field': 'citation.yearFacet',
-								  		'size': 5
+								  		'size': 50
 								  		}
                                     },
 								  	'region': {
 								  		'terms': {
 								  		'field': 'regionFacet',
-								  		'size': 5
+								  		'size': 50
 								  		}
                                      },
                          			'dataCenter': {
                          				'terms': {
 	                       				'field': 'dataCenterFacet',
-        	              				'size': 5
+        	              				'size': 50
                            				}
              		                }
 			                     }
@@ -343,10 +344,18 @@
 								data: JSON.stringify(completeQuery),
 								dataType: 'json',
 								success: function(json) {
-								    var facet = json.aggregations;
-								    //console.log(facet);
-									if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', facet);
 									var datasrc = json.hits.hits;
+									// display facet only if the search return more than 1 result
+									if (datasrc.length >0){
+										console.log('1:'+datasrc.length);
+										var facet = json.aggregations;
+										console.log(facet);
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', facet);
+									}
+									else {
+										console.log('2');
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', '');
+									}
 									var res = [];
 									for (var i = 0, iLen = datasrc.length; i < iLen; i++) {
 										var inner = new Object();
@@ -680,7 +689,7 @@
 					$(".sp-replacer").addClass("invisible").attr("title","Select color to display on VAT (for registered user).");
 				}
 				function showCartIcon(nRow,aData){
-					console.log(aData.maxLatitude+' '+aData.maxLongitude+' '+aData.minLatitude+' '+aData.minLongitude);
+					//console.log(aData.maxLatitude+' '+aData.maxLongitude+' '+aData.minLatitude+' '+aData.minLongitude);
 					if (((aData.maxLatitude!=undefined)||(aData.minLatitude!=undefined))&&((aData.maxLongitude!=undefined)||(aData.minLongitude!=undefined))){
 						var elmRow = $(nRow);
 						var elmTD = $(elmRow[0].lastElementChild);
