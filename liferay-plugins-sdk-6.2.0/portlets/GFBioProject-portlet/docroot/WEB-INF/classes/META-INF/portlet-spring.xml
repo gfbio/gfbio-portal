@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<bean id="org.gfbio.service.ProjectLocalService" class="org.gfbio.service.impl.ProjectLocalServiceImpl" />
+	<bean id="org.gfbio.service.ProjectService" class="org.gfbio.service.impl.ProjectServiceImpl" />
+	<bean id="org.gfbio.service.persistence.ProjectPersistence" class="org.gfbio.service.persistence.ProjectPersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="gfbioDataSource" />
+		<property name="sessionFactory" ref="gfbioSessionFactory" />
+	</bean>
+	<bean id="org.gfbio.service.Project_ResearchObjectLocalService" class="org.gfbio.service.impl.Project_ResearchObjectLocalServiceImpl" />
+	<bean id="org.gfbio.service.Project_ResearchObjectService" class="org.gfbio.service.impl.Project_ResearchObjectServiceImpl" />
+	<bean id="org.gfbio.service.persistence.Project_ResearchObjectPersistence" class="org.gfbio.service.persistence.Project_ResearchObjectPersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="gfbioDataSource" />
+		<property name="sessionFactory" ref="gfbioSessionFactory" />
+	</bean>
+	<bean id="org.gfbio.service.Project_UserLocalService" class="org.gfbio.service.impl.Project_UserLocalServiceImpl" />
+	<bean id="org.gfbio.service.Project_UserService" class="org.gfbio.service.impl.Project_UserServiceImpl" />
+	<bean id="org.gfbio.service.persistence.Project_UserPersistence" class="org.gfbio.service.persistence.Project_UserPersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="gfbioDataSource" />
+		<property name="sessionFactory" ref="gfbioSessionFactory" />
+	</bean>
+	<bean id="org.gfbio.service.Project_User_PILocalService" class="org.gfbio.service.impl.Project_User_PILocalServiceImpl" />
+	<bean id="org.gfbio.service.Project_User_PIService" class="org.gfbio.service.impl.Project_User_PIServiceImpl" />
+	<bean id="org.gfbio.service.persistence.Project_User_PIPersistence" class="org.gfbio.service.persistence.Project_User_PIPersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="gfbioDataSource" />
+		<property name="sessionFactory" ref="gfbioSessionFactory" />
+	</bean>
+	<bean id="org.gfbio.service.ResearchObjectLocalService" class="org.gfbio.service.impl.ResearchObjectLocalServiceImpl" />
+	<bean id="org.gfbio.service.ResearchObjectService" class="org.gfbio.service.impl.ResearchObjectServiceImpl" />
+	<bean id="org.gfbio.service.persistence.ResearchObjectPersistence" class="org.gfbio.service.persistence.ResearchObjectPersistenceImpl" parent="basePersistence">
+		<property name="dataSource" ref="gfbioDataSource" />
+		<property name="sessionFactory" ref="gfbioSessionFactory" />
+	</bean>
+</beans>
