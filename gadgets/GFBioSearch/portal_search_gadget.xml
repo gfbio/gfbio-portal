@@ -108,7 +108,7 @@
 					
 					$('#gfbioSearchInput').autocomplete('close');
 					
-					getSearchResult(keyword,filter);
+					getSearchResult(keyword,filter,"newQuery");
 				}
 				
 				
@@ -120,12 +120,13 @@
 					$('#tableId').DataTable().clear();
 					var keyword = document.getElementById("gfbioSearchInput").value;
 					
-					getSearchResult(keyword,filter);
+					getSearchResult(keyword,filter,"filterQuery");
 				}
 				
-				function getSearchResult(keyword,filter) {
+				function getSearchResult(keyword,filter,origin) {
 					//console.log(':Search: getSearchResult: '+keyword);
-					if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
+					if ( origin == "newQuery")
+						if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
 					writeResultTable();
 					var oTable = $('#tableId').DataTable( {
 									"bDestroy" : true,
