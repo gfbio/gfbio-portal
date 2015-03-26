@@ -18,16 +18,16 @@
 			<head  lang="en">
 				<meta charset="UTF-8">
 				<title>GFBio Search widget</title>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery.dataTables.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/spectrum.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/esTSSearch/TMS.js" type="text/javascript"></script>
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/search.css" />
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/spectrum.css" />
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/dataTables.jqueryui.css" />
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery.dataTables.css" />
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery-ui.css" />
+				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
+				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
+				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/jquery.dataTables.js"	type="text/javascript"></script>
+				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/spectrum.js"	type="text/javascript"></script>
+				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/esTSSearch/TMS.js" type="text/javascript"></script>
+				<link rel="stylesheet"	href="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/css/search.css" />
+				<link rel="stylesheet"	href="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/css/spectrum.css" />
+				<link rel="stylesheet"	href="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/css/dataTables.jqueryui.css" />
+				<link rel="stylesheet"	href="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/css/jquery.dataTables.css" />
+				<link rel="stylesheet"	href="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/css/jquery-ui.css" />
 			</head>
 			<body style="min-height:350px;">
 				<div id="search_gadget">
@@ -108,7 +108,7 @@
 					
 					$('#gfbioSearchInput').autocomplete('close');
 					
-					getSearchResult(keyword,filter,"newQuery");
+					getSearchResult(keyword,filter);
 				}
 				
 				
@@ -120,13 +120,12 @@
 					$('#tableId').DataTable().clear();
 					var keyword = document.getElementById("gfbioSearchInput").value;
 					
-					getSearchResult(keyword,filter,"filterQuery");
+					getSearchResult(keyword,filter);
 				}
 				
-				function getSearchResult(keyword,filter,origin) {
+				function getSearchResult(keyword,filter) {
 					//console.log(':Search: getSearchResult: '+keyword);
-					if ( origin == "newQuery")
-						if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
+					if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.ts', keyword);
 					writeResultTable();
 					var oTable = $('#tableId').DataTable( {
 									"bDestroy" : true,
@@ -234,7 +233,7 @@
 				function updateVisualisation() {
 					var jsonData = getSelectedResult();
 					//console.log(':Search: fire selected data: '+JSON.stringify(jsonData));
-					if (gadgets.Hub.isConnected() && JSON.stringify(jsonData.selected) != "[]"){
+					if (gadgets.Hub.isConnected()){
 						gadgets.Hub.publish('gfbio.search.selectedData', jsonData);
 					}
 				}
@@ -583,10 +582,12 @@
 							 $.each(displayedResult, function(ind2, res2) {
 								var displayedLink = res2.metadataLink;
 								if (selectedLink == displayedLink) {
-										//console.log('found selected row: '+ind2);
 										// if yes, toggle class to selected.
 										var row = tb.rows().nodes()[ind2];
 										row.className +=' selected';
+										//console.log('found selected row: '+ind2);
+										row.childNodes[1].childNodes[2].className = 'cart_selected';
+										$(row.childNodes[1].childNodes[1]).removeClass("invisible");
 									}
 							 });
 						 });
