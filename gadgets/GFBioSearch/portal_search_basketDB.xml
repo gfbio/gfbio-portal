@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-	<ModulePrefs title="Search Widget" author="gfbiodev"
+	<ModulePrefs title="Search Widget BasketDB" author="gfbiodev"
 			author_email="dev@gfbio.org" >
 		<Require feature="pubsub-2">
 			<Param name="topics">
 				<![CDATA[
-        <Topic title="GFBio Search" name="gfbio.search.selectedData" publish="true" subscribe="true"/>
+        <Topic title="GFBio Search BasketDB" name="gfbio.search.selectedData" publish="true" subscribe="true"/>
           ]]>
 			</Param>
 		</Require>
@@ -42,6 +42,9 @@
 						type="button" value="" class="acButton"
 						onclick="javascript:newQuery();" />
 
+        				<input id="SaveBasketButton" class="acButton"
+        						type="button" value="Save Basket"
+        						onclick="javascript:addBasket();" />
 					</label> <div style="height:10px"></div>
 					<div id="search_result_table"></div>
 
@@ -77,7 +80,6 @@
 					}
 					filterQuery(filteredArray);
 				};
-				
 				$(document).ready(function() {
 					listenToEnterPress();
 					setAutoComplete();
@@ -238,54 +240,54 @@
 					// Add query message in JSON format 
 					var queryJSON = document.getElementById("queryJSON").value;
 					jsonData.queryStr = queryJSON;
-					
 					console.log(':Search: fire selected data: '+JSON.stringify(jsonData));
 					if (gadgets.Hub.isConnected()){
 						gadgets.Hub.publish('gfbio.search.selectedData', jsonData);
 					}
 				}
 				
-				function fnServerObjectToArray(keyword,filterArray){
-					return function (sSource, aoData, fnCallback){
+					function fnServerObjectToArray(keyword,filterArray){
+						return function (sSource, aoData, fnCallback){
 
-						var iDisplayStart = getValueByAttribute(aoData,"name","iDisplayStart");
-						var iDisplayLength = getValueByAttribute(aoData,"name","iDisplayLength");
-						// Construct query message in JSON format
-						var queryfield = createQueryFieldArray();
-						var filteredQuery = getFilteredQuery(keyword,filterArray);
-						var boostedQuery = applyBoost(filteredQuery);
-						var completeQuery = getCompleteQuery(boostedQuery,iDisplayStart,iDisplayLength,queryfield);
-						// Store query string for sending to VAT
-						document.getElementById("queryJSON").value = JSON.stringify(completeQuery);
-						// Send request via AJAX
-						$.ajax(sSource, {
-							contentType: 'application/json; charset=UTF-8',
-							type: 'POST',
-							data: JSON.stringify(completeQuery),
-							dataType: 'json',
-							success: function(json) {
-								var datasrc = json.hits.hits;
-								// display facet only if the search return more than 1 result
-								if (datasrc.length >0){
-									console.log('1:'+datasrc.length);
-									var facet = json.aggregations;
-									console.log(facet);
-									if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', facet);
-								}
-								else {
-									if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', '');
-								}
+							var iDisplayStart = getValueByAttribute(aoData,"name","iDisplayStart");
+							var iDisplayLength = getValueByAttribute(aoData,"name","iDisplayLength");
+							// Construct query message in JSON format
+							var queryfield = createQueryFieldArray();
+							var filteredQuery = getFilteredQuery(keyword,filterArray);
+							var boostedQuery = applyBoost(filteredQuery);
+							var completeQuery = getCompleteQuery(boostedQuery,iDisplayStart,iDisplayLength,queryfield);
+							// Store query string for sending to VAT
+							document.getElementById("queryJSON").value = JSON.stringify(completeQuery);
+							// Send request via AJAX
+							$.ajax(sSource, {
+								contentType: 'application/json; charset=UTF-8',
+								type: 'POST',
+								data: JSON.stringify(completeQuery),
+								dataType: 'json',
+								success: function(json) {
+									var datasrc = json.hits.hits;
+									// display facet only if the search return more than 1 result
+									if (datasrc.length >0){
+										console.log('1:'+datasrc.length);
+										var facet = json.aggregations;
+										console.log(facet);
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', facet);
+									}
+									else {
+										if (gadgets.Hub.isConnected())gadgets.Hub.publish('gfbio.search.facet', '');
+									}
 								var res = parseReturnedJSONfromSearch(datasrc);
-								
-								json.iTotalRecords = json.hits.total;
-								json.iTotalDisplayRecords = json.hits.total;
-								json.data = res;
-								fnCallback(json);
-							}
-						});
+										
+										
+										
+									json.iTotalRecords = json.hits.total;
+									json.iTotalDisplayRecords = json.hits.total;
+									json.data = res;
+									fnCallback(json);
+								}
+							});
+						};
 					};
-				};
-
 				function listenToEnterPress() {
 					 $("#gfbioSearchInput").keyup(function(event) {
 							if (event.keyCode == 13) {
@@ -496,6 +498,26 @@
 					}
 					//console.log('Query variable %s not found', variable);
 					return '';
+				}
+				
+				function addBasket(){
+    			    var uid = parent.Liferay.ThemeDisplay.getUserId();
+    				var basketid = 0;
+    				var val = document.getElementById("visualBasket").value;
+    				var query = document.getElementById("queryJSON").value;
+    				parent.Liferay.Service(
+                      '/GFBioProject-portlet.basket/update-basket',
+                      {
+                        basketID: basketid,
+                        userID: uid,
+                        name: uid+'_basket',
+                        basketJSON: val,
+                        queryJSON: query
+                      },
+                      function(obj) {
+                        console.log("Post return: "+obj);
+                      }
+                    );
 				}
 			</script>
 		</html>
