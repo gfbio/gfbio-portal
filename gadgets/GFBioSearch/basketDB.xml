@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
 	<ModulePrefs title="BasketDB Gadget" 
-		author="Kob">
+		author="Kob" height="600">
 		<Require feature="pubsub-2">
 			<Param name="topics">
 				<Topic title="GFBio BasketDB" name="gfbio.search.basketdb"
@@ -19,7 +19,7 @@
 				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
 				<script src="http://gfbio-dev1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
 				<script type="text/javascript">
-				    console.log('test basket DB');
+			
 				    function addBasket(){
     				    var uid = parent.Liferay.ThemeDisplay.getUserId();
     					console.log(uid);
@@ -36,33 +36,80 @@
                             basketJSON: val,
                             queryJSON: query
                           },
-                          function(obj) {
-                            console.log(obj);
-                            var displaytext = obj;
-            				var div = document.getElementById('basket_result');
-            				div.innerHTML = displaytext;
-            				document.getElementById("basket_id").value = '';
-            				adjust();
-                          }
-                        );
+                          function(obj){
+							displayResult(obj);
+						  }
+						);
 				    }
 				    function getBasket(){
-    				    var uid = parent.Liferay.ThemeDisplay.getUserId();
-    					console.log(uid);
+    					var getOption = document.getElementById("getByOption");
+    					var getOptionSelVal = getOption.options[getOption.selectedIndex].value;
+    					var id = document.getElementById("get_id").value;
+        				var uid = parent.Liferay.ThemeDisplay.getUserId();
+    					var getPeriod = document.getElementById("getPeriodOption");
+    					var getPeriodSelVal = getPeriod.options[getPeriod.selectedIndex].value;
+    					
+    					var url = "";
+    					var param = null;
+    					if (getOptionSelVal == "getByCurrentUserId"){
+    					    if (getPeriodSelVal > 0){
+    					        url = "/GFBioProject-portlet.basket/get-baskets-by-user-and-period";
+    					        param = {"userID":uid, "period":getPeriodSelVal};
+        					}
+        					else{
+            					url = "/GFBioProject-portlet.basket/get-baskets-by-user-id";
+            					param = {'userID':uid};
+            				}
+    					}
+						else if (getOptionSelVal == "getIdsByCurrentUserId"){
+    					    if (getPeriodSelVal > 0){
+    					        url = "/GFBioProject-portlet.basket/get-baskets-id-by-user-and-period";
+    					        param = {"userID":uid, "period":getPeriodSelVal};
+        					}
+        					else{
+        					    url = "/GFBioProject-portlet.basket/get-baskets-id-by-user-id";
+        					    param = {'userID':uid};
+        					}
+    					}
+						else if (getOptionSelVal == "getByUserId"){
+    					    if (getPeriodSelVal > 0){
+    					        url = "/GFBioProject-portlet.basket/get-baskets-by-user-and-period";
+    					        param = {"userID":id, "period":getPeriodSelVal};
+        					}
+        					else{
+            					url = "/GFBioProject-portlet.basket/get-baskets-by-user-id";
+    							// use id provided in input text
+            					param = {'userID':id};
+        					}
+    					}
+						else if (getOptionSelVal == "getIdsByUserId"){
+    					    if (getPeriodSelVal > 0){
+    					        url = "/GFBioProject-portlet.basket/get-baskets-id-by-user-and-period";
+    					        param = {"userID":id, "period":getPeriodSelVal};
+        					}
+        					else{
+            					url = "/GFBioProject-portlet.basket/get-baskets-id-by-user-id";
+    							// use id provided in input text
+            					param = {'userID':id};
+            				}
+    					}
+						else if (getOptionSelVal == "getByBasketId"){
+        					url = "/GFBioProject-portlet.basket/get-basket-by-id";
+							// use id provided in input text
+        					param = {'basketID':id};
+    					}
+						else if (getOptionSelVal == "getByBasketIds"){
+        					url = "/GFBioProject-portlet.basket/get-baskets-by-ids";
+							// use ids provided in input text
+        					param = {'basketIds':id.split(",")};
+    					}
+    					
     					parent.Liferay.Service(
-                            '/GFBioProject-portlet.basket/get-basket-list',
-                            {
-                                userID: uid
-                            },
-                            function(obj) {
-                                var objStr = JSON.stringify(obj);
-                                console.log(objStr);
-                                var displaytext = objStr;
-            					var div = document.getElementById('basket_result');
-            					div.innerHTML = displaytext;
-            					document.getElementById("basket_id").value = '';
-            					adjust();
-                            }
+                            url,
+                            param,
+                            function(obj){
+							    displayResult(obj);
+							}
                         );
 				    }
 				    
@@ -73,8 +120,14 @@
                           '/GFBioProject-portlet.basket/remove-basket',
                           {
                             basketID: basketid
-                          },
-                          function(obj) {
+                          }, 
+                          function(obj){
+							displayResult(obj);
+						   }
+                        );
+				    }
+				    
+				    function displayResult(obj){
                             var objStr = JSON.stringify(obj);
                             console.log(objStr);
                             var displaytext = objStr;
@@ -82,10 +135,26 @@
             				div.innerHTML = displaytext;
             				document.getElementById("basket_id").value = '';
             				adjust();
-                          }
-                        );
 				    }
 				    
+    				function getByOptionChange() {
+    				    console.log('get by option changed');
+                        var selection = document.getElementById("getByOption").value; 
+                        console.log(selection);
+                        //grab the value selected
+                        var periodOption = document.getElementById("getPeriodOption");
+                        if ( (selection == "getByBasketId") || 
+                            (selection == "getByBasketIds") ){
+    				    console.log('1');
+                            periodOption.value = 0;
+                            periodOption.disabled=true;
+                        }
+                        else{
+    				    console.log('2');
+                            periodOption.disabled=false;
+                        }
+                    }
+                    
     				function adjust() {
     				   //console.log('auto adjust height');
     				   var height = $('#basket_div').height()+20;
@@ -114,17 +183,43 @@
     
     			    </div>
     			    <div>
-    			    	<input id="QueryButton"
+    			    	<input id="GetButton"
     						type="button" value="Get Basket"
     						onclick="javascript:getBasket();" />
+    				    <select id="getByOption" onchange="getByOptionChange()">
+                          <option value="getByCurrentUserId" selected>By Current User ID</option>
+                          <option value="getIdsByCurrentUserId">IDs By Current User ID</option>
+                          <option value="getByUserId">By User ID</option>
+                          <option value="getIdsByUserId">IDs By User ID</option>
+                          <option value="getByBasketId">By Basket ID</option>
+                          <option value="getByBasketIds">By Multiple Basket IDs</option>
+                        </select> 
+                        <input id="get_id" 
+    						type="text" value="ID(s)"
+    						autocomplete="off"/> 
+    					Last updated:
+    				    <select id="getPeriodOption">
+                          <option value="0" selected>All</option>
+                          <option value="1">Today</option>
+                          <option value="2">2 days</option>
+                          <option value="10">1 week</option>
+                          <option value="50">2 weeks</option>
+                          <option value="100">1 month</option>
+                          <option value="200">2 months</option>
+                          <option value="300">3 month</option>
+                          <option value="600">6 months</option>
+                          <option value="1000">1 year</option>
+                          <option value="2000">2 years</option>
+                          <option value="3000">3 years</option>
+                        </select> 
     			    </div>
     				<div>
-    			        <input id="basket_id" 
-    						type="text" value="Basket ID"
-    						autocomplete="off"/> 
         				<input id="RemoveButton"
     						type="button" value="Remove Basket" 
     						onclick="javascript:removeBasket();" />
+    			        <input id="basket_id" 
+    						type="text" value="Basket ID"
+    						autocomplete="off"/> 
     				</div>
     			    <div id="basket_result" style="overflow-y: scroll;">
     			    </div>
