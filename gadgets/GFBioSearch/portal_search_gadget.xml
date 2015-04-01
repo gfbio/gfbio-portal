@@ -374,7 +374,7 @@
 					var i =0;
 					var color="rgb(204, 204, 204)";
 					$("#tableId tbody tr").each(function() {
-						var row = i%8;
+						var row = i%10;
 						i++;
 						switch (row) {
 						case 0:
@@ -400,6 +400,12 @@
 							break;
 						case 7:
 							color = "rgb(142, 124, 195)";
+							break;
+						case 8:
+							color = "rgb(204, 0, 0)";
+							break;
+						case 9:
+							color = "rgb(106, 168, 79)";
 							break;
 						}
 						var elm = $(this).context.childNodes;

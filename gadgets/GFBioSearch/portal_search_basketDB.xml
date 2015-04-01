@@ -41,16 +41,13 @@
 						<input id="QueryButton" name="QueryButton"
 						type="button" value="" class="acButton"
 						onclick="javascript:newQuery();" />
-
-        				<input id="SaveBasketButton" class="acButton"
-        						type="button" value="Save Basket"
-        						onclick="javascript:addBasket();" />
 					</label> <div style="height:10px"></div>
 					<div id="search_result_table"></div>
 
 				</div>
 				<input id="visualBasket" type="hidden" value=""/>
 				<input id="queryJSON" type="hidden" value=""/>
+				<input id="basketID" type="hidden" value="0"/>
 			</body>
 			<script type="text/javascript">
 			
@@ -241,6 +238,7 @@
 					var queryJSON = document.getElementById("queryJSON").value;
 					jsonData.queryStr = queryJSON;
 					console.log(':Search: fire selected data: '+JSON.stringify(jsonData));
+					addBasket();
 					if (gadgets.Hub.isConnected()){
 						gadgets.Hub.publish('gfbio.search.selectedData', jsonData);
 					}
@@ -376,7 +374,7 @@
 					var i =0;
 					var color="rgb(204, 204, 204)";
 					$("#tableId tbody tr").each(function() {
-						var row = i%8;
+						var row = i%10;
 						i++;
 						switch (row) {
 						case 0:
@@ -402,6 +400,12 @@
 							break;
 						case 7:
 							color = "rgb(142, 124, 195)";
+							break;
+						case 8:
+							color = "rgb(204, 0, 0)";
+							break;
+						case 9:
+							color = "rgb(106, 168, 79)";
 							break;
 						}
 						var elm = $(this).context.childNodes;
@@ -501,23 +505,32 @@
 				}
 				
 				function addBasket(){
-    			    var uid = parent.Liferay.ThemeDisplay.getUserId();
-    				var basketid = 0;
-    				var val = document.getElementById("visualBasket").value;
-    				var query = document.getElementById("queryJSON").value;
-    				parent.Liferay.Service(
-                      '/GFBioProject-portlet.basket/update-basket',
-                      {
-                        basketID: basketid,
-                        userID: uid,
-                        name: uid+'_basket',
-                        basketJSON: val,
-                        queryJSON: query
-                      },
-                      function(obj) {
-                        console.log("Post return: "+obj);
-                      }
-                    );
+    			    var val = document.getElementById("visualBasket").value;
+					if (val == "") {
+						console.log('No basket selected.');
+					}
+					else{
+						var uid = parent.Liferay.ThemeDisplay.getUserId();
+						var basketid = document.getElementById("basketID").value;
+						var query = document.getElementById("queryJSON").value;
+						parent.Liferay.Service(
+						  '/GFBioProject-portlet.basket/update-basket',
+						  {
+							basketID: basketid,
+							userID: uid,
+							name: uid+'_basket',
+							basketJSON: val,
+							queryJSON: query
+						  },
+						  function(obj) {
+							console.log("Post return: "+obj);
+							// if the returned value is basket id
+							if (!isNaN(obj)){
+								document.getElementById("basketID").value = obj;
+							}
+						  }
+						);
+					}
 				}
 			</script>
 		</html>

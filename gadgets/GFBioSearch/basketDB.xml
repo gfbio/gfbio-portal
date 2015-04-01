@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
 	<ModulePrefs title="BasketDB Gadget" 
-		author="Kob" height="600">
+		author="Kob" height="500">
 		<Require feature="pubsub-2">
 			<Param name="topics">
 				<Topic title="GFBio BasketDB" name="gfbio.search.basketdb"
@@ -44,7 +44,7 @@
 				    function getBasket(){
     					var getOption = document.getElementById("getByOption");
     					var getOptionSelVal = getOption.options[getOption.selectedIndex].value;
-    					var id = document.getElementById("get_id").value;
+    					var id = document.getElementById("getID").value;
         				var uid = parent.Liferay.ThemeDisplay.getUserId();
     					var getPeriod = document.getElementById("getPeriodOption");
     					var getPeriodSelVal = getPeriod.options[getPeriod.selectedIndex].value;
@@ -143,14 +143,20 @@
                         console.log(selection);
                         //grab the value selected
                         var periodOption = document.getElementById("getPeriodOption");
+                        // disable period option for get by basket id functions
                         if ( (selection == "getByBasketId") || 
                             (selection == "getByBasketIds") ){
-    				    console.log('1');
                             periodOption.value = 0;
                             periodOption.disabled=true;
+                            // change text in getID box for hinting
+                            if (selection == "getByBasketId"){
+                                document.getElementById("getID").placeholder = "e.g. 101"; 
+                            }else{
+                                document.getElementById("getID").placeholder = "e.g. 101,102,103"; 
+                            }
                         }
                         else{
-    				    console.log('2');
+                            document.getElementById("getID").placeholder = "e.g. 101"; 
                             periodOption.disabled=false;
                         }
                     }
@@ -167,60 +173,74 @@
 			</head>
 			<body>
 			    <div id="basket_div">
-    			    <div id="basket_input">
-    			        <input id="basket_name" 
-    						type="text" value="Name"
-    						autocomplete="off"/> <br/>
-    			        <input id="basket_val" 
-    						type="text" value="Selected Value"
-    						autocomplete="off"/> <br/>
-    			        <input id="basket_query" 
-    						type="text" value="Query String"
-    						autocomplete="off"/> <br/>
-        				<input id="UpdateButton"
-    						type="button" value="Update" 
-    						onclick="javascript:addBasket();" />
-    
-    			    </div>
-    			    <div>
-    			    	<input id="GetButton"
-    						type="button" value="Get Basket"
-    						onclick="javascript:getBasket();" />
-    				    <select id="getByOption" onchange="getByOptionChange()">
-                          <option value="getByCurrentUserId" selected>By Current User ID</option>
-                          <option value="getIdsByCurrentUserId">IDs By Current User ID</option>
-                          <option value="getByUserId">By User ID</option>
-                          <option value="getIdsByUserId">IDs By User ID</option>
-                          <option value="getByBasketId">By Basket ID</option>
-                          <option value="getByBasketIds">By Multiple Basket IDs</option>
-                        </select> 
-                        <input id="get_id" 
-    						type="text" value="ID(s)"
-    						autocomplete="off"/> 
-    					Last updated:
-    				    <select id="getPeriodOption">
-                          <option value="0" selected>All</option>
-                          <option value="1">Today</option>
-                          <option value="2">2 days</option>
-                          <option value="10">1 week</option>
-                          <option value="50">2 weeks</option>
-                          <option value="100">1 month</option>
-                          <option value="200">2 months</option>
-                          <option value="300">3 month</option>
-                          <option value="600">6 months</option>
-                          <option value="1000">1 year</option>
-                          <option value="2000">2 years</option>
-                          <option value="3000">3 years</option>
-                        </select> 
-    			    </div>
-    				<div>
-        				<input id="RemoveButton"
-    						type="button" value="Remove Basket" 
-    						onclick="javascript:removeBasket();" />
-    			        <input id="basket_id" 
-    						type="text" value="Basket ID"
-    						autocomplete="off"/> 
-    				</div>
+			        <form id="add_basket">
+                        <fieldset>
+                            <legend>Add Basket:</legend>
+        			        <input id="basket_name" 
+        						type="text" placeholder="Name"
+        						style="width:100%"/> <br/>
+        			        <input id="basket_val" 
+        						type="text" placeholder="Selected Value"
+        						style="width:100%"/> <br/>
+        			        <input id="basket_query" 
+        						type="text" placeholder="Query String"
+        						style="width:100%"/> <br/>
+            				<input id="UpdateButton"
+        						type="button" value="Add" 
+        						onclick="javascript:addBasket();" />
+        				</fieldset>
+    			    </form>
+			        <form id="get_basket">
+                        <fieldset>
+                            <legend>Get Basket:</legend>
+        				    <select id="getByOption" onchange="getByOptionChange()">
+                              <option value="getByCurrentUserId" selected>By Current User ID</option>
+                              <option value="getIdsByCurrentUserId">IDs By Current User ID</option>
+                              <option value="getByUserId">By User ID</option>
+                              <option value="getIdsByUserId">IDs By User ID</option>
+                              <option value="getByBasketId">By Basket ID</option>
+                              <option value="getByBasketIds">By Multiple Basket IDs</option>
+                            </select> 
+                            
+                            <input id="getID" 
+        						type="text" placeholder="ID(s)"
+        						autocomplete="off"/> 
+        						
+        					<br/>
+        					Last updated:
+        				    <select id="getPeriodOption">
+                              <option value="0" selected>All</option>
+                              <option value="1">Today</option>
+                              <option value="2">2 days</option>
+                              <option value="10">1 week</option>
+                              <option value="50">2 weeks</option>
+                              <option value="100">1 month</option>
+                              <option value="200">2 months</option>
+                              <option value="300">3 month</option>
+                              <option value="600">6 months</option>
+                              <option value="1000">1 year</option>
+                              <option value="2000">2 years</option>
+                              <option value="3000">3 years</option>
+                            </select> 
+                            <input id="GetButton"
+        						type="button" value="Get Basket"
+        						onclick="javascript:getBasket();" />
+                        </fieldset>
+    			    </form>
+			        <form id="del_basket">
+                        <fieldset>
+                            <legend>Delete Basket:</legend>
+                            Basket id:
+        			        <input id="basket_id" 
+        						type="text" placeholder="Basket ID"
+        						autocomplete="off"/> 
+            				<input id="RemoveButton"
+        						type="button" value="Remove" 
+        						onclick="javascript:removeBasket();" />
+                        </fieldset>
+    			    </form>
+    			    </br>
+    			    </br>
     			    <div id="basket_result" style="overflow-y: scroll;">
     			    </div>
     			 </div>
