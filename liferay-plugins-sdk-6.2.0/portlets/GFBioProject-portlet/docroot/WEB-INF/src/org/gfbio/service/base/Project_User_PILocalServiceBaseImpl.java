@@ -34,6 +34,9 @@ import com.liferay.portal.service.persistence.UserPersistence;
 import org.gfbio.model.Project_User_PI;
 
 import org.gfbio.service.Project_User_PILocalService;
+import org.gfbio.service.persistence.BasketPersistence;
+import org.gfbio.service.persistence.HeadPersistence;
+import org.gfbio.service.persistence.PositionPersistence;
 import org.gfbio.service.persistence.ProjectPersistence;
 import org.gfbio.service.persistence.Project_ResearchObjectPersistence;
 import org.gfbio.service.persistence.Project_UserPersistence;
@@ -287,6 +290,172 @@ public abstract class Project_User_PILocalServiceBaseImpl
 	public Project_User_PI updateProject_User_PI(
 		Project_User_PI project_User_PI) throws SystemException {
 		return project_User_PIPersistence.update(project_User_PI);
+	}
+
+	/**
+	 * Returns the basket local service.
+	 *
+	 * @return the basket local service
+	 */
+	public org.gfbio.service.BasketLocalService getBasketLocalService() {
+		return basketLocalService;
+	}
+
+	/**
+	 * Sets the basket local service.
+	 *
+	 * @param basketLocalService the basket local service
+	 */
+	public void setBasketLocalService(
+		org.gfbio.service.BasketLocalService basketLocalService) {
+		this.basketLocalService = basketLocalService;
+	}
+
+	/**
+	 * Returns the basket remote service.
+	 *
+	 * @return the basket remote service
+	 */
+	public org.gfbio.service.BasketService getBasketService() {
+		return basketService;
+	}
+
+	/**
+	 * Sets the basket remote service.
+	 *
+	 * @param basketService the basket remote service
+	 */
+	public void setBasketService(org.gfbio.service.BasketService basketService) {
+		this.basketService = basketService;
+	}
+
+	/**
+	 * Returns the basket persistence.
+	 *
+	 * @return the basket persistence
+	 */
+	public BasketPersistence getBasketPersistence() {
+		return basketPersistence;
+	}
+
+	/**
+	 * Sets the basket persistence.
+	 *
+	 * @param basketPersistence the basket persistence
+	 */
+	public void setBasketPersistence(BasketPersistence basketPersistence) {
+		this.basketPersistence = basketPersistence;
+	}
+
+	/**
+	 * Returns the head local service.
+	 *
+	 * @return the head local service
+	 */
+	public org.gfbio.service.HeadLocalService getHeadLocalService() {
+		return headLocalService;
+	}
+
+	/**
+	 * Sets the head local service.
+	 *
+	 * @param headLocalService the head local service
+	 */
+	public void setHeadLocalService(
+		org.gfbio.service.HeadLocalService headLocalService) {
+		this.headLocalService = headLocalService;
+	}
+
+	/**
+	 * Returns the head remote service.
+	 *
+	 * @return the head remote service
+	 */
+	public org.gfbio.service.HeadService getHeadService() {
+		return headService;
+	}
+
+	/**
+	 * Sets the head remote service.
+	 *
+	 * @param headService the head remote service
+	 */
+	public void setHeadService(org.gfbio.service.HeadService headService) {
+		this.headService = headService;
+	}
+
+	/**
+	 * Returns the head persistence.
+	 *
+	 * @return the head persistence
+	 */
+	public HeadPersistence getHeadPersistence() {
+		return headPersistence;
+	}
+
+	/**
+	 * Sets the head persistence.
+	 *
+	 * @param headPersistence the head persistence
+	 */
+	public void setHeadPersistence(HeadPersistence headPersistence) {
+		this.headPersistence = headPersistence;
+	}
+
+	/**
+	 * Returns the position local service.
+	 *
+	 * @return the position local service
+	 */
+	public org.gfbio.service.PositionLocalService getPositionLocalService() {
+		return positionLocalService;
+	}
+
+	/**
+	 * Sets the position local service.
+	 *
+	 * @param positionLocalService the position local service
+	 */
+	public void setPositionLocalService(
+		org.gfbio.service.PositionLocalService positionLocalService) {
+		this.positionLocalService = positionLocalService;
+	}
+
+	/**
+	 * Returns the position remote service.
+	 *
+	 * @return the position remote service
+	 */
+	public org.gfbio.service.PositionService getPositionService() {
+		return positionService;
+	}
+
+	/**
+	 * Sets the position remote service.
+	 *
+	 * @param positionService the position remote service
+	 */
+	public void setPositionService(
+		org.gfbio.service.PositionService positionService) {
+		this.positionService = positionService;
+	}
+
+	/**
+	 * Returns the position persistence.
+	 *
+	 * @return the position persistence
+	 */
+	public PositionPersistence getPositionPersistence() {
+		return positionPersistence;
+	}
+
+	/**
+	 * Sets the position persistence.
+	 *
+	 * @param positionPersistence the position persistence
+	 */
+	public void setPositionPersistence(PositionPersistence positionPersistence) {
+		this.positionPersistence = positionPersistence;
 	}
 
 	/**
@@ -749,6 +918,24 @@ public abstract class Project_User_PILocalServiceBaseImpl
 		}
 	}
 
+	@BeanReference(type = org.gfbio.service.BasketLocalService.class)
+	protected org.gfbio.service.BasketLocalService basketLocalService;
+	@BeanReference(type = org.gfbio.service.BasketService.class)
+	protected org.gfbio.service.BasketService basketService;
+	@BeanReference(type = BasketPersistence.class)
+	protected BasketPersistence basketPersistence;
+	@BeanReference(type = org.gfbio.service.HeadLocalService.class)
+	protected org.gfbio.service.HeadLocalService headLocalService;
+	@BeanReference(type = org.gfbio.service.HeadService.class)
+	protected org.gfbio.service.HeadService headService;
+	@BeanReference(type = HeadPersistence.class)
+	protected HeadPersistence headPersistence;
+	@BeanReference(type = org.gfbio.service.PositionLocalService.class)
+	protected org.gfbio.service.PositionLocalService positionLocalService;
+	@BeanReference(type = org.gfbio.service.PositionService.class)
+	protected org.gfbio.service.PositionService positionService;
+	@BeanReference(type = PositionPersistence.class)
+	protected PositionPersistence positionPersistence;
 	@BeanReference(type = org.gfbio.service.ProjectLocalService.class)
 	protected org.gfbio.service.ProjectLocalService projectLocalService;
 	@BeanReference(type = org.gfbio.service.ProjectService.class)
