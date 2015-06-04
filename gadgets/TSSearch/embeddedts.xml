@@ -25,14 +25,14 @@
 			<script src="http://terminologies.gfbio.org/openSocialGadget/TMSexact.js" type="text/javascript"></script>
 
 			<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/flick/jquery-ui.css">
-			<link rel="stylesheet" type="text/css" href="http://portals-dev.inf-bb.uni-jena.de/gfbio/esTSSearch/termSearchCSS.css"/>
+			<link rel="stylesheet" type="text/css" href="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/esTSSearch/termSearchCSS.css"/>
 			
 			
 			<script>
 
 				function callback(topic, data, subscriberData) {
 					TMS.performSearch(data);
-					console.log('search ausgeführt');
+					console.log('search ausgefÃ¼hrt');
 				    //adjust();
 			    }
 				
@@ -54,7 +54,7 @@
 		    function adjust() {
 		        var height = $('#search_results').height()+20;
 			    gadgets.window.adjustHeight(height);
-			    console.log('adjust ausgeführt ' + height);
+			    console.log('adjust ausgefÃ¼hrt ' + height);
 			}
 			
 			</script>

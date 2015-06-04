@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Module>
 	<ModulePrefs title="Search Facet" author="gfbiodev"
 		author_email="dev@gfbio.org" >
@@ -8,7 +8,7 @@
 
 			</Param>
 		</Require>
-		<Require feature="dynamic-height" />
+		<Require feature="dynamic-height"/>
 	</ModulePrefs>
 	<Content type="html">
 		<![CDATA[
@@ -17,27 +17,26 @@
 			<head  lang="en">
 				<meta charset="UTF-8">
 				<title>GFBio Search Facet</title>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/jquery.bonsai.js"	type="text/javascript"></script>
-				<script src="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery.bonsai.css" />
-				<link rel="stylesheet"	href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/search.css" />
+				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2.js"	type="text/javascript"></script>
+				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/js/jquery-1.10.2-ui.js"	type="text/javascript"></script>
+				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/js/jquery.bonsai.js"	type="text/javascript"></script>
+				<script src="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/js/tag-it.js" type="text/javascript" charset="utf-8"></script>
+				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/css/jquery.bonsai.css" />
+				<link rel="stylesheet"	href="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/css/search.css" />
 				<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-				<link rel="stylesheet" type="text/css" href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery.tagit.css">
-				<link rel="stylesheet" type="text/css" href="http://portals-dev.inf-bb.uni-jena.de/gfbio/search/css/jquery-ui.css">
+				<link rel="stylesheet" type="text/css" href="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/css/jquery.tagit.css">
+				<link rel="stylesheet" type="text/css" href="http://gfbio-db1.inf-bb.uni-jena.de/gfbio/search/css/jquery-ui.css">
 				
 				<script type="text/javascript">
 			
 					var facetData;
+					var maxYear=(new Date()).getFullYear();
+					var minYear=maxYear;
+					var maxFilteredYear;
+					var minFilteredYear;
 					$(document).ready(function() {
 						var facetTags = $('#facetTags');
 						facetTags.tagit({
-							//afterTagAdded: function(evt, ui) {
-							//	if (!ui.duringInitialization) {
-							//		console.log(':Facet: afterTagAdded: ' + facetTags.tagit('tagLabel', ui.tag));
-							//	}
-							//},
 							afterTagRemoved: function(evt, ui) {
 								var tagName = facetTags.tagit('tagLabel', ui.tag);
 								console.log(':Facet: afterTagRemoved: ' + tagName);
@@ -50,6 +49,26 @@
 						appendDivAfteriFrame();
 
 					});
+  				    
+					function createYearSlider() {
+						$( "#slider-range" ).slider({
+						  range: true,
+						  min: minYear,
+						  max: maxYear,
+						  values: [ minFilteredYear, maxFilteredYear ],
+						  change: function( event, ui ) {
+							var min = ui.values[0];
+							var max = ui.values[1];
+							$( "#amount" ).val(min + " - " + max);
+							//TODO: remove previous range filter
+							removeByFacetCatBasket("citation.yearFacet");
+							addToFacetBasket("citation.yearFacet", min + " - " + max);
+						  }
+						});
+						$( "#amount" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+						   " - " + $( "#slider-range" ).slider("values", 1) );
+					}
+					
 					function appendDivAfteriFrame() {
 						 var iFrame = window.parent.document.getElementById(window.frameElement.id)
 						 
@@ -94,8 +113,6 @@
 										//allFields.removeClass( "ui-state-error" );
 										var dialogFacetCat = window.parent.document.getElementById("dialogFacetCat").value;
 										var dialogFacetTerm = window.parent.document.getElementById("dialogFacetTerm").value;
-										console.log(dialogFacetCat);
-										console.log(dialogFacetTerm);
 										if (dialogFacetTerm != "")addToFacetBasket(dialogFacetCat, dialogFacetTerm);
 									}
 									
@@ -131,34 +148,61 @@
 					}
 					
 					function creteFacetDialog(catName,field){
-						return "<li data-value='more'><a href='#' onclick='showMoreFacet(\""
-								+catName+"\",\""+field+"\");return false;'>More...</a></li>";
+						return "<a href='#' onclick='showMoreFacet(\""
+								+catName+"\",\""+field+"\");return false;'>More...</a>";
+					}
+					
+					function setMinMaxYear(facetArray){
+						minFilteredYear=0;
+						maxFilteredYear=0;
+						for (var i = 0, iLen = facetArray.length; i < iLen ; i++) {
+							var key = facetArray[i].key;
+							if (i == 0) {
+								minFilteredYear = key;
+								maxFilteredYear = key;
+							}	else{
+								if (key < minYear){ minYear = key;}
+								if (key > maxYear){ maxYear = key;}
+								if (key < minFilteredYear){ minFilteredYear = key;}
+								if (key > maxFilteredYear){ maxFilteredYear = key;}
+							}
+						}
+					}
+					function writeYearSlider(catName,facetArray,fieldName){
+						setMinMaxYear(facetArray);
+						return "<p><label for=\"amount\">Publication Year(s):</label>"
+									+"<input type=\"text\" id=\"amount\" readonly "
+									+"style=\"border:0; color:#f6931f; font-weight:bold; margin-left: 30px;\"></p>"
+									+"<div id=\"slider-range\" style=\"margin-left: 30px; margin-right: 30px;\"></div>"
+									+"<p style=\"margin-left: 35px;\">"+creteFacetDialog(catName,fieldName)+"</p>";
 					}
 					
 					function writeListFacet(catName, displayName, facetArray, fieldName){
 						var displayHTML = "";
 						if (facetArray.length > 0){
+							if (fieldName == "year") displayHTML += writeYearSlider(catName,facetArray,fieldName)
+							else {
 							displayHTML += "<li data-value='"+catName+"'>"+displayName+"<ol>";
 							for (var i = 0, iLen = facetArray.length; i < iLen ; i++) {
 								var key = facetArray[i].key;
-								var ncount = facetArray[i].doc_count;
-								if (i <5) {displayHTML += createFacetList(key,catName,ncount);}
+									var ncount = facetArray[i].doc_count;
+									if ((i <5)&&(fieldName != "year")) {displayHTML += createFacetList(key,catName,ncount);}
 								else if (i==5){
-									displayHTML += creteFacetDialog(catName,fieldName);
+										displayHTML += "<li data-value='more'>"+creteFacetDialog(catName,fieldName)
+														+"</li>";
 								}else i = iLen;
 								
 							}					    
 							displayHTML += "</ol></li>";
+							}
 						}
 						return displayHTML;
 					}
-					// TODO: investigate why no result but facet still appears
+					
 					function refreshFacet(topic, data, subscriberData) {
 						facetData = data;
 					    var displayHTML = "";
-						console.log('3:'+data);
 						if (data != ""){
-							console.log('4');
 							var authorFacet = data.author.buckets;
 							var yearFacet = data.year.buckets;
 							var regionFacet = data.region.buckets;
@@ -172,7 +216,7 @@
 
 							displayHTML += writeListFacet('regionFacet', 'Geographical Region', regionFacet, 'region');
 
-							displayHTML += writeListFacet('dataCenterFacet', 'Data center', dataCenterFacet, 'dataCenter');
+							displayHTML += writeListFacet('dataCenterFacet', 'Data Center', dataCenterFacet, 'dataCenter');
 
 							displayHTML += "</ol>";							
 						}
@@ -183,6 +227,7 @@
 							adjust();
 						});
 						$("#facetDiv").removeClass("invisible");
+						createYearSlider();
                     	adjust();
 					};
 					function createFacetList(dataVal,cat,count){
@@ -246,6 +291,16 @@
 						}
 					}
 					
+					function removeByFacetCatBasket(filterCat){
+						var basket = document.getElementById("facetBasket");
+						var basketStr = basket.value;
+						if (basketStr!="") {
+							jsonData = JSON.parse(basketStr);
+							jsonData.filtered = JSONfindAndRemoveWithTagRemove(jsonData.filtered,'facetCat',filterCat);
+							basket.value = JSON.stringify(jsonData);
+						}
+					}
+					
 					function isInJSON(array, property, value) {
 						var isExist = false;
 					  $.each(array, function(index, result) {
@@ -267,7 +322,22 @@
 							});
 						   return resultArray;
 					};
-				
+					function JSONfindAndRemoveWithTagRemove(array, property, value) {
+						var resultArray = [];
+						   $.each(array, function(index, result) {
+							  if (result[property] == value) {
+								  // Remove from array is not working I don't know why,
+								  // just do it another way round
+								  console.log('*****************');
+								  console.log(result['facetTerm']);
+								  console.log('*****************');
+								  $("#facetTags").tagit("removeTagByLabel", result['facetTerm']);
+							  }    else {
+								  resultArray.push(result);
+							  }
+							});
+						   return resultArray;
+					};
 					function getFacetBasketJSON() {
 						var jsonData = {};
 						var selected = [];

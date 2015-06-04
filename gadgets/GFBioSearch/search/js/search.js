@@ -2,10 +2,10 @@
 function createQueryFieldArray() {
 	var jArr = [];
 		jArr.push("_score");
-		//jArr.push("citation.title");
-		//jArr.push("citation.authors");
-		//jArr.push("description");
-		//jArr.push("dataCenter");
+		jArr.push("citation.title");
+		jArr.push("citation.authors");
+		jArr.push("description");
+		jArr.push("dataCenter");
 		//jArr.push("region");
 		//jArr.push("project");
 		//jArr.push("citation.date");
@@ -22,23 +22,42 @@ function createQueryFieldArray() {
 				jArr.push("html-1");
 	return jArr;
 }
-function getFilteredQuery(keyword,filterArray){
-	return {
-		"filtered":{
-				"query":{
-				"simple_query_string": {
-					"query":keyword,
-					"fields": [ "fulltext", "fulltext.folded^.7", "citation^3", "citation.folded^2.1" ],
-					"default_operator": "and"
-				}
-			},
-			"filter":{
-				"and":{
-					"filters":filterArray
-				}
-			}
-		}
+function getFilteredQuery(keyword,filterArray,yearRange){
+	var queryObj = {"simple_query_string": {
+						"query":keyword,
+						"fields": [ "fulltext", "fulltext.folded^.7", "citation^3", "citation.folded^2.1" ],
+						"default_operator": "and"
+					}};
+	var filterObj;
+	
+	if (yearRange == "")
+	{
+		filterObj = {"and":{
+						"filters":filterArray
+						}
+					};
 	}
+	else{
+		var splitPos = yearRange.indexOf(' - ');
+		var minYear = yearRange.substring(0, splitPos);
+		var maxYear = yearRange.substring(splitPos+3);
+		console.log(minYear+"-"+maxYear);
+		filterObj =[{"and":{
+						"filters":filterArray
+					}},
+					{"range": {
+						"citation.yearFacet": {
+							"gte": minYear,
+							"lte": maxYear
+						}
+					}}
+					]
+	}
+	
+	return {"filtered":{
+				"query":queryObj,
+				"filter":filterObj
+			}};
 }
 function applyBoost(query) {
 	return {
@@ -101,7 +120,11 @@ function createResultArray(nRow,tRows) {
 	"minLatitude": value.minLatitude,
 	"maxLongitude": value.maxLongitude,
 	"minLongitude": value.minLongitude,
-	"color":rgbToHex(color)};
+	"color":rgbToHex(color),
+	"title": value.title,
+	"authors": value.authors,
+	"description": value.description,
+	"dataCenter": value.dataCenter};
 	return result;
 }
 
@@ -114,16 +137,16 @@ function parseReturnedJSONfromSearch(datasrc){
 		//console.log(sourceObj);
 		inner.score  = score;
 		if (sourceObj["citation.title"] !== undefined)
-			inner.title  = sourceObj["citation.title"];
+			inner.title  = sourceObj["citation.title"][0];
 		else inner.title = "";
 		if (sourceObj["citation.authors"] !== undefined)
 			inner.authors = sourceObj["citation.authors"];
 		else inner.authors = "";
 		if (sourceObj["description"] !== undefined)
-			inner.description = sourceObj["description"];
+			inner.description = sourceObj["description"][0];
 		else inner.description = "";
 		if (sourceObj["dataCenter"] !== undefined)
-			inner.dataCenter = sourceObj["dataCenter"];
+			inner.dataCenter = sourceObj["dataCenter"][0];
 		else inner.dataCenter = "";
 		if (sourceObj["region"] !== undefined)
 			inner.region = sourceObj["region"];
