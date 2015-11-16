@@ -46,7 +46,7 @@ function getFilteredQuery(keyword,filterArray,yearRange){
 						"filters":filterArray
 					}},
 					{"range": {
-						"citation.yearFacet": {
+						"citation_yearFacet": {
 							"gte": minYear,
 							"lte": maxYear
 						}
@@ -83,13 +83,13 @@ function getCompleteQuery(boostedQuery,iDisplayStart,iDisplayLength,queryfield){
 			  'aggs': {
 				'author': {
 					'terms': {
-					'field': 'citation.authorFacet',
+					'field': 'citation_authorFacet',
 					'size': 50
 					}
 									},
 				'year': {
 					'terms': {
-					'field': 'citation.yearFacet',
+					'field': 'citation_yearFacet',
 					'size': 50
 					}
 				},
