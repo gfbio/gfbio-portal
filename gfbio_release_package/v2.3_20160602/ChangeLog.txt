@@ -1,1 +1,6 @@
 Please enter changes/ issues solved in this release here:
+750	[Portal Search] Whole basket is cleared after unselected one dataset
+749	[Portal Search] Facet box doesn't autosized after finish loading
+735	Portal Search - update field name "citation.title" and "citation.authors"
+737	Search page timeout after 30 secs	
+363	VAT portal integration: authenticate Liferay Users from portal
