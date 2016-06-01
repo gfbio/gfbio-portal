@@ -8,4 +8,10 @@ Please enter changes/ issues solved in this release here:
 791     Headline - h3 - CSS fix
 746     update footer logo
 705     Mouse Over Tooltop for Sign-In Button
+646 inner portlet interactions in submission workflow menu portlet 
+712 DB implementation Scripts of iteration 3
+784 Technical integration of workflow menu portlet
+790		submission workflow menu portlet prototype
+792		inner portlet interactions in submission workflow menu portlet 
+
 
