@@ -1,0 +1,6 @@
+GFBio SSO Hook
+- 841 Notification about Help Center account
+- 883 SSO registration for new Portal user
+- 912 New portal users are automatically registreded in JIRA 
+- 967 New SSO in registration (pub2) shows reset password page 2 times
+- 968 When a portal user is deleted, the LDAP credential is not removed
