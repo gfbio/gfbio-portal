@@ -1,0 +1,10 @@
+Task #936: Change icon and naming on landing page
+Task #964: SWoMD: left Navbar is hidden through ena widget css
+Bug #928: Portal search baskets: Make baskets updatable for non-admin users
+Bug #931: Setting password problem
+Bug #942: Footer needs to be on bottom of page / "Sticky" Footer
+Bug #965: Responsive layout: second tier menu is not working on mobile device
+Bug #966: contact form does not allow email addresses with two dots
+Requirement #970: Update javascript calling elasticsearch API
+Improvement #827: Add Subject to Contact Form in the portal
+Improvement #959: Load external resources over CDN if possible
