@@ -1,0 +1,17 @@
+Task #711: VAT portal integration: Implementation of new UI
+Task #936: Change icon and naming on landing page
+Task #975: Password policies should be informed in error message
+Task #986: DB implementation Scripts of iteration 6
+Task #992: Portal WS build get user by email adress
+Task #994: Portal WS update get research object by id
+Task #1004: Portal WS update create research object
+Task #1006: Portal WS build get submissions by research object id and version
+Task #1008: Portal WS build get status by research object id
+Task #1009: Portal WS build get status by research object id and version
+Task #1011: Visualization page, double bullets in the description
+Task #1014: Wiki Page is empty
+Task #1019: Notification mail about an account creation contains unrealistic URL
+Improvement #738: Loading time of search page
+Improvement #762: Improved Menu Structure
+Improvement #834: [Search] Handle download link when the download is restricted
+Improvement #961: Switch www.gfbio.org to HTTPS
