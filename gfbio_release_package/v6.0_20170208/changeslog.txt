@@ -11,6 +11,13 @@ Task #1009: Portal WS build get status by research object id and version
 Task #1011: Visualization page, double bullets in the description
 Task #1014: Wiki Page is empty
 Task #1019: Notification mail about an account creation contains unrealistic URL
+Bug #908: Gfbio.org landing-page: First Section on landing-page is not fullscreen
+Bug #930: Could not use Umlaut in my display name
+Bug #942: Footer needs to be on bottom of page / "Sticky" Footer
+Bug #969: Responsive menu and dockbar are not working on without-JQuery-theme
+Bug #979: data sets with no coordinates are displayed in the Atlantic Ocean at Lat:0/Long:0 in the semantic search
+Bug #983: Nav Menu and Dockbar items behave erratically on Mobile layout
+Bug #1013: Portal WS update get projects by user
 Improvement #738: Loading time of search page
 Improvement #762: Improved Menu Structure
 Improvement #834: [Search] Handle download link when the download is restricted
