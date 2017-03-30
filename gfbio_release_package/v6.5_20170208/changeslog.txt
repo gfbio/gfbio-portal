@@ -1,0 +1,4 @@
+Bug #1062: New Portal User not registred in JIRA
+Task #1033: Basket API: Query String position in JSON Object
+Bug #1034: Basket API: Single authors are not an array anymore
+Requirement #1081: Change autocomplete url
