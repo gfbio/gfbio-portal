@@ -1,6 +1,5 @@
 Task #921: SWMP: improve the display of RO's
 Task #922: SWMP: default none by project choose
-Task #936: Change icon and naming on landing page
 Task #980: Enable creation of external links in web-content via editor interface
 Task #985: Fix anchor links settings
 Task #1015: Term of use page has different content formats
