@@ -1,8 +1,8 @@
 Task #921: SWMP: improve the display of RO's
 Task #922: SWMP: default none by project choose
+Task #936: Change icon and naming on landing page
 Task #980: Enable creation of external links in web-content via editor interface
 Task #985: Fix anchor links settings
-Task #1015: Term of use page has different content formats
 Task #1021: DB implementation Scripts of iteration 7
 Task #1022: DB updates for DCRT
 Task #1023: DB implementation Scripts of iteration 6.5
@@ -35,4 +35,4 @@ Feature #1040: Replace CKEditor in Liferay
 Requirement #910: Generic Data submission form
 Requirement #911: Send Generic Data form contents to Broker Agent
 
-Improvement #912: New portal users are automatically registreded in JIRA 
+Improvement #1101: Data Lifecycle - no autoplay on load
