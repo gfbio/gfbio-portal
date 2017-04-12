@@ -5,7 +5,6 @@ Task #980: Enable creation of external links in web-content via editor interface
 Task #985: Fix anchor links settings
 Task #1021: DB implementation Scripts of iteration 7
 Task #1022: DB updates for DCRT
-Task #1023: DB implementation Scripts of iteration 6.5
 Task #1024: add dynamic managment functions for HCC
 Task #1031: Portal WS no author option by research object
 Task #1035: Portal WS update create submission
@@ -29,6 +28,7 @@ Bug #1007: Anchor Linking on Data Centers overview page does not work (properly)
 Bug #1038: Featured Projects on GFBio portal - magnification glass does not link to search
 Bug #1076: Generic workflow visible on gfbio.org without login
 Bug #1086: Portal WS fix id bug by create research object
+Bug #1091: Cannot change users role 
 
 Feature #1040: Replace CKEditor in Liferay
 
