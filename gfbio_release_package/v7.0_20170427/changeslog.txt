@@ -1,11 +1,10 @@
 Task #921: SWMP: improve the display of RO's
 Task #922: SWMP: default none by project choose
+Task #936: Change icon and naming on landing page
 Task #980: Enable creation of external links in web-content via editor interface
 Task #985: Fix anchor links settings
-Task #1015: Term of use page has different content formats
 Task #1021: DB implementation Scripts of iteration 7
 Task #1022: DB updates for DCRT
-Task #1023: DB implementation Scripts of iteration 6.5
 Task #1024: add dynamic managment functions for HCC
 Task #1031: Portal WS no author option by research object
 Task #1035: Portal WS update create submission
@@ -29,10 +28,11 @@ Bug #1007: Anchor Linking on Data Centers overview page does not work (properly)
 Bug #1038: Featured Projects on GFBio portal - magnification glass does not link to search
 Bug #1076: Generic workflow visible on gfbio.org without login
 Bug #1086: Portal WS fix id bug by create research object
+Bug #1091: Cannot change users role 
 
 Feature #1040: Replace CKEditor in Liferay
 
 Requirement #910: Generic Data submission form
 Requirement #911: Send Generic Data form contents to Broker Agent
 
-Improvement #912: New portal users are automatically registreded in JIRA 
+Improvement #1101: Data Lifecycle - no autoplay on load
