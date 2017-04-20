@@ -20,6 +20,7 @@ Task #1054: SWoGD Store JIRA Task Response
 Task #1055: Portal WS update update submission
 Task #1060: SWoGD Feedback to Generic Submission Workflow
 Task #1083: Add automate script to renew keystore after renew SSL Cert
+Task #1092: Fix layout and sign-in link in banner on molecular submission page
 Task #1096: SWoGD: update communication between workflow and menu portlets
 Task #1099: Portal WS made a general update for research object
 
