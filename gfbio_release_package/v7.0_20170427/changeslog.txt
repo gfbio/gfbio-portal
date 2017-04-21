@@ -37,3 +37,4 @@ Requirement #910: Generic Data submission form
 Requirement #911: Send Generic Data form contents to Broker Agent
 
 Improvement #1101: Data Lifecycle - no autoplay on load
+Improvement #1110: add jira information to serverfile.txt
