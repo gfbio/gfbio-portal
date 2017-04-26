@@ -30,6 +30,7 @@ Bug #1038: Featured Projects on GFBio portal - magnification glass does not link
 Bug #1076: Generic workflow visible on gfbio.org without login
 Bug #1086: Portal WS fix id bug by create research object
 Bug #1091: Cannot change users role 
+Bug #1119: Use case 1.1 - Generic Submission, 7.0 Revision 1
 
 Feature #1040: Replace CKEditor in Liferay
 
