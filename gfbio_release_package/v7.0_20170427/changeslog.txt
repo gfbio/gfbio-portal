@@ -1,6 +1,6 @@
 Task #921: SWMP: improve the display of RO's
 Task #922: SWMP: default none by project choose
-Task #936: Change icon and naming on landing page
+Task #936: Change icon and naming on landing page - 80% done 
 Task #980: Enable creation of external links in web-content via editor interface
 Task #985: Fix anchor links settings
 Task #1021: DB implementation Scripts of iteration 7
@@ -13,24 +13,26 @@ Task #1037: Portal WS category parameters by create/update research object
 Task #1043: SWoGD Store MRR in DB
 Task #1044: SWoGD File Upload
 Task #1045: SWoGD Initialisation of Submission Registry
-Task #1047: SWoGD Stored SubmissionRegistry Information
+
+Task #1047: SWoGD Stored SubmissionRegistry Information < the #1046 is not done, please check it.
+
 Task #1048: SWoGD Sent Information to JIRA
 Task #1049: DB add jiraID to submission entity
 Task #1054: SWoGD Store JIRA Task Response
 Task #1055: Portal WS update update submission
 Task #1060: SWoGD Feedback to Generic Submission Workflow
 Task #1083: Add automate script to renew keystore after renew SSL Cert
-Task #1092: Fix layout and sign-in link in banner on molecular submission page
 Task #1096: SWoGD: update communication between workflow and menu portlets
 Task #1099: Portal WS made a general update for research object
 
-Bug #983: Nav Menu and Dockbar items behave erratically on Mobile layout
 Bug #1007: Anchor Linking on Data Centers overview page does not work (properly)
 Bug #1038: Featured Projects on GFBio portal - magnification glass does not link to search
 Bug #1076: Generic workflow visible on gfbio.org without login
 Bug #1086: Portal WS fix id bug by create research object
 Bug #1091: Cannot change users role 
-Bug #1119: Use case 1.1 - Generic Submission, 7.0 Revision 1
+
+Bug #1119: Use case 1.1 - Generic Submission, 7.0 Revision 1 << Improvement #1125 is not in this changelog, please confirm if this can be marked as closed.
+
 Bug #1142: Use case 1.1 - Generic Submission, 7.0 Revision 2
 
 Feature #1040: Replace CKEditor in Liferay
@@ -38,5 +40,6 @@ Feature #1040: Replace CKEditor in Liferay
 Requirement #910: Generic Data submission form
 Requirement #911: Send Generic Data form contents to Broker Agent
 
+Improvement #1092: Fix layout and sign-in link in banner on molecular submission page
 Improvement #1101: Data Lifecycle - no autoplay on load
 Improvement #1110: add jira information to serverfile.txt
