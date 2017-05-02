@@ -30,3 +30,5 @@ All the packages in this repository are tested on gfbio-pub2 and rolled out to g
 ## mockups
 Any new design documents can be shared here. However, most of our documents are stored internally http://fusion.cs.uni-jena.de/git/gfbio/ Please contact us if you need more information.
 
+# TO-DO
+Mockups folder has not been updated for 3 years. And besides our private git repository, we document the design on wiki pages. Please consider to remove this.
