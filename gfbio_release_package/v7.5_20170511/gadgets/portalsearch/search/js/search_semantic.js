@@ -118,6 +118,7 @@ function getQueryVariable(variable) {
  */
 function showLatestTenDataset(filter, yearRange) {
 	isSemanticSearch = false;
+	document.getElementById('semanticTermsDisplay').innerHTML = "";
 	// clear result table
 	$('#tableId').DataTable().clear();
 	// initiate result table
@@ -271,6 +272,7 @@ function getFilteredLatestDataset(filter, yearRange) {
  */
 function normalQuery(clearBasket) {
 	isSemanticSearch = false;
+	document.getElementById('semanticTermsDisplay').innerHTML = "";
 	// clear result table
 	$('#tableId').DataTable().clear();
 	// clear visualBasket if the clearBasket flag is true
@@ -1108,9 +1110,9 @@ function hilightResult(orgHTML,termsToHighlight) {
 		//allow only 1-25 characters in between, e.g. Circaea ... L.
 		//console.log("::"+key);
 		if (key.length >highlightLength) {//ignore short string
-			var query = new RegExp("(\\b" + key + "\\b)", "gim");
+			var query = new RegExp("(\\b" + key + "\\b)", "gm");
 			//if (newHTML.match(query) != null) {
-				newHTML = newHTML.replace(new RegExp(query, 'gim'), "<span class='highlight'>"+key+"</span>");
+				newHTML = newHTML.replace(new RegExp(query, 'gm'), "<span class='highlight'>"+key+"</span>");
 			//}
 		}
 	});
@@ -1609,6 +1611,7 @@ function isJArray(elm) {
 ///////////////////////////////////  Semantic functions  /////////////////////////////////////
 function semanticQuery(clearBasket) {
 	isSemanticSearch = true;
+	document.getElementById('semanticTermsDisplay').innerHTML = "";
 	// clear result table
 	$('#tableId').DataTable().clear();
 	// read search keywords
