@@ -8,7 +8,7 @@ Bug #942: Footer needs to be on bottom of page / "Sticky" Footer
 Bug #1085: Semantic Search
 Bug #1145: Social medai icons not visible in footer on sub-pages
 Bug #1148: DB id conflict between database and portal
-Bug #1151: Use case 1.1 - Generic Submission, 7.0 Revision 3
+Bug #1163: SWoGD Dataset author has no character limit
 Improvement #834: [Search] Handle download link when the download is restricted
 Improvement #1059: Semantic search doesn't work normally with facet
 Improvement #1089: Search query is shown in the URL
