@@ -1,0 +1,25 @@
+Task #936: Change icon and naming on landing page
+Task #1052: Read license information from DB
+Task #1053: Add "Legal Restrictions" to DB
+Task #1069: News section GFBio.org
+Task #1095: DB implementation Scripts of iteration 8
+Task #1118: Search reset button/ clear filters
+Task #1156: VM server time is running ahead of local time (CEST) by 2 hours
+Task #1165: Can't use mail adress for new registration, after change
+Task #1172: DB large of RO/Project name and other fields
+Task #1205: Conversion function
+Task #1213: Add "Policy" to DB
+Bug #1080: Footer missing on account registration page
+Bug #1151: Use case 1.1 - Generic Submission, 7.0 Revision 3
+Bug #1212: Error when trying to create a Researchobject
+Bug #1222: SwoGD Encoding problem by request to JIRA
+Feature #1094: Deep-Links for the Portal
+Requirement #1162: Password policies is not shown during the registration process
+Improvement #1078: Remove on-load animation for landing area
+Improvement #1079: Fix layout of account registration form
+Improvement #1127: SWoGD: Change to length independed request
+Improvement #1137: Email domain in sign-in box should be removed
+Improvement #1158: Improve registration process
+Improvement #1171: Portal WS create submission need no researchObjectVersion
+Improvement #1230: Portal WS add large check by create/update research object services
+Improvement #1231: SWoGD higher character limit in front end
