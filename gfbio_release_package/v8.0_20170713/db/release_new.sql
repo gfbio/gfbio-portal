@@ -460,7 +460,7 @@ WHERE
 	columnid != (select getcolumnidbynames('gfbio_category', 'name')) and
 	columnid != (select getcolumnidbynames('gfbio_category', 'description')) and
 	columnid != (select getcolumnidbynames('gfbio_category', 'lastmodifieddate')) and
-	cellcontent = 'Other'
+	cellcontent = 'Other';
 			
 			
 -----------------------------------------------------------------------------------------------
