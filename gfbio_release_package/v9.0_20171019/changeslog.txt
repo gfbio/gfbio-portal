@@ -9,6 +9,7 @@ Task #1274: DCRT - Molecular workflow connection
 Bug #1143: [Reopen] Bug #983: Nav Menu and Dockbar items behave erratically on Mobile layout
 Bug #1246: Power User accessing to parts of Control panel
 Bug #1273: Email Validation is sent from dev portal when a user registers on gfbio.org
+Bug #1280: Selecting an item from the menu reloads the page (on mobile)
 Bug #1281: button labels in generic workflow do not fit into button field
 
 Improvement #1018: On My account, it is not so easy to see the guidelines information about name and password.
@@ -21,3 +22,4 @@ Improvement #1256: Set Relation beween db and legal requirements
 Improvement #1270: VAT loading basket is slow
 Improvement #1272: Disable basket option when datasets is access restricted
 Improvement #1276: Add url column to gfbio_license
+Improvement #1282: Display password policies and screenname rule on the registration page
