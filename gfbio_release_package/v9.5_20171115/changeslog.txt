@@ -1,0 +1,16 @@
+Improvement #1298 Improve Sign-in/Sign-up interfaces II
+Registration/Sign-in:
+
+    hide OpenId option
+    limit input box length (it shold not always take the 90% width of the page)
+    auto-generate screenname (no requirement to fill it) in registration
+    no middlename (registration)
+    no re-enter password box (registration)
+    no text verification (registration)
+    password policy will be displayed as a placeholder in the textbox, tooltip on mousehover and (only for a touch device) displayed as a text box on tap event
+
+Footer
+
+    sticky footer on sign-in/sign-up pages
+    sign-up button redirect to create account UI, not sign-in
+    reduce the height of the sign-up section to match with other columns
