@@ -20,3 +20,4 @@ Task #1301: User registration: Error message "Invalid mail adress" but account w
 Task #1303: Publish revised DCRT version on gfbio.org
 Rejected - Improvement #668: Handle "race condition" when editing research objects
 Improvement #1078: Remove on-load animation for landing area
+Release 10.0 - Compatibility test 1 - Welcome Page mobile iPhone - Revision 1
