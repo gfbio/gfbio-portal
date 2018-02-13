@@ -1,0 +1,23 @@
+Task #794: DB implementation
+	gfbio_researchobject add atributes:
+        datacollectiontime
+        embargo
+        publications
+
+Task #990: Implementation of Portal Webservices
+	updateResearchObject add parameters
+        authors (jsonobject): With this json you can integrate more as a name or a mail adress in our database. The json use all keys/columns of the database (hcc) table. Currently the columns are: name, mail, orcid
+        datacollectiontime (string): The data collection time was a part of the extended data. Now, this parameter has his own attribute in the research object database table. Now it is possible to do this parameter information in the extended data json or direct in the request json
+        embargo (date yyyy-mm-dd): The embargo was a part of the extended data. Now, this parameter has his own attribute in the research object database table. Now it is possible to do this parameter information in the extended data json or direct in the request json
+        legalrequirementid (long), legalrequirementids (jsonArray), legalrequirementnames (jsonArray): The legal requirements were a part of the extended data. Now, this parameters have their own table and relation to research object database table. Now you should use the direct parameter in the request json
+        legalrestrictionid (long), legalrestrictionids (jsonArray), legalrestrictionnames (jsonArray): We use restriction in jira context and requirements in portal context, but it is the same.
+        publications (string): The publications was a part of the extended data. Now, this parameter has his own attribute in the research object database table. Now it is possible to do this parameter information in the extended data json or direct in the request json
+        primarydata (jsonobject): With this json you can integrate information of external primary data (create/update primary data). The parameter can be name (string), path (string), externallink (boolean) and for update primarydataid (long)
+
+Task #1286: create DMPT table in databse
+Task #1299: Correct typo in database entries for licenses
+Task #1301: User registration: Error message "Invalid mail adress" but account was created
+Task #1303: Publish revised DCRT version on gfbio.org
+Rejected - Improvement #668: Handle "race condition" when editing research objects
+Improvement #1078: Remove on-load animation for landing area
+Release 10.0 - Compatibility test 1 - Welcome Page mobile iPhone - Revision 1
