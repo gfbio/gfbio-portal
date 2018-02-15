@@ -13,11 +13,16 @@ Task #990: Implementation of Portal Webservices
         legalrestrictionid (long), legalrestrictionids (jsonArray), legalrestrictionnames (jsonArray): We use restriction in jira context and requirements in portal context, but it is the same.
         publications (string): The publications was a part of the extended data. Now, this parameter has his own attribute in the research object database table. Now it is possible to do this parameter information in the extended data json or direct in the request json
         primarydata (jsonobject): With this json you can integrate information of external primary data (create/update primary data). The parameter can be name (string), path (string), externallink (boolean) and for update primarydataid (long)
-
+Task #134: SWoGD clear file type for submission <- no code change
 Task #1286: create DMPT table in databse
+Task #1287: local Services for gfbio_dmp table
 Task #1299: Correct typo in database entries for licenses
 Task #1301: User registration: Error message "Invalid mail adress" but account was created
 Task #1303: Publish revised DCRT version on gfbio.org
+Bug #1135: SWoGD can't upload files from type mdb <- no code change
 Rejected - Improvement #668: Handle "race condition" when editing research objects
 Improvement #1078: Remove on-load animation for landing area
+Improvement #1140: SWoGD URL link by file upload
+Improvement #1219: SWoGD Reset security check 
+Improvement #1304: SWoGD Delete change to default option by DCRT related generic submission
 Release 10.0 - Compatibility test 1 - Welcome Page mobile iPhone - Revision 1
