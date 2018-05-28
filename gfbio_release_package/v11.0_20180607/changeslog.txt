@@ -9,6 +9,7 @@
 [100] Bug #1313: Green underscore below contact section on landing page misalined
 [100] Bug #1314: DCRT entry point misaligned
 [100] Bug #1365: Submission page tries to load an non existing icon from an external page over an unsecure connection
+[100] Bug #1382: Consortium table misaligned on gfbio.org
 [100] Improvement #1305: update licenses
 
 [  0] Task #1323: Create Editable Output
