@@ -1,8 +1,8 @@
 @echo off 
     setlocal enableextensions disabledelayedexpansion
 	
-    set "search=//gfbio-db1.inf-bb.uni-jena.de/gfbioPub2"
-    set "replace=//gfbio-db1.inf-bb.uni-jena.de/gfbioGA4"
+    set "search=//gfbio-db1.inf-bb.uni-jena.de/gfbioDev"
+    set "replace=//gfbio-db1.inf-bb.uni-jena.de/gfbioPub2"
 	
 	for %%f in (*.xml) do (
 		echo %%f
