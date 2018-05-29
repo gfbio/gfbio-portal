@@ -1,14 +1,5 @@
-var searchAPI = "//ws.pangaea.de/es/dataportal-gfbio/pansimple/_search";
-var cartAddTitle = "Click to add dataset to VAT basket.";
-var cartRemTitle = "Click to remove dataset from VAT basket.";
-//var cartDiv = "<div id='cart' class='cart_unselected invisible' title='"+cartAddTitle+"'></div>";
-var cartCheckbox = "<input type='checkbox' class='basketCheck'></input>";
-var cartDivDisabled = 'This dataset cannot be visualized.';
-var ratingDiv = "<div id='ratingDiv' title='Please provide us your feedback of this result (5:Highly relevant - 1:Irrelevant)'><select class='ratebar'><option value='5'>5</option><option value='4'>4</option><option value='3'>3</option><option value='2'>2</option><option value='1'>1</option></select></div>";
-var VATpage = '/data/visualizeandanalyze';
-var linkVAT = '<a href="javascript:showBasketDialog();" class="basketIcon invisible" title="Download or see your basket in VAT."></a>';
-var showRating = 0;
-var saveSearch = 1;
+var searchAPI = '//ws.pangaea.de/es/dataportal-gfbio/pansimple/_search';
+var cartDiv = "<div id='cart' class='cart_unselected invisible' title='Click to add/remove dataset to/from VAT (for registered user).'/>";
 
 /////////////////////////////// Search initial functions ////////////////////////////////
 /*
@@ -24,33 +15,22 @@ function listenToEnterPress() {
 }
 
 function resetSearch(){
-	$("#visualBasket").val("");
-	$("#basketID").val(0); 
-	$("#queryJSON").val("");
-	$("#queryKeyword").val("");
-	$("#queryFilter").val("[]");
-	$("#gfbioSearchInput").val("");
+	document.getElementById("visualBasket").value = "";
+	document.getElementById("basketID").value = 0; 
+	document.getElementById("queryJSON").value = "";
+	document.getElementById("queryKeyword").value = "";
+	document.getElementById("queryFilter").value = "[]";
+	document.getElementById("gfbioSearchInput").value = "";
 	insertParam("q", "");
 	insertParam("filter", "");
 	insertParam("year", "");
-	
 	if (gadgets.Hub.isConnected()){
 		gadgets.Hub.publish('gfbio.search.facetreset', 'reset');
 	}
-	
 	showLatestTenDataset([],"");
 }
-function resetFilter(){
-	$("#visualBasket").val("");
-	$("#basketID").val(0); 
-	$("#queryJSON").val("");
-	$("#queryKeyword").val("");
-	$("#queryFilter").val("[]");
-	insertParam("filter", "");
-	insertParam("year", "");
-}
 function searchButtonClicked(){
-	var value = $("#gfbioSearchInput").val();
+			var value = document.getElementById("gfbioSearchInput").value;
 	insertParam("q", value);
 	if (value == ''){
 		resetSearch();
@@ -58,7 +38,6 @@ function searchButtonClicked(){
 		if (gadgets.Hub.isConnected()){
 			gadgets.Hub.publish('gfbio.search.facetreset', 'reset');
 		}
-		resetFilter();
 		newQuery(true);
 	}
 }
@@ -67,37 +46,31 @@ function isValueNotEmpty(value){
 	return (!value.isArray && value!='' & value !='[]') || (value.isArray && value.length >0);
 }
 
-function insertParam(key, value) {		
+function insertParam(key, value) {
 	var urlString = document.referrer;
 	var valueNotEmpty = isValueNotEmpty(value);
 	if (parent.history.state != null){ 
 		//if any parameter has been popped to the state
-		//console.log(':::insertParam parent.history.state.path');	
-		//console.log(parent.history.state.path);
 		urlString = parent.history.state.path;
 	}
 	var url = urlString.split('?');
 	var urlDomain = url[0];
 	//console.log(url);
 	var newUrl = urlDomain;
-	 
+
 	value = encodeURIComponent(value);
-		
+
 	var isNewParam = true;
-	if (url.length >1){
-		// if url already has parameters
-		//console.log(':::insertParam append Parameter');	
+		if (url.length >1){
+			// if url already has parameters
 		var urlParam = url[1];
 		var paramsArray = urlParam.split('&');
 		var paramsString = '';
-		// check the current parameters, replace when the key is matched
 		for (i=0; i< paramsArray.length; i++){
-			// replace the inserted value that matched with the key
 			var par = paramsArray[i].split('=');
-			// find if the parameter is already added to the url
-			if (par[0] == key) {
-				//console.log(':::insertParam replace parameter');	
-				par[1] = value;
+
+                if (par[0] == key) {
+                    par[1] = value;
 				isNewParam = false;
 			}
 			if (par[0] != key || valueNotEmpty){
@@ -105,18 +78,16 @@ function insertParam(key, value) {
 					paramsString += par.join('=');
 				}else{
 					paramsString += '&'+par.join('=');
-				}
+        }
 			}
 		}
-			
+
 		if (paramsString!=''){
-			//console.log(':::insertParam append to Params in URL');	
 			newUrl += '?'+paramsString;
 			if (isNewParam && valueNotEmpty) {
 				newUrl += '&'+key+"="+value;
 			}
 		}else{
-			//console.log(':::insertParam add to URL');	
 			if (isNewParam && valueNotEmpty) {
 				newUrl += '?'+key+"="+value;
 			}
@@ -124,15 +95,13 @@ function insertParam(key, value) {
 	}
 	else if (url.length==1 && valueNotEmpty){
 		//if no parameter in url, and there is a parameter to update
-		//console.log(':::insertParam add new Parameter');	
 		newUrl += "?"+key+"="+value;
 	}
 		
-	// push new url to the history state	
 	if (parent.history.pushState && newUrl!='') {
 		//console.log(':::pushstate');
 		//console.log(newUrl);
-		parent.history.pushState({path:newUrl},'',newUrl);
+			parent.history.pushState({path:newUrl},'',newUrl);
 	}
 }
 /*
@@ -174,7 +143,7 @@ function setAutoComplete() {
 
 /*
  * Description: Read URL and extract variable
- * Input: variable name, e.g. "q"
+ * Input: variable name, e.g. "q_"
  * Return: keyword attaced to the variable
  */
 function getQueryVariable(variable) {
@@ -233,11 +202,7 @@ function showLatestTenDataset(filter, yearRange) {
 					"class": "color-control",
 					"sortable": false,
 					"data": null,
-					"defaultContent": "<div id='divCheck' class='invisible'>"
-					+ cartCheckbox
-					+ "<input type='text' class='full-spectrum'/>" +"</div>"
-					+ linkVAT
-					+ ((showRating) ? ratingDiv : '')
+					"defaultContent" : "<input type='text' class='full-spectrum'/>" + cartDiv
 				}
 			],
 			"sDom": '<"top"l<"divline"ip>>rt<"bottom"<"divline"ip>><"clear">',
@@ -251,9 +216,6 @@ function showLatestTenDataset(filter, yearRange) {
 					setSelectedRowStyle();
 					// activate parameter show/hide event
 					toggleParametersField();
-					if (showRating) {
-						setRatingBar();
-					}
 				}
 			},
 			// define the event after each table row is created
@@ -267,22 +229,7 @@ function showLatestTenDataset(filter, yearRange) {
 	// activate the row click event (broadcast a message to mini-map)
 	onRowClick();
 };
-function setRatingBar() {
-	$('.ratebar').barrating('show', {
-		theme: 'bars-horizontal',
-		reverse: true,
-		initialRating: null,
-		hoverState: false,
-		onSelect: function (value, text, event) {
-			if (typeof(event) !== 'undefined') {
-				var parent = event.target.parentElement.parentElement.parentElement;
-			} else {
-			}
-		}
-	});
-	$(".br-widget a").removeClass('br-selected');
-	$(".br-current-rating").empty();
-}
+
 /*
  * Description: Get latest dataset with (or without) filtering option, no keyword.
  * Input: JSONArray filter : filter option (Authors, Region, Data Center)
@@ -307,8 +254,7 @@ function getFilteredLatestDataset(filter, yearRange) {
 		};
 
 		// Store query string for sending to VAT
-		var strCompletQuery = JSON.stringify(completeQuery);
-		$("#queryJSON").val(strCompletQuery);
+		document.getElementById("queryJSON").value = JSON.stringify(completeQuery);
 		// Send request via AJAX
 		$.ajax(sSource, {
 			contentType: 'application/json; charset=UTF-8',
@@ -354,29 +300,28 @@ function newQuery(clearBasket) {
 	$('#tableId').DataTable().clear();
 	// clear visualBasket if the clearBasket flag is true
 	if (clearBasket){
-		$("#visualBasket").val("");
-		$("#basketID").val(0); 
+		document.getElementById("visualBasket").value = "";
+		document.getElementById("basketID").value = 0; 
 		//create a new basket for every query
-		$("#queryJSON").val("");
-		$("#queryKeyword").val("");
-		$("#queryFilter").val("[]");
+		document.getElementById("queryJSON").value = "";
+		document.getElementById("queryKeyword").value = "";
+		document.getElementById("queryFilter").value = "[]";
 	}
 	var filter = [];
 	var yearFilter = '';
 	// read search keywords
-	var keyword = $("#gfbioSearchInput").val();
-	//console.log('newQuery');
-	//console.log(keyword);
-	var urlFilter = getQueryVariable('filter');
-	var urlYear = getQueryVariable('year');
-	if (urlFilter !=''){
-	//console.log(':filter:'+urlFilter);
-		filter = JSON.parse(urlFilter);
-	}
-	if (urlYear !=''){
-	//console.log(':year:'+urlYear);
-		yearFilter = urlYear;
-	}
+	var keyword = document.getElementById("gfbioSearchInput").value;
+			
+		var urlFilter = getQueryVariable('filter');
+		var urlYear = getQueryVariable('year');
+		if (urlFilter !=''){
+			console.log(':filter:'+urlFilter);
+			filter = JSON.parse(urlFilter);
+		}
+		if (urlYear !=''){
+			console.log(':year:'+urlYear);
+			yearFilter = urlYear;
+		}
 	//setCookie("gfbioSearchInput", keyword);
 	// reset facet gadget
 	if (gadgets.Hub.isConnected()){
@@ -388,12 +333,6 @@ function newQuery(clearBasket) {
 	// send query to pansimple and parse result to the table
 	console.log(':: newQuery');
 	getSearchResult(keyword, filter, yearFilter);
-	// Save query to DB
-	if (saveSearch && keyword != "" && clearBasket) {
-		saveSearchHistory(keyword, filter);
-		var strFilters = JSON.stringify(filter);
-		$("#filters").val(strFilters);
-	}
 
 	// send content of visual basket to the mini-map gadget
 	updateMap();
@@ -443,11 +382,7 @@ function getSearchResult(keyword, filter, yearRange) {
 					"class": "color-control",
 					"sortable": false,
 					"data": null,
-					"defaultContent": "<div id='divCheck' class='invisible'>"
-					+ cartCheckbox
-					+ "<input type='text' class='full-spectrum'/>" +"</div>"
-					+ linkVAT
-					+ ((showRating) ? ratingDiv : '')
+					"defaultContent" : "<input type='text' class='full-spectrum'/>" + cartDiv
 				}
 			],
 			"sDom": '<"top"l<"divline"ip>>rt<"bottom"<"divline"ip>><"clear">',
@@ -461,9 +396,6 @@ function getSearchResult(keyword, filter, yearRange) {
 					setSelectedRowStyle();
 					// activate parameter show/hide event
 					toggleParametersField();
-					if (showRating) {
-						setRatingBar();
-					}
 				}
 			},
 			// define the event after each table row is created
@@ -478,45 +410,6 @@ function getSearchResult(keyword, filter, yearRange) {
 	onRowClick();
 }
 
-function saveSearchHistory(keyword, filter) {
-	//TODO: overwrite the record, if the same keyword and filter are added
-	var recordid = 0; //For a new record
-	var uid = parent.Liferay.ThemeDisplay.getUserId();
-	//console.log('saveSearchHistory');
-	parent.Liferay.Service(
-		'/GFBio-Search-Service-portlet.searchhistory/update-search-history', {
-		searchHistoryId: recordid,
-		userID: uid,
-		queryString: keyword,
-		queryFilter: filter
-	},
-		function (obj) {
-		//console.log('Query is recorded.');
-		//if (!isNaN(obj)) {}
-	});
-}
-function saveSearchFeedback(datasetDetail, datasetRank, rating) {
-	//TODO: overwrite the record, if the same keyword, filter, rank are added
-	var keyword = $("#gfbioSearchInput").val();
-	var filter = $("#filters").val();
-	var recordid = 0; //For a new record
-	var uid = parent.Liferay.ThemeDisplay.getUserId();
-	//console.log('saveSearchFeedback');
-	parent.Liferay.Service(
-		'/GFBio-Search-Service-portlet.searchfeedback/update-search-feedback', {
-		searchHistoryId: recordid,
-		userID: uid,
-		queryString: keyword,
-		queryFilter: filter,
-		datasetDetail: datasetDetail,
-		datasetRank: datsetRank,
-		rating: rating
-	},
-		function (obj) {
-		//console.log('Rating is recorded.');
-		//if (!isNaN(obj)) {}
-	});
-}
 /*
  * Description: Get search result from submitted keyword with (or without) filtering option
  * Input: String keyword : search keyword
@@ -530,14 +423,14 @@ function submitQueryToServer(keyword, filter, yearRange) {
 		// set value for pagination
 		var iDisplayStart = getValueByAttribute(aoData, "name", "iDisplayStart");
 		var iDisplayLength = getValueByAttribute(aoData, "name", "iDisplayLength");
+
 		// Construct query message in JSON format
 		var filteredQuery = getFilteredQuery(keyword, filter, yearRange);
 		var boostedQuery = applyBoost(filteredQuery);
 		var completeQuery = getCompleteQuery(boostedQuery, iDisplayStart, iDisplayLength);
 
 		// Store query string for sending to VAT
-		var strCompleteQuery = JSON.stringify(completeQuery);
-		$("#queryJSON").val(strCompleteQuery);
+		document.getElementById("queryJSON").value = JSON.stringify(completeQuery);
 
 		// Send request via AJAX
 		$.ajax(sSource, {
@@ -554,13 +447,13 @@ function submitQueryToServer(keyword, filter, yearRange) {
 					var facet = result.aggregations;
 					if (gadgets.Hub.isConnected()){
 						gadgets.Hub.publish('gfbio.search.facet', facet);
-						//console.log('search:set facet to:');
-						//console.log(facet);
+						console.log('search:set facet to:');
+						console.log(facet);
 					}
 				} else {
 					if (gadgets.Hub.isConnected()){
 						gadgets.Hub.publish('gfbio.search.facet', '');
-						//console.log('search:clear facet');
+						console.log('search:clear facet');
 					}
 				}
 				var res = parseReturnedJSONfromSearch(datasrc);
@@ -614,6 +507,7 @@ function createQueryFieldArray() {
  * Output: JSONObject : filtered query
  */
 function getFilteredQuery(keyword, filterArray, yearRange) {
+
 	var queryObj;
 	if (keyword != "") {
 		queryObj = {
@@ -629,7 +523,7 @@ function getFilteredQuery(keyword, filterArray, yearRange) {
 		};
 	}
 	// save Keyword to invisible field for basket
-	$("#queryKeyword").val(keyword);
+	document.getElementById("queryKeyword").value = keyword;
 	var filterObj;
 	if (yearRange.trim() == "") {
 		if (isValueNotEmpty(filterArray)) {
@@ -658,9 +552,7 @@ function getFilteredQuery(keyword, filterArray, yearRange) {
 		filterObj.push(yearFilter);
 	}
 	// save filterObj to invisible field for basket
-	var strFilter = JSON.stringify(filterObj);
-	$("#queryFilter").val(strFilter);
-		
+	document.getElementById("queryFilter").value = JSON.stringify(filterObj);
 	return {
 		"bool": {
 			"must": queryObj,
@@ -771,7 +663,7 @@ function parseReturnedJSONfromSearch(datasrc) {
 		inner.minLongitude = getMultiValueField(fields, "minLongitude");
 		inner.metadatalink = getMultiValueField(fields, "metadatalink");
 		inner.datalink = getMultiValueField(fields, "datalink");
-		inner.vatVisualizable = getMultiValueField(fields, "vatVisualizable");
+		inner.accessRestricted = getMultiValueField(fields, "accessRestricted");
 		/* pangeae doesn't return license field
 		inner.license = getMultiValueField(fields, "license");*/
 		inner.format = getMultiValueField(fields, "format");
@@ -828,8 +720,8 @@ function parseReturnedJSONfromSearch(datasrc) {
  */
 function writeResultTable() {
 	var displaytext = "<table style='border: 0; cellpadding: 0; cellspacing: 0;' id='tableId' class='display'>";
-	var div = $('#search_result_table');
-	div.html(displaytext);
+	var div = document.getElementById('search_result_table');
+	div.innerHTML = displaytext;
 }
 /////////////////////////////// End main search functions ////////////////////////////////////
 
@@ -842,13 +734,13 @@ function writeResultTable() {
  * Effect: The search box is automatically filled with the basket's keyword and submitted for search
  */
 function loadBasket(topic, data, subscriberData) {
-	$("#basketID").val(data.basketID);
-	$("#visualBasket").val(data.basketContent);
+	document.getElementById("basketID").value = data.basketID;
+	document.getElementById("visualBasket").value = data.basketContent
 		var query = JSON.parse(data.query);
 	var queryStr = query.query.function_score.query.filtered.query.simple_query_string.query;
 	//console.log(queryStr);
-	var searchbox = $("#gfbioSearchInput");
-	searchbox.val(queryStr);
+	var searchbox = document.getElementById("gfbioSearchInput");
+	searchbox.value = queryStr;
 	newQuery(false);
 }
 
@@ -858,20 +750,20 @@ function loadBasket(topic, data, subscriberData) {
  *         Otherwise, create a new basket from the selected dataset(s).
  */
 function addBasket() {
-	var val = $("#visualBasket").val();
+	var val = document.getElementById("visualBasket").value;
 	if (val == "") {
 		//console.log('No basket selected.');
 	} else {
 		// read the current portal user id for authentication in service invokation
 		var uid = parent.Liferay.ThemeDisplay.getUserId();
-		var basketid = $("#basketID").val();
+		var basketid = document.getElementById("basketID").value;
 		//console.log("addBasket:"+basketid);
-		var query = $("#queryJSON").val();
+		var query = document.getElementById("queryJSON").value;
 		
 		/*console.log("addBasket queryJSON:");
 		console.log(query);*/
-		var keyword = $("#queryKeyword").val();
-		var filter = $("#queryFilter").val();
+		var keyword = document.getElementById("queryKeyword").value;
+		var filter = document.getElementById("queryFilter").value;
 		/*console.log("addBasket queryKeyword:");
 		console.log(keyword);
 		console.log("addBasket queryFilter:");
@@ -889,7 +781,7 @@ function addBasket() {
 			function (obj) {
 			// set the return id as the current basket id
 			if (!isNaN(obj)) {
-				$("#basketID").val(obj);
+				document.getElementById("basketID").value = obj;
 			}
 		});
 	}
@@ -902,8 +794,8 @@ function addBasket() {
 function getSelectedResult() {
 	var jsonData = {};
 	var selected = [];
-	var basket = $("#visualBasket");
-	var basketStr = basket.val();
+	var basket = document.getElementById("visualBasket");
+	var basketStr = basket.value;
 	// if nothing selected, return empty array []
 	if (basketStr == "") {
 		jsonData.selected = selected;
@@ -915,121 +807,6 @@ function getSelectedResult() {
 	return jsonData;
 }
 //////////////////////////////// End Basket functions /////////////////////////////////////
-///////////////////////////////////////  Basket Dialog  /////////////////////////////////////
-function addBasketDialogToPage() {
-	// The dialog must be a children of the page, not the gadget.
-	var iFrame = window.parent.document.getElementById(window.frameElement.id)
-	var newDivInParent = window.parent.document.createElement('div');
-	newDivInParent.setAttribute("id", "dialogBasket");
-	newDivInParent.setAttribute("title", "Basket");
-	newDivInParent.setAttribute("class", "robotofont");
-	// Write a dialog placeholder on the page
-	iFrame.parentNode.appendChild(newDivInParent);
-	// set behaviour of dialog box
-	dialog = window.parent.$('#dialogBasket').dialog({
-			autoOpen : false,
-			modal : true,
-			height : 350,
-			width : 500,
-			buttons : [
-				{
-					text: "Download Datasets",
-					click : function () {
-						console.log('download');
-						filesToDownload();
-						dialog.dialog("close");
-					}
-				},
-				{
-					text: "View in VAT",
-					click : function(){
-						console.log('go to VAT');
-						linkToVAT();
-						dialog.dialog("close");
-					}
-				}
-				/*{
-					text: "Cancel",
-					icons: { primary: "ui-icon-closethick" },
-					click: function(){
-						console.log('close dialog');
-						dialog.dialog("close");
-					}
-				}*/
-			],
-			close : function () {
-				/* Do nothing */
-			}
-		});
-}
-
-function filesToDownload(){	
-	var basket = $("#visualBasket");
-	var jsonBasket = JSON.parse(basket.val());
-	var selectedBasket = jsonBasket.selected;
-	
-	var zip = new JSZip();
-	
-	$.each(selectedBasket, function (index, result) {	
-		var linkURL = result['datalink'];
-		
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'https://cors-anywhere.herokuapp.com/' + linkURL, false);
-		xhr.overrideMimeType('text\/plain; charset=x-user-defined');
-		xhr.send(null);
-		
-		var headers = xhr.getAllResponseHeaders();
-		
-		if (xhr.readyState === 4) {
-		
-			var filestream = xhr.responseText;
-			var out;
-			out = '';
-			for (i = 0; i < filestream.length; i++) {
-				out+=String.fromCharCode(filestream.charCodeAt(i) & 0xff);
-			}
-			var out64 = window.btoa(out);
-		
-			var filename = /(?:^|\s)filename=(.*?)(?:\s|$)/.exec(headers);
-		
-			if(filename == null){
-				zip.file(decodeURIComponent(linkURL.substring(linkURL.lastIndexOf('/')+1)), out64, {base64:true});
-			}
-			else
-			{
-				zip.file(filename[1], out64, {base64:true});			
-			}
-		}
-	});
-	
-	zip.generateAsync({type:"blob"}).then(function (blob) { // 1) generate the zip file
-        saveAs(blob, "gfbio_basket_" + Date.now() + ".zip");                          // 2) trigger the download
-    }, function (err) {
-        jQuery("#blob").text(err);
-    });
-}
-
-function showBasketDialog() {
-	var basket = $("#visualBasket");
-	console.log('showBasketDialog');
-	var jsonBasket = JSON.parse(basket.val());
-	console.log(jsonBasket);
-	var selectedBasket = jsonBasket.selected;
-	console.log(selectedBasket);
-	console.log($("#basketID").val());
-	console.log($("#gfbioSearchInput").val());
-	var displayHTML = "<h3>Basket ID: "+$("#basketID").val()+"</h3>";
-	console.log('-------------------------');
-	$.each(selectedBasket, function (index, result) {
-		console.log(result['metadatalink']);
-		displayHTML += "<p>Item:"+(index+1)+"</br>"+result['metadatalink']+"</p>";
-		console.log('-------------------------');
-	});
-	var dialogDiv = window.parent.$("#dialogBasket");
-	$(dialogDiv).html(displayHTML);
-	window.parent.$('#dialogBasket').dialog("open");
-}
-/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////// Facet filter functions ////////////////////////////////////
 /*
@@ -1053,13 +830,12 @@ function applyFacetFilter(topic, data, subscriberData) {
 			filterArray.push(filterTerm);
 		}
 	}
-	
 		//console.log('applyFacetFilter:: '+JSON.stringify(filterArray));
 		insertParam("filter", JSON.stringify(filterArray));
 
 		//console.log('applyFacetFilter:: '+yearRange);
 		insertParam("year", yearRange);
-		
+
 	filterQuery(filterArray, yearRange);
 };
 
@@ -1072,19 +848,12 @@ function filterQuery(filter, yearRange) {
 	// keep only filtered items
 	// clear result table
 	$('#tableId').DataTable().clear();
-	var keyword = $("#gfbioSearchInput").val();
+	var keyword = document.getElementById("gfbioSearchInput").value;
 	// resubmit a query with filter to pansimple and rewrite the result table
 	if (keyword != "") {
 		getSearchResult(keyword, filter, yearRange);
 	} else {
 		showLatestTenDataset(filter, yearRange);
-	}
-	// Save query to DB
-	if (saveSearch && keyword != "") {
-		var filterObj = filter;
-		filterObj.push(yearRange);
-		saveSearchHistory(keyword, filterObj);
-		$("#filters").val(filterObj);
 	}
 }
 /////////////////////////////// End Facet filter functions /////////////////////////////////
@@ -1096,8 +865,8 @@ function filterQuery(filter, yearRange) {
  */
 function setSelectedRowStyle() {
 	// read basket value
-	var basket = $("#visualBasket");
-	var basketStr = basket.val();
+	var basket = document.getElementById("visualBasket");
+	var basketStr = basket.value;
 	var jsonData = {};
 	if (basketStr != "") {
 		jsonData = JSON.parse(basketStr);
@@ -1114,16 +883,8 @@ function setSelectedRowStyle() {
 					// if yes, toggle class to selected.
 					var row = tb.rows().nodes()[ind2];
 					row.className += ' selected';
-					var basketCell = row.childNodes[1];
-					//var cartDiv = $(basketCell).find('#cart')[0];
-					var divCheck = $(basketCell).find('#divCheck')[0];
-					$(divCheck).attr('title', cartRemTitle);
-					// show color palette
-					$($(basketCell).find('.sp-replacer')[0]).removeClass("invisible");
-					var isUserSignedIn = parent.Liferay.ThemeDisplay.isSignedIn();
-					// show VAT link only if this user is logged in
-					var vatLink = $(basketCell).find('.basketIcon')[0];
-					if (isUserSignedIn){$(vatLink).removeClass('invisible');}
+					row.childNodes[1].childNodes[2].className = 'cart_selected';
+					$(row.childNodes[1].childNodes[1]).removeClass("invisible");
 				}
 			});
 		});
@@ -1137,65 +898,58 @@ function setSelectedRowStyle() {
  */
 function onRowClick() {
 	$('#tableId tbody').off('click');
-	$('#tableId tbody').on('click', '.basketCheck', function (e) {
-		if (!$(this).attr('disabled')){
-			var div = $(this).parent();
-			var cell = $(div).parent();
-			var row = $(cell).parent();
-			var icol = $(row).children().index(cell);
-			var irow = $(row).parent().children().index(row);
-			// class of the table row
-			row.toggleClass('selected');
+	$('#tableId tbody').on('click', '#cart', function (e) {
+		var cell = $(this).parent();
+		var row = cell.parent();
+		var icol = row.children().index(cell);
+		var irow = row.parent().children().index(row);
+		// class of the table row
+		row.toggleClass('selected');
 
-			// get Element visual basket for updating
-			var basket = $("#visualBasket");
-			var basketStr = basket.val();
-			var jsonData = {};
-			var selected = [];
-			var vatLink = $(cell).find('.basketIcon')[0];
-			var isUserSignedIn = parent.Liferay.ThemeDisplay.isSignedIn();// toggle basket
-			if (row.hasClass('selected')) {
-				$(this).attr('title', cartRemTitle);
-				$($(".sp-replacer")[irow]).removeClass("invisible");
-				// show VAT link only if this user is logged in
-				if (isUserSignedIn){$(vatLink).removeClass('invisible');}
-				// add to basket
-				if (basketStr == "") {
-					jsonData.selected = selected;
-				} else {
-					jsonData = JSON.parse(basketStr);
-				}
+		// get Element visual basket for updating
+		var basket = document.getElementById("visualBasket");
+		var basketStr = basket.value;
+		var jsonData = {};
+		var selected = [];
+		// toggle basket
+		if (row.hasClass('selected')) {
+			// show the icon that this item has been selected
+			$(this).attr('class', 'cart_selected');
+			$($(".sp-replacer")[irow]).removeClass("invisible");
+			// add to basket
+			if (basketStr == "") {
+				jsonData.selected = selected;
+			} else {
+				jsonData = JSON.parse(basketStr);
+			}
 
+			var nRow = row[0];
+			var tRows = $('#tableId').DataTable().rows();
+			var resultArray = getDataFromSelectedRow(nRow, tRows);
+			jsonData.selected.push(resultArray);
+			// store basket in string format
+			basket.value = JSON.stringify(jsonData);
+		} else {
+			// show the icon that this item is unselected,
+			// and ready to be added into a cart/basket
+			$(this).attr('class', 'cart_unselected');
+			$($(".sp-replacer")[irow]).addClass("invisible");
+			// remove from basket
+			if (basketStr != "") {
+				jsonData = JSON.parse(basketStr);
+				// get row index to find metadatalink as id
 				var nRow = row[0];
 				var tRows = $('#tableId').DataTable().rows();
 				var resultArray = getDataFromSelectedRow(nRow, tRows);
-				jsonData.selected.push(resultArray);
-				// store basket in string format
-				var strJSONData = JSON.stringify(jsonData);
-				basket.val(strJSONData);
-			} else {
-				$(this).attr('title', cartAddTitle);
-				$($(".sp-replacer")[irow]).addClass("invisible");
-				// hide VAT link
-				$(vatLink).addClass('invisible');
-				// remove from basket
-				if (basketStr != "") {
-					jsonData = JSON.parse(basketStr);
-					// get row index to find metadatalink as id
-					var nRow = row[0];
-					var tRows = $('#tableId').DataTable().rows();
-					var resultArray = getDataFromSelectedRow(nRow, tRows);
-					// metadataLink is supposed to be unique for each dataset,
-					// so I use it as an id for each row.
-					jsonData.selected = JSONfindAndRemove(jsonData.selected,
-							'metadatalink', resultArray.metadatalink);
-					var strJSONData = JSON.stringify(jsonData);
-					basket.val(strJSONData);
-				}
+				// metadataLink is supposed to be unique for each dataset,
+				// so I use it as an id for each row.
+				jsonData.selected = JSONfindAndRemove(jsonData.selected,
+						'metadatalink', resultArray.metadatalink);
+				basket.value = JSON.stringify(jsonData);
 			}
-			//update visualisation
-			updateMap();
 		}
+		//update visualisation
+		updateMap();
 	});
 }
 
@@ -1230,7 +984,7 @@ function getDataFromSelectedRow(nRow, tRows) {
 		"dcIdentifier": value.dcIdentifier,
 		"parameter": value.parameter,
 		"xml": value.xml,
-		"vatVisualizable": value.vatVisualizable,
+		"accessRestricted": value.accessRestricted,
 		/* pangeae doesn't return license field
 		"license":value.license*/
 	};
@@ -1275,11 +1029,11 @@ function writeShowHideFields(orgHTML) {
 function updateMap() {
 	var jsonData = getSelectedResult();
 	// Add query message in JSON format
-	jsonData.queryStr = $("#queryJSON").val();
+	jsonData.queryStr = document.getElementById("queryJSON").value;
 	// add queryKeyword and queryFilter to jsonData
 	// store in database (for use later)
-	jsonData.queryKeyword = $("#queryKeyword").val();
-	jsonData.queryFilter = $("#queryFilter").val();
+	jsonData.queryKeyword = document.getElementById("queryKeyword").value;
+	jsonData.queryFilter = document.getElementById("queryFilter").value;
 	addBasket();
 	// then send info to VAT
 	if (gadgets.Hub.isConnected()) {
@@ -1338,16 +1092,8 @@ function addColorPicker() {
 			if (tdClass !== undefined) {
 				if (tdClass.indexOf("color-control") >= 0) {
 					//console.log(color);
-					var input = $(elm[j]).find('.full-spectrum')[0];
-					var divCheck = $(elm[j]).find('#divCheck')[0];
-					$(input).val(color);
-					var basketCheck = $(divCheck).find('.basketCheck')[0];
-					if ($(basketCheck).attr('disabled')){
-						$(divCheck).css('background-color','rgb(204, 204, 204)');
-					}
-					else{
-						$(divCheck).css('background-color',color);
-					}
+					var input = elm[j].childNodes[0];
+					input.value = color;
 					break;
 				}
 			}
@@ -1411,31 +1157,26 @@ function addColorPicker() {
 				"rgb(32, 18, 77)"]// violent violet
 		],
 		change: function (color) {
-			//console.log('spectrum changed');
 			// read basket value
-			var basket = $("#visualBasket");
-			var basketStr = basket.val();
+			var basket = document.getElementById("visualBasket");
+			var basketStr = basket.value;
 			if (basketStr != "") {
 				var jsonData = {};
 				jsonData = JSON.parse(basketStr);
 				// get metadata link of the current row
-				var checkDiv = $(this).parent();
-				var cell = $(checkDiv).parent();
-				var row = $(cell).parent();
+				var col = this.parentElement;
+				var row = col.parentElement;
 				var tb = $('#tableId').DataTable();
-				var rowInd = $(row).index();
-				var metadatalink = tb.rows().data()[rowInd].metadatalink;
+				var metadatalink = tb.rows().data()[row.rowIndex - 1].metadataLink;
 				// loop compare with the link in basket
 				$.each(jsonData.selected, function (index, result) {
 					var selectedLink = result['metadatalink'];
 					if (selectedLink == metadatalink) {
 						// if found the link, update row detail
 						jsonData.selected[index].color = color.toHexString();
-						checkDiv.css('background-color',color.toHexString());
 					}
 				});
-				var strJSONData = JSON.stringify(jsonData);
-				basket.val(strJSONData);
+				basket.value = JSON.stringify(jsonData);
 				updateMap();
 			}
 		}
@@ -1450,34 +1191,17 @@ function addColorPicker() {
  * Effect: Cart icon will appear for each search result if they have geological data
  */
 function showCartIcon(nRow, aData) {
-	// read the current row number and get a div for the cart
-	var elmRow = $(nRow);
-	var elmTD = $(elmRow[0].lastElementChild);
-	var divCheck = $($(elmTD[0]).find('#divCheck')[0]);
-	//console.log('showCartIcon: '+isUserSignedIn);
-	// show the cart icon only if the visualizable flag is true
-	// show the basket checkbox div		
-	$(divCheck).removeClass('invisible');
-	if (aData.vatVisualizable) {
-		$(divCheck).attr('title', cartAddTitle);
+	// show the cart icon only if the geological data is provided
+	if (((aData.maxLatitude != '') || (aData.minLatitude != '')) &&
+		((aData.maxLongitude != '') || (aData.minLongitude != ''))) {
+		// read the current row number and get a div for the cart
+		var elmRow = $(nRow);
+		var elmTD = $(elmRow[0].lastElementChild);
+		var elmDiv = $(elmTD[0].lastElementChild);
+		// show the cart's div
+		//console.log(elmDiv);
+		elmDiv.removeClass('invisible');
 	}
-	else{
-		$(divCheck).attr('title', cartDivDisabled);
-		$(divCheck).css('background-color','rgb(128,128,128)');
-		var basketCheck = $(divCheck).find('.basketCheck')[0];
-		$(basketCheck).attr("disabled", true);
-	}
-}
-
-function linkToVAT(){
-	var basketID = $('#basketID').val();
-	var linkURL = VATpage;
-	//console.log('linkToVAT:'+basketID);
-	if (basketID!=0){
-		linkURL += '?gfbioBasketId='+basketID;
-	}
-	var win = window.open(linkURL, '_blank');
-	win.focus();
 }
 //////////////////////////// End Search result UI functions //////////////////////////////
 
@@ -1698,7 +1422,7 @@ function getMultiValueField(jObj, id){
 	}
 	else{
 		if (jObj[id] != null)
-		  return jObj[id];
+		return jObj[id];
 		else return "";
 		// return the object as it is
 	}
