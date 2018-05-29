@@ -136,8 +136,8 @@ function resetFacet(topic, data, subscriberData) {
 	var urlYear = getQueryVariable('year');
 	var keyword = getQueryVariable('q');
 	if ((keyword == '')||((urlFilter =='')&& (urlYear ==''))){
-	resetFacetTray();
-}
+		resetFacetTray();
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -146,7 +146,7 @@ function addFacetDialogToPage() {
 	// The dialog must be a children of the page, not the gadget.
 	var iFrame = window.parent.document.getElementById(window.frameElement.id)
 
-		var newDivInParent = window.parent.document.createElement('div');
+	var newDivInParent = window.parent.document.createElement('div');
 	newDivInParent.setAttribute("id", "dialogFacet");
 	newDivInParent.setAttribute("title", "More Facet Terms");
 	newDivInParent.setAttribute("class", "robotofont");
@@ -195,12 +195,17 @@ function createLinkToFacetDialog(catName, field) {
 }
 
 function showMoreFacet(catName, field) {
+	console.log('showMoreFacet');
+	console.log(facetData[field]);
 	var facetList = facetData[field].buckets;
+	console.log(facetList);
 	var displayHTML = "<input id='dialogFacetTerm' type='hidden'></input>"
 		 + "<input id='dialogFacetCat' type='hidden'></input>";
 	for (var i = 0, iLen = facetList.length; i < iLen; i++) {
 		var facetTerm = facetList[i].key;
 		var facetCount = facetList[i].doc_count;
+	console.log(facetTerm);
+	console.log(facetCount);
 		if (facetTerm.indexOf("\"")<0){
 				//ignore the facet that contains " for now
 				//TODO: find a permanent solution
