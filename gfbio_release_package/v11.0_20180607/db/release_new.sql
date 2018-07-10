@@ -116,8 +116,8 @@ select updatecellcontentbyrowidentifier('gfbio_license', 'label', 'url', 'CC BY-
 -----------------------------------------      category           -- 09.05.2018 ----------------
 ------------------------------------------------------------------------------------------------
 
-select updatecellcontentbyrowidentifier('gfbio_category', 'label', 'name', 'Ecology',		'Ecology & Environment');
-select updatecellcontentbyrowidentifier('gfbio_category', 'label', 'label', 'Ecology',		'Ecology & Environment');
+select updatecellcontentbyrowidentifier('gfbio_category', 'name', 'name', 'Ecology ',		'Ecology & Environment');
+select updatecellcontentbyrowidentifier('gfbio_category', 'label', 'label', 'Ecology ',		'Ecology & Environment');
 
 
 ------------------------------------------------------------------------------------------------
