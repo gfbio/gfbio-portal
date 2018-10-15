@@ -1,0 +1,8 @@
+[100] Task #1370: Templates generic submission
+[100] Task #1386: Dataset label - removed "one keyword per line"
+
+[100] HELP-410: JIRA error handling
+
+Metadata Download (first version - metadata provided by GFBio)
+
+Theme loading improved (smaller icomoonTS file, javascript - minified versions)
