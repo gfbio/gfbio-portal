@@ -1,6 +1,5 @@
-### [100] Task #1370: Templates generic submission
-### [100] Task #1386: Dataset label - removed "one keyword per line"
-### 
-### [100] HELP-410: JIRA error handling
-### 
-### Theme loading improved (smaller icomoonTS file, javascript - minified versions)
+### [100] DEVOPS-12: Change ENA-Widget URL
+### [100] DEVOPS-13: Establish web statistics
+### [100] DEVOPS-17: Not Logged in Page
+### [100] DEVOPS-18: Generic Submission - spelling
+### [100] DEVOPS-23: GFBio Search - Paging not working
