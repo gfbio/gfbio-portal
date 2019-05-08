@@ -1,0 +1,4 @@
+### [100] DEVOPS-83: Reducing SPAM in Contact Form, google captcha v2
+### [100] DEVOPS-165: Privacy policy not enforced on contact form
+### [100] DEVOPS-173: Empty Tags inside CKEditor
+### [100] DEVOPS-176: Portal Theme - menu items with sub-entries not clickable
