@@ -1,0 +1,10 @@
+### [100] DEVOPS-32: DMPT Output produces invalid file
+### [100] DEVOPS-67	DMPT: Enable line break in project name
+### [100] DEVOPS-69	DMPT: Enable line break in hyperlinks
+### [100] DEVOPS-70	DMPT: Correct output of physical objects - dead/alive
+### [100] DEVOPS-74	Multiple Dataset Download
+### [100] DEVOPS-95	Remove DCRT from submission page
+### [100] DEVOPS-43	Link in verification email is not a link
+### [100] DEVOPS-47	Add class for centered responsive images to theme
+### [100] DEVOPS-77	Confirmation Email as HTML
+### [100] DEVOPS-86	User could not reload DMP and had problems with her account
